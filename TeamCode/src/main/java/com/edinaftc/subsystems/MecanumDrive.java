@@ -1,55 +1,41 @@
 package com.edinaftc.subsystems;
 
 
+import com.edinaftc.library.Vector2d;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.Hardware;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class MecanumDrive extends Subsystem{
 
+    private DcMotorEx[] motors;
+    public static final String[] MOTOR_NAMES = {"frontLeft", "rearLeft", "rearRight", "frontRight"};
     private double[] powers;
     private Vector2d targetVel = new Vector2d(0, 0);
     private double targetOmega = 0;
 
-    public static int TRACKING_ENCODER_TICKS_PER_REV = 2000;
-
     public static final PIDCoefficients NORMAL_VELOCITY_PID = new PIDCoefficients(20, 8, 12);
     public static final PIDCoefficients SLOW_VELOCITY_PID = new PIDCoefficients(10, 3, 1);
 
-    public static PIDFCoefficients HEADING_PIDF = new PIDFCoefficients(-0.5, 0, 0, 0.230, 0);
-    public static PIDFCoefficients AXIAL_PIDF = new PIDFCoefficients(-0.05, 0, 0, 0.0177, 0);
-    public static PIDFCoefficients LATERAL_PIDF = new PIDFCoefficients(-0.05, 0, 0, 0.0179, 0);
-
-    // units in cm
-    public static PIDCoefficients COLUMN_ALIGN_PID = new PIDCoefficients(-0.06, 0, -0.01);
-    public static double COLUMN_ALIGN_SETPOINT = 7;
-    public static double COLUMN_ALIGN_ALLOWED_ERROR = 0.5;
-
-    public static double PROXIMITY_SMOOTHING_COEFF = 0.5;
-    public static double PROXIMITY_SWIVEL_EXTEND = 0;
-    public static double PROXIMITY_SWIVEL_RETRACT = 0.64;
-
-    public static double ULTRASONIC_SWIVEL_EXTEND = 0.2;
-    public static double ULTRASONIC_SWIVEL_RETRACT = 0.75;
-
-    public static PIDCoefficients MAINTAIN_HEADING_PID = new PIDCoefficients(-2, 0, -0.01);
-
-    private void resetTrackingEncoders() {
-        int[] positions = internalGetTrackingEncoderPositions();
-        for(int i = 0; i < 2; i++) {
-            trackingEncoderOffsets[i] = -positions[i];
+    public MecanumDrive(HardwareMap map) {
+        motors = new DcMotorEx[4];
+        for (int i = 0; i < 4; i ++) {
+            DcMotorEx dcMotorEx = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
+            motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-    }
+        motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
+        motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+        setVelocityPIDCoefficients(NORMAL_VELOCITY_PID);
 
-    public double[] getTrackingEncoderRotations() {
-        double[] motorRotations = new double[2];
-        int[] encoderPositions = getTrackingEncoderPositions();
-        for (int i = 0; i < 2; i++) {
-            motorRotations[i] = trackingEncoderTicksToRadians(encoderPositions[i]);
-        }
-        return motorRotations;
     }
-
-}
 
     private void updatePowers() {
         powers[0] = targetVel.x() - targetVel.y() - targetOmega;
@@ -64,4 +50,20 @@ public class MecanumDrive extends Subsystem{
             powers[i] /= max;
         }
     }
+
+    public void update() {
+
+        updatePowers();
+
+    }
+
+    public void setVelocityPIDCoefficients(PIDCoefficients pidCoefficients) {
+        for (int i = 0; i < 4; i++) {
+            motors[i].setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidCoefficients);
+        }
+    }
+}
+
+
+
 
