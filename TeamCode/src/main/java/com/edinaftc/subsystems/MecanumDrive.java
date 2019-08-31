@@ -1,6 +1,8 @@
 package com.edinaftc.subsystems;
 
 
+import android.graphics.PorterDuff;
+
 import com.edinaftc.library.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -37,6 +39,16 @@ public class MecanumDrive extends Subsystem{
 
     }
 
+    public void setVelocity(Vector2d vel, double omega) {
+        internalSetVelocity(vel, omega);
+    }
+
+    private void internalSetVelocity(Vector2d vel, double omega) {
+        this.targetVel = vel;
+        this.targetOmega = omega;
+    }
+
+
     private void updatePowers() {
         powers[0] = targetVel.x() - targetVel.y() - targetOmega;
         powers[1] = targetVel.x() + targetVel.y() - targetOmega;
@@ -61,6 +73,8 @@ public class MecanumDrive extends Subsystem{
         for (int i = 0; i < 4; i++) {
             motors[i].setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidCoefficients);
         }
+
+
     }
 }
 
