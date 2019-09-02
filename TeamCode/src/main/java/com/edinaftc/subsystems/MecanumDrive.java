@@ -18,7 +18,7 @@ import java.util.Collections;
 public class MecanumDrive extends Subsystem{
 
     private DcMotorEx[] motors;
-    public static final String[] MOTOR_NAMES = {"frontLeft", "rearLeft", "rearRight", "frontRight"};
+    public static final String[] MOTOR_NAMES = {"fl", "bl", "br", "fr"};
     private double[] powers;
     private Vector2d targetVel = new Vector2d(0, 0);
     private double targetOmega = 0;
@@ -27,9 +27,11 @@ public class MecanumDrive extends Subsystem{
     public static final PIDCoefficients SLOW_VELOCITY_PID = new PIDCoefficients(10, 3, 1);
 
     public MecanumDrive(HardwareMap map) {
+        powers = new double[4];
         motors = new DcMotorEx[4];
         for (int i = 0; i < 4; i ++) {
             DcMotorEx dcMotorEx = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
+            motors[i] = dcMotorEx;
             motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
@@ -66,6 +68,10 @@ public class MecanumDrive extends Subsystem{
     public void update() {
 
         updatePowers();
+
+        for (int i = 0; i < 4; i++) {
+            motors[i].setPower(powers[i]);
+        }
 
     }
 

@@ -8,9 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Teleop", group = "teleop")
 public class TeleOp extends OpMode {
-    private Stickygamepad stickyGamepad1, stickyGamepad2;
-
-
     private Stickygamepad stickygamepad1, stickygamepad2;
 
     public void init() {
@@ -34,7 +31,7 @@ public class TeleOp extends OpMode {
         stickygamepad1.update();
         stickygamepad2.update();
 
-        if (stickyGamepad1.b) {
+        if (stickygamepad1.b) {
             slowMode = !slowMode;
             superSlowMode = false;
             if (slowMode) {
@@ -42,7 +39,7 @@ public class TeleOp extends OpMode {
             } else {
                 robot.drive.setVelocityPIDCoefficients(MecanumDrive.NORMAL_VELOCITY_PID);
             }
-        } else if (stickyGamepad1.left_bumper) {
+        } else if (stickygamepad1.left_bumper) {
             superSlowMode = !superSlowMode;
             slowMode = false;
             if (superSlowMode) {

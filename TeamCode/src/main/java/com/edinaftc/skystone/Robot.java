@@ -5,6 +5,7 @@ import android.util.Log;
 import com.edinaftc.subsystems.MecanumDrive;
 import com.edinaftc.subsystems.Subsystem;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class Robot {
 
         }
 
+        subsystemUpdateExecutor = ThreadPool.newSingleThreadExecutor("subsystem update");
     }
 
     public void start() {
