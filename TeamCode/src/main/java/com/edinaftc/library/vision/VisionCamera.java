@@ -54,6 +54,7 @@ public abstract class VisionCamera implements OpModeManagerNotifier.Notification
 
     public void initialize() {
         if (!initialized) {
+/*
             final CountDownLatch openCvInitialized = new CountDownLatch(1);
 
             final BaseLoaderCallback loaderCallback = new BaseLoaderCallback(activity) {
@@ -73,13 +74,15 @@ public abstract class VisionCamera implements OpModeManagerNotifier.Notification
                 }
             };
 
-            appUtil.runOnUiThread(() -> OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_3_0, activity, loaderCallback));
+            appUtil.runOnUiThread(() -> OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, activity, loaderCallback));
 
             try {
                 openCvInitialized.await();
             } catch (InterruptedException e) {
                 Log.w(TAG, e);
             }
+*/
+            OpenCVLoader.initDebug();
 
             doInitialize();
 
