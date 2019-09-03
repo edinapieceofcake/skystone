@@ -26,10 +26,10 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.edinaftc.relicrecovery.opmodes.vision;
+package com.edinaftc.roverruckus.opmodes.vision;
 
-import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.library.vision.VuforiaCamera;
+import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
 import com.edinaftc.roverruckus.vision.RoverRuckusVuMarkTracker;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -37,26 +37,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //@Disabled
 @TeleOp
-public class DynamicJewelVision extends OpMode {
+public class DynamicRelicRecoverVuMarkVision extends OpMode {
     private VuforiaCamera camera;
-    private DynamicJewelTracker jewelTracker;
-    private RelicRecoveryVuMarkTracker relicRecoveryVuMarkTracker;
+    private RoverRuckusVuMarkTracker roverRuckusVuMarkTracker;
 
     @Override
     public void init() {
-        jewelTracker = new DynamicJewelTracker();
-        relicRecoveryVuMarkTracker = new RelicRecoveryVuMarkTracker();
+        roverRuckusVuMarkTracker = new RoverRuckusVuMarkTracker();
         camera = new VuforiaCamera();
-        camera.addTracker(jewelTracker);
-        camera.addTracker(relicRecoveryVuMarkTracker);
+        camera.addTracker(roverRuckusVuMarkTracker);
         camera.initialize();
     }
 
     @Override
     public void loop() {
 
-        telemetry.addData("jewel", jewelTracker.getJewelPosition());
-        telemetry.addData("vuMark", relicRecoveryVuMarkTracker.getVuMark());
+        telemetry.addData("roverruckus", roverRuckusVuMarkTracker.GetRoverRuckusMark());
     }
 
     @Override
