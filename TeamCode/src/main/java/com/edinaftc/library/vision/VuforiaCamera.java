@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutorService;
 public class VuforiaCamera extends VisionCamera {
     public static final String TAG = "VuforiaCamera";
 
-    public static final String VUFORIA_LICENSE_KEY = "AaNzdGn/////AAAAGVCiwQaxg01ft7Lw8kYMP3aE00RU5hyTkE1CNeaYi16CBF0EC/LWi50VYsSMdJITYz6jBTmG6UGJNaNXhzk1zVIggfVmGyEZFL5doU6eVaLdgLyVmJx6jLgNzSafXSLnisXnlS+YJlCaOh1pwk08tWM8Oz+Au7drZ4BkO8j1uluIkwiewRu5zDZGlbNliFfYeCRqslBEZCGxiuH/idcsD7Q055Bwj+f++zuG3x4YlIGJCHrTpVjJUWEIbdJzJVgukc/vVOz21UNpY6WoAwH5MSeh4/U6lYwMZTQb4icfk0o1EiBdOPJKHsxyVF9l00r+6Mmdf6NJcFTFLoucvPjngWisD2T/sjbtq9N+hHnKRpbK\n";
+    public static final String VUFORIA_LICENSE_KEY = "ASA9XvT/////AAABmUnq30r9sU3Nmf/+RS+Xx0CHgJj/JtD5ycahnuM/0B2SFvbMRPIZCbLi4LeOkfse9Dymor5W7vNMYI+vmqVx9kpEaKE8VM7cFMUb/T1LLwlCPdX9QKOruzTcRdlYswR7ULh4K11GuFZDO/45pSks+Nf25kT5cnV+IN3TsscA0o7I6XPIeUoAJJPsjw+AycsmRk2uffr3Bnupexr93iRfHylniqP+ss4cRcT1lOqS5Zhh7FQaoelR58qL/RUorGpknjy9ufCn9ervc6Mz01u3ZkM/EOa5wUPT8bDzPZ6nMDaadqumorT5Py+GtJSUosUgz4Gd3iR++fdEk6faFZq3L9xfBSagNykwhiyYx+oqwVqe";
 
     private VuforiaLocalizer vuforia;
     private FrameLayout cameraLayout;
@@ -127,7 +127,7 @@ public class VuforiaCamera extends VisionCamera {
         VuforiaLocalizer.Parameters vuforiaParams = new VuforiaLocalizer.Parameters(parameters.cameraMonitorViewId);
         vuforiaParams.vuforiaLicenseKey = VUFORIA_LICENSE_KEY;
         vuforiaParams.cameraDirection = parameters.cameraDirection;
-        vuforia = ClassFactory.createVuforiaLocalizer(vuforiaParams);
+        vuforia = ClassFactory.getInstance().createVuforia(vuforiaParams);
 
         Vuforia.setFrameFormat(PIXEL_FORMAT.RGB888, true);
         vuforia.setFrameQueueCapacity(1);
@@ -141,9 +141,13 @@ public class VuforiaCamera extends VisionCamera {
 
             final Activity activity = appUtil.getActivity();
             activity.runOnUiThread(() -> {
-                LinearLayout cameraMonitorView = activity.findViewById(parameters.cameraMonitorViewId);
-                cameraLayout = (FrameLayout) cameraMonitorView.getParent();
-                cameraLayout.addView(overlayView);
+                try {
+                    LinearLayout cameraMonitorView = activity.findViewById(parameters.cameraMonitorViewId);
+                    cameraLayout = (FrameLayout) cameraMonitorView.getParent().getParent();
+                    cameraLayout.addView(overlayView);
+                } catch (Exception ex) {
+                    ex.getMessage();
+                }
             });
         }
 
