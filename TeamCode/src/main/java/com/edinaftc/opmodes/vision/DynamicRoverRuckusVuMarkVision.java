@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //@Disabled
 @TeleOp
-public class DynamicRelicRecoverVuMarkVision extends OpMode {
+public class DynamicRoverRuckusVuMarkVision extends OpMode {
     private VuforiaCamera camera;
     private RoverRuckusVuMarkTracker roverRuckusVuMarkTracker;
 
