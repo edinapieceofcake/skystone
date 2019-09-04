@@ -1,12 +1,12 @@
-package com.edinaftc.opmodes;
+package com.edinaftc.opmodes.test;
 
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.Vector2d;
 import com.edinaftc.skystone.Robot;
-import com.edinaftc.subsystems.MecanumDrive;
+import com.edinaftc.library.subsystems.MecanumDrive;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Teleop", group = "teleop")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Subsystem Mecanum Test", group = "teleop")
 public class TeleOp extends OpMode {
     private Stickygamepad stickygamepad1, stickygamepad2;
 

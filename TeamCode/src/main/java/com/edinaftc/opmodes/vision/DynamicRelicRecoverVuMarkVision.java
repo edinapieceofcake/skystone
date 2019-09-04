@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.edinaftc.roverruckus.opmodes.vision;
+package com.edinaftc.opmodes.vision;
 
 import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;

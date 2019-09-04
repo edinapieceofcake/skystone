@@ -1,4 +1,4 @@
-package com.edinaftc.relicrecovery.vision;
+package com.edinaftc.roverruckus.vision;
 
 import com.edinaftc.library.vision.Overlay;
 import com.edinaftc.library.vision.Tracker;
