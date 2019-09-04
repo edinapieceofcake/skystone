@@ -28,8 +28,8 @@
  */
 package com.edinaftc.opmodes.vision;
 
-import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
+import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
 import com.edinaftc.roverruckus.vision.RoverRuckusVuMarkTracker;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -37,22 +37,26 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //@Disabled
 @TeleOp
-public class DynamicRoverRuckusVuMarkVision extends OpMode {
+public class RelicRecovery extends OpMode {
     private VuforiaCamera camera;
-    private RoverRuckusVuMarkTracker roverRuckusVuMarkTracker;
+    private DynamicJewelTracker jewelTracker;
+    private RelicRecoveryVuMarkTracker relicRecoveryVuMarkTracker;
 
     @Override
     public void init() {
-        roverRuckusVuMarkTracker = new RoverRuckusVuMarkTracker();
+        jewelTracker = new DynamicJewelTracker();
+        relicRecoveryVuMarkTracker = new RelicRecoveryVuMarkTracker();
         camera = new VuforiaCamera();
-        camera.addTracker(roverRuckusVuMarkTracker);
+        camera.addTracker(jewelTracker);
+        camera.addTracker(relicRecoveryVuMarkTracker);
         camera.initialize();
     }
 
     @Override
     public void loop() {
 
-        telemetry.addData("roverruckus", roverRuckusVuMarkTracker.GetRoverRuckusMark());
+        telemetry.addData("jewel", jewelTracker.getJewelPosition());
+        telemetry.addData("vuMark", relicRecoveryVuMarkTracker.getVuMark());
     }
 
     @Override

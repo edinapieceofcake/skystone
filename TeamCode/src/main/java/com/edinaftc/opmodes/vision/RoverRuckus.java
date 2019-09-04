@@ -28,35 +28,41 @@
  */
 package com.edinaftc.opmodes.vision;
 
-import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.library.vision.VuforiaCamera;
+import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
+import com.edinaftc.roverruckus.vision.DynamicMineralTracker;
 import com.edinaftc.roverruckus.vision.RoverRuckusVuMarkTracker;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //@Disabled
 @TeleOp
-public class DynamicJewelVision extends OpMode {
+public class RoverRuckus extends OpMode {
     private VuforiaCamera camera;
-    private DynamicJewelTracker jewelTracker;
-    private RelicRecoveryVuMarkTracker relicRecoveryVuMarkTracker;
+    private RoverRuckusVuMarkTracker roverRuckusVuMarkTracker;
+    private DynamicMineralTracker dynamicMineralTracker;
 
     @Override
     public void init() {
-        jewelTracker = new DynamicJewelTracker();
-        relicRecoveryVuMarkTracker = new RelicRecoveryVuMarkTracker();
+        roverRuckusVuMarkTracker = new RoverRuckusVuMarkTracker();
+        dynamicMineralTracker = new DynamicMineralTracker();
         camera = new VuforiaCamera();
-        camera.addTracker(jewelTracker);
-        camera.addTracker(relicRecoveryVuMarkTracker);
+        camera.addTracker(roverRuckusVuMarkTracker);
+        camera.addTracker(dynamicMineralTracker);
         camera.initialize();
     }
 
     @Override
     public void loop() {
 
-        telemetry.addData("jewel", jewelTracker.getJewelPosition());
-        telemetry.addData("vuMark", relicRecoveryVuMarkTracker.getVuMark());
+        telemetry.addData("roverruckus", roverRuckusVuMarkTracker.GetRoverRuckusMark());
+        telemetry.addData("mineral found", dynamicMineralTracker.isFound());
+        if (dynamicMineralTracker.isFound()) {
+            telemetry.addData("rect", dynamicMineralTracker.getRect());
+        } else {
+            telemetry.addData("rect", "not found");
+        }
     }
 
     @Override
