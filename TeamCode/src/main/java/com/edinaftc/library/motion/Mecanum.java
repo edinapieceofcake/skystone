@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Components;
+package com.edinaftc.library.motion;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
