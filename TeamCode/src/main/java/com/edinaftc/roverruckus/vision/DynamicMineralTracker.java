@@ -7,6 +7,10 @@ import com.edinaftc.roverruckus.utils.Enums;
 import com.edinaftc.roverruckus.vision.filter.ColorFilter;
 import com.edinaftc.roverruckus.vision.filter.HSVColorFilter;
 import com.edinaftc.roverruckus.vision.filter.LeviColorFilter;
+import com.edinaftc.roverruckus.vision.scorer.IScorer;
+import com.edinaftc.roverruckus.vision.scorer.MaxAreaScorer;
+import com.edinaftc.roverruckus.vision.scorer.PerfectAreaScorer;
+import com.edinaftc.roverruckus.vision.scorer.RatioScorer;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -22,186 +26,165 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DynamicMineralTracker extends Tracker {
-    public Enums.AreaScoringMethod detectionMode = Enums.AreaScoringMethod.MAX_AREA;
-    public double downScaleFactor = 0.4;
-    public double perfectRatio = 1;
-    public boolean rotateMat = false;
-    public Enums.DetectionSpeed speed = Enums.DetectionSpeed.BALANCED;
+    // Defining Mats to be used.
+    private Mat workingMat = null; // Used for preprocessing and working with (blurring as an example)
+    private Mat maskYellow = null; // Yellow Mask returned by color filter
+    private Mat hierarchy  = null; // hierarchy used by coutnours
 
-    public ColorFilter colorFilter = new HSVColorFilter(new Scalar(50,50,50), new Scalar(50,50,50));
+    // Results of the detector
+    private boolean found    = false; // Is the gold mineral found
+    private boolean aligned  = false; // Is the gold mineral aligned
+    private double  goldXPos = 0;     // X Position (in pixels) of the gold element
+    private double  goldYPos = 0;
 
-    public double perfectArea = 6500;
-    public double areaWeight = 0.05; // Since we're dealing with 100's of pixels
-    public double minArea = 700;
-    public double ratioWeight = 15; // Since most of the time the area diffrence is a decimal place
-    public double maxDiffrence = 10; // Since most of the time the area diffrence is a decimal place
-    public boolean debugContours = false;
-    public boolean stretch = false;
-    public Size stretchKernal = new Size(10,10);
+    // Detector settings
+    public double alignPosOffset  = 0;    // How far from center frame is aligned
+    public double alignSize       = 100;  // How wide is the margin of error for alignment
 
-    private Point resultLocation = null;
-    private Rect resultRect = null;
-    private boolean resultFound = false;
-    private Mat workingMat = new Mat();
-    private Mat blurredMat = new Mat();
-    private Mat mask = new Mat();
-    private Mat hiarchy = new Mat();
-    private Mat structure = new Mat();
+    public Enums.AreaScoringMethod areaScoringMethod = Enums.AreaScoringMethod.MAX_AREA; // Setting to decide to use MaxAreaScorer or PerfectAreaScorer
 
-    private Size newSize = new Size();
+    private List<IScorer> scorers = new ArrayList<>();
+
+    public RatioScorer ratioScorer       = new RatioScorer(1.0, 3);          // Used to find perfect squares
+    public MaxAreaScorer maxAreaScorer     = new MaxAreaScorer( 0.01);                    // Used to find largest objects
+    public PerfectAreaScorer perfectAreaScorer = new PerfectAreaScorer(5000,0.05); // Used to find objects near a tuned area value
+
+    public double downscale = 0.5;
+    public Size   downscaleResolution = new Size(640, 480);
+    public boolean useFixedDownscale = true;
+    private Size initSize;
+
+    //Create the default filters and scorers
+    public ColorFilter yellowFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW); //Default Yellow filter
+
+    Rect resultRect = null;
 
     @Override
     public void init(VisionCamera camera) {
-         colorFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW);
+        yellowFilter = new LeviColorFilter(LeviColorFilter.ColorPreset.YELLOW, 100);
+        // Add diffrent scoreres depending on the selected mode
+        if(areaScoringMethod == Enums.AreaScoringMethod.MAX_AREA){
+            scorers.add(maxAreaScorer);
+        }
 
-        //Jewel Detector Settings
-        areaWeight = 0.02;
-        detectionMode = Enums.AreaScoringMethod.MAX_AREA; // PERFECT_AREA
-        //genericDeterctor.perfectArea = 6500; <- Needed for PERFECT_AREA
-        debugContours = true;
-        maxDiffrence = 15;
-        ratioWeight = 15;
-        minArea = 100;
+        if (areaScoringMethod == Enums.AreaScoringMethod.PERFECT_AREA){
+            scorers.add(perfectAreaScorer);
+        }
     }
 
     @Override
     public void processFrame(Mat frame, double timestamp) {
-        Size initSize = frame.size();
-        newSize = new Size(initSize.width * downScaleFactor, initSize.height * downScaleFactor);
+        Rect bestRect = null;
+        Size adjustedSize;
+        double bestDiffrence = Double.MAX_VALUE; // MAX_VALUE since less diffrence = better
+
+        initSize = frame.size();
+
+        if(useFixedDownscale){
+            adjustedSize = downscaleResolution;
+        }else{
+            adjustedSize = new Size(initSize.width * downscale, initSize.height * downscale);
+        }
+
+
+        if (workingMat == null) {
+            workingMat = new Mat(); // Used for preprocessing and working with (blurring as an example)
+            maskYellow = new Mat(); // Yellow Mask returned by color filter
+            hierarchy  = new Mat(); // hierarchy used by coutnours
+        }
+
         frame.copyTo(workingMat);
 
-        Imgproc.resize(workingMat, workingMat, newSize);
+        Imgproc.resize(workingMat, workingMat,adjustedSize); // Downscale
 
-        if (rotateMat) {
-            Mat tempBefore = workingMat.t();
+        //Preprocess the working Mat (blur it then apply a yellow filter)
+        Imgproc.GaussianBlur(workingMat,workingMat,new Size(5,5),0);
+        yellowFilter.process(workingMat.clone(),maskYellow);
 
-            Core.flip(tempBefore, workingMat, -1); //mRgba.t() is the transpose
+        //Find contours of the yellow mask and draw them to the display mat for viewing
+        // Current result
+        List<MatOfPoint> contoursYellow = new ArrayList<>();
+        Imgproc.findContours(maskYellow, contoursYellow, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-            tempBefore.release();
-        }
-
-        Mat preConvert = workingMat.clone();
-        colorFilter.process(preConvert,mask);
-
-        if(stretch){
-            structure = Imgproc.getStructuringElement(Imgproc.CV_SHAPE_RECT,stretchKernal);
-            Imgproc.morphologyEx(mask,mask,Imgproc.MORPH_CLOSE,structure);
-        }
-        List<MatOfPoint> contours = new ArrayList<>();
-
-        Imgproc.findContours(mask, contours, hiarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.drawContours(workingMat, contours, -1, new Scalar(230, 70, 70), 2);
-        Rect chosenRect = null;
-        double chosenScore = Integer.MAX_VALUE;
-
-        MatOfPoint2f approxCurve = new MatOfPoint2f();
-
-        for (MatOfPoint c : contours) {
-            MatOfPoint2f contour2f = new MatOfPoint2f(c.toArray());
-
-            //Processing on mMOP2f1 which is in type MatOfPoint2f
-            double approxDistance = Imgproc.arcLength(contour2f, true) * 0.02;
-            Imgproc.approxPolyDP(contour2f, approxCurve, approxDistance, true);
-
-            //Convert back to MatOfPoint
-            MatOfPoint points = new MatOfPoint(approxCurve.toArray());
+        // Loop through the contours and score them, searching for the best result
+        for (MatOfPoint cont : contoursYellow) {
+            double score = calculateScore(cont); // Get the diffrence score using the scoring API
 
             // Get bounding rect of contour
-            Rect rect = Imgproc.boundingRect(points);
+            Rect rect = Imgproc.boundingRect(cont);
 
-            // You can find this by printing the area of each found rect, then looking and finding what u deem to be perfect.
-            // Run this with the bot, on a balance board, with jewels in their desired location. Since jewels should mostly be
-            // in the same position, this hack could work nicely.
-
-
-            double area = Imgproc.contourArea(c);
-            double areaDiffrence = 0;
-
-            switch (detectionMode) {
-                case MAX_AREA:
-                    areaDiffrence = -area * areaWeight;
-                    break;
-                case PERFECT_AREA:
-                    areaDiffrence = Math.abs(perfectArea - area);
-                    break;
-            }
-
-            // Just declaring vars to make my life eassy
-            double x = rect.x;
-            double y = rect.y;
-            double w = rect.width;
-            double h = rect.height;
-            Point centerPoint = new Point(x + (w / 2), y + (h / 2));
-
-
-            double cubeRatio = Math.max(Math.abs(h / w), Math.abs(w / h)); // Get the ratio. We use max in case h and w get swapped??? it happens when u account for rotation
-            double ratioDiffrence = Math.abs(cubeRatio - perfectRatio);
-
-
-            double finalDiffrence = (ratioDiffrence * ratioWeight) + (areaDiffrence * areaWeight);
-
-
-            // Optional to ALWAYS return a result.
-
-            // Update the chosen rect if the diffrence is lower then the curreny chosen
-            // Also can add a condition for min diffrence to filter out VERY wrong answers
-            // Think of diffrence as score. 0 = perfect
-            if (finalDiffrence < chosenScore && finalDiffrence < maxDiffrence && area > minArea) {
-                chosenScore = finalDiffrence;
-                chosenRect = rect;
+            // If the result is better then the previously tracked one, set this rect as the new best
+            if (score < bestDiffrence) {
+                bestDiffrence = score;
+                bestRect = rect;
             }
         }
 
-        if (chosenRect != null) {
-            Point centerPoint = new Point(chosenRect.x + (chosenRect.width / 2), chosenRect.y + (chosenRect.height / 2));
-            resultRect = chosenRect;
-            resultLocation = centerPoint;
-            resultFound = true;
+        // Vars to calculate the alignment logic.
+        double alignX    = (adjustedSize.width / 2) + alignPosOffset; // Center point in X Pixels
+        double alignXMin = alignX - (alignSize / 2); // Min X Pos in pixels
+        double alignXMax = alignX +(alignSize / 2); // Max X pos in pixels
+        double xPos; // Current Gold X Pos
+
+        if(bestRect != null){
+            resultRect = bestRect;
+
+            // Set align X pos
+            xPos = bestRect.x + (bestRect.width / 2);
+            goldXPos = xPos;
+            goldYPos = bestRect.y + (bestRect.width /2 );
+
+            // Check if the mineral is aligned
+            if(xPos < alignXMax && xPos > alignXMin){
+                aligned = true;
+            }else{
+                aligned = false;
+            }
+            found = true;
         }else{
-            resultFound = false;
+            found = false;
+            aligned = false;
             resultRect = null;
-            resultLocation = null;
         }
-        Imgproc.resize(workingMat, workingMat, initSize);
-
-        preConvert.release();
-
-        workingMat.release();
-
     }
 
     @Override
     public void drawOverlay(Overlay overlay, int imageWidth, int imageHeight, boolean debug) {
-/*
+        overlay.putText("Found: " + found, Overlay.TextAlign.LEFT, new Point(20, 700),
+                new Scalar(255, 255, 0), 30);
+        overlay.putText("Aligned: " + aligned, Overlay.TextAlign.LEFT, new Point(20, 675),
+                new Scalar(255, 255, 0), 30);
+        if (resultRect != null) {
+            overlay.putText("Rect: " + resultRect, Overlay.TextAlign.LEFT, new Point(20, 650),
+                    new Scalar(255, 255, 0), 30);
+        } else {
+            overlay.putText("Rect: not found", Overlay.TextAlign.LEFT, new Point(20, 650),
+                    new Scalar(255, 255, 0), 30);
+        }
+    }
 
-            if (debugContours && area > 100) {
-                Imgproc.circle(workingMat, centerPoint, 3, new Scalar(0, 255, 255), 3);
-                Imgproc.putText(workingMat, "Area: " +  String.format("%.1f", area), centerPoint, 0, 0.5, new Scalar(0, 255, 255));
-            }
+    private double calculateScore(Mat input){
+        double totalScore = 0;
 
-            Imgproc.rectangle(workingMat,
-                    new Point(chosenRect.x, chosenRect.y),
-                    new Point(chosenRect.x + chosenRect.width, chosenRect.y + chosenRect.height),
-                    new Scalar(0, 255, 0), 3);
+        for(IScorer scorer : scorers){
+            totalScore += scorer.calculateScore(input);
+        }
 
-            Imgproc.putText(workingMat,
-                    "Result: " + String.format("%.2f", chosenScore),
-                    new Point(chosenRect.x - 5, chosenRect.y - 10),
-                    Core.FONT_HERSHEY_PLAIN,
-                    1.3,
-                    new Scalar(0, 255, 0),
-                    2);
-        Imgproc.putText(workingMat, "DogeCV v1.1 Generic: " + newSize.toString() + " - " + speed.toString() + " - " + detectionMode.toString(), new Point(5, 30), 0, 1.2, new Scalar(0, 255, 255), 2);
-*/
+        return totalScore;
     }
 
     public boolean isFound()
     {
-        return resultFound;
+        return found;
     }
 
     public Rect getRect()
     {
         return resultRect;
+    }
+
+    public boolean isAligned()
+    {
+        return aligned;
     }
 }

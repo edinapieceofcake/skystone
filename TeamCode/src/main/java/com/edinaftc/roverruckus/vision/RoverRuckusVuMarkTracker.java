@@ -4,6 +4,7 @@ import com.edinaftc.library.vision.Overlay;
 import com.edinaftc.library.vision.Tracker;
 import com.edinaftc.library.vision.VisionCamera;
 import com.edinaftc.library.vision.VuforiaCamera;
+import com.edinaftc.library.vision.VuforiaCamera2;
 
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
@@ -40,7 +41,7 @@ public class RoverRuckusVuMarkTracker extends Tracker {
 
     @Override
     public void init(VisionCamera camera) {
-        VuforiaLocalizer vuforia = ((VuforiaCamera) camera).getVuforia();
+        VuforiaLocalizer vuforia = ((VuforiaCamera2) camera).getVuforia();
         targetsRoverRuckus = vuforia.loadTrackablesFromAsset("RoverRuckus");
         VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
         blueRover.setName("Blue-Rover");

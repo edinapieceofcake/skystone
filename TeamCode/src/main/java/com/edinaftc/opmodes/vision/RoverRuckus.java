@@ -29,6 +29,7 @@
 package com.edinaftc.opmodes.vision;
 
 import com.edinaftc.library.vision.VuforiaCamera;
+import com.edinaftc.library.vision.VuforiaCamera2;
 import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
 import com.edinaftc.roverruckus.vision.DynamicMineralTracker;
@@ -39,7 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //@Disabled
 @TeleOp
 public class RoverRuckus extends OpMode {
-    private VuforiaCamera camera;
+    private VuforiaCamera2 camera;
     private RoverRuckusVuMarkTracker roverRuckusVuMarkTracker;
     private DynamicMineralTracker dynamicMineralTracker;
 
@@ -47,7 +48,7 @@ public class RoverRuckus extends OpMode {
     public void init() {
         roverRuckusVuMarkTracker = new RoverRuckusVuMarkTracker();
         dynamicMineralTracker = new DynamicMineralTracker();
-        camera = new VuforiaCamera();
+        camera = new VuforiaCamera2();
         camera.addTracker(roverRuckusVuMarkTracker);
         camera.addTracker(dynamicMineralTracker);
         camera.initialize();
@@ -63,6 +64,7 @@ public class RoverRuckus extends OpMode {
         } else {
             telemetry.addData("rect", "not found");
         }
+        telemetry.addData("aligned", dynamicMineralTracker.isAligned());
     }
 
     @Override
