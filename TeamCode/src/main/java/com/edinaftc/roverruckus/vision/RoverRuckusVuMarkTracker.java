@@ -41,7 +41,7 @@ public class RoverRuckusVuMarkTracker extends Tracker {
 
     @Override
     public void init(VisionCamera camera) {
-        VuforiaLocalizer vuforia = ((VuforiaCamera2) camera).getVuforia();
+        VuforiaLocalizer vuforia = ((VuforiaCamera) camera).getVuforia();
         targetsRoverRuckus = vuforia.loadTrackablesFromAsset("RoverRuckus");
         VuforiaTrackable blueRover = targetsRoverRuckus.get(0);
         blueRover.setName("Blue-Rover");
