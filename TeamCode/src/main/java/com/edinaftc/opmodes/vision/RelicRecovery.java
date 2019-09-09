@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 //@Disabled
 @TeleOp
-public class DynamicJewelVision extends OpMode {
+public class RelicRecovery extends OpMode {
     private VuforiaCamera camera;
     private DynamicJewelTracker jewelTracker;
     private RelicRecoveryVuMarkTracker relicRecoveryVuMarkTracker;
