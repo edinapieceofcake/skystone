@@ -18,6 +18,8 @@ public class Robot {
 
     public Intake intake;
 
+    public LiftandArm liftandarm;
+
     private List<Subsystem> subsystems;
 
     private Runnable subsystemUpdateRunnable = () -> {
@@ -50,6 +52,13 @@ public class Robot {
         try {
             intake = new Intake(opMode.hardwareMap);
             subsystems.add(intake);
+        } catch (IllegalArgumentException e) {
+
+        }
+
+        try {
+            liftandarm = new LiftandArm(opMode.hardwareMap);
+            subsystems.add(liftandarm);
         } catch (IllegalArgumentException e) {
 
         }

@@ -1,4 +1,4 @@
-package com.edinaftc.library.subsystems;
+Intake.javapackage com.edinaftc.library.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
