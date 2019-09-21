@@ -11,7 +11,7 @@ public class TeleOp extends OpMode {
     private Stickygamepad stickygamepad1, stickygamepad2;
 
     public void init() {
-        robot = new Robot(this);
+        robot = new Robot(this, telemetry);
         robot.start();
 
         stickygamepad1 = new Stickygamepad(gamepad1);
@@ -28,6 +28,7 @@ public class TeleOp extends OpMode {
     }
 
     public void loop() {
+        /*
         stickygamepad1.update();
         stickygamepad2.update();
 
@@ -48,7 +49,8 @@ public class TeleOp extends OpMode {
                 robot.drive.setVelocityPIDCoefficients(MecanumDrive.NORMAL_VELOCITY_PID);
             }
         }
-
+*/
+/*
         double x, y = 0, omega;
 
         x = -gamepad1.left_stick_y;
@@ -60,7 +62,16 @@ public class TeleOp extends OpMode {
         omega = -gamepad1.right_stick_x;
 
         robot.drive.setVelocity(new Vector2d(x, y), omega);
+*/
 
+        robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+
+        telemetry.addData("motor 0", "%f", robot.drive.getMotors()[0].getPower());
+        telemetry.addData("motor 1", "%f", robot.drive.getMotors()[1].getPower());
+        telemetry.addData("motor 2", "%f", robot.drive.getMotors()[2].getPower());
+        telemetry.addData("motor 3", "%f", robot.drive.getMotors()[3].getPower());
+        telemetry.update();
+/*
         if (gamepad1.left_trigger != 0) {
             robot.intake.setIntakePower(gamepad1.left_trigger);
         } else if (gamepad1.right_trigger != 0) {
@@ -68,5 +79,6 @@ public class TeleOp extends OpMode {
         } else {
             robot.intake.setIntakePower(0);
         }
+ */
     }
 }

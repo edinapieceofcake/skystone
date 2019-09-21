@@ -1,10 +1,14 @@
 package com.edinaftc.skystone;
 
+import com.edinaftc.library.motion.TelemetryMounts;
 import com.edinaftc.library.subsystems.Intake;
 import com.edinaftc.library.subsystems.MecanumDrive;
+import com.edinaftc.library.subsystems.MecanumDrive2;
 import com.edinaftc.library.subsystems.Subsystem;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ThreadPool;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +18,13 @@ public class Robot {
     private ExecutorService subsystemUpdateExecutor;
     private boolean started;
 
-    public MecanumDrive drive;
+    public MecanumDrive2 drive;
 
     public Intake intake;
 
     private List<Subsystem> subsystems;
+
+    private Telemetry telemetry;
 
     private Runnable subsystemUpdateRunnable = () -> {
         while (!Thread.currentThread().isInterrupted()) {
@@ -28,32 +34,43 @@ public class Robot {
                     try {
                         subsystem.update();
                     } catch (Throwable t) {
+                        this.telemetry.addData("Exception running thread 1", "");
+                        this.telemetry.update();
                     }
                 }
             } catch (Throwable t) {
-
+                this.telemetry.addData("Exception running thread 2", "");
+                this.telemetry.update();
             }
         }
     };
 
-    public Robot(OpMode opMode) {
+    public Robot(OpMode opMode, Telemetry telemetry) {
+        this.telemetry = telemetry;
 
         subsystems = new ArrayList<>();
-
+/*
         try {
             drive = new MecanumDrive(opMode.hardwareMap);
             subsystems.add(drive);
         } catch (IllegalArgumentException e) {
 
         }
+*/
+        try {
+            drive = new MecanumDrive2(opMode.hardwareMap);
+            subsystems.add(drive);
+        } catch (IllegalArgumentException e) {
 
+        }
+/*
         try {
             intake = new Intake(opMode.hardwareMap);
             subsystems.add(intake);
         } catch (IllegalArgumentException e) {
 
         }
-
+*/
 
         subsystemUpdateExecutor = ThreadPool.newSingleThreadExecutor("subsystem update");
     }

@@ -11,18 +11,19 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class MecanumDrive extends Subsystem{
+public class MecanumDrive2 extends Subsystem{
 
     private DcMotorEx[] motors;
     public static final String[] MOTOR_NAMES = {"fl", "bl", "br", "fr"};
     private double[] powers;
-    private Vector2d targetVel = new Vector2d(0, 0);
-    private double targetOmega = 0;
+    private double leftStickX;
+    private double leftStickY;
+    private double rightStickY;
 
     public static final PIDCoefficients NORMAL_VELOCITY_PID = new PIDCoefficients(20, 8, 12);
     public static final PIDCoefficients SLOW_VELOCITY_PID = new PIDCoefficients(10, 3, 1);
 
-    public MecanumDrive(HardwareMap map) {
+    public MecanumDrive2(HardwareMap map) {
         powers = new double[4];
         motors = new DcMotorEx[4];
         for (int i = 0; i < 4; i ++) {
@@ -39,28 +40,29 @@ public class MecanumDrive extends Subsystem{
 
     public DcMotorEx[] getMotors() { return motors; }
 
-    public void setVelocity(Vector2d vel, double omega) {
-        internalSetVelocity(vel, omega);
+    public void setVelocity(double leftStickX, double leftStickY, double rightStickY) {
+        internalSetVelocity(leftStickX, leftStickY, rightStickY);
     }
 
-    private void internalSetVelocity(Vector2d vel, double omega) {
-        this.targetVel = vel;
-        this.targetOmega = omega;
+    private void internalSetVelocity(double leftStickX, double leftStickY, double rightStickY) {
+        this.leftStickX = leftStickX;
+        this.leftStickY = leftStickY;
+        this.rightStickY = rightStickY;
     }
 
 
     private void updatePowers() {
-        powers[0] = targetVel.x() - targetVel.y() - targetOmega;
-        powers[1] = targetVel.x() + targetVel.y() - targetOmega;
-        powers[2] = targetVel.x() - targetVel.y() + targetOmega;
-        powers[3] = targetVel.x() + targetVel.y() + targetOmega;
+        final double x = Math.pow(-leftStickX, 3.0);
+        final double y = Math.pow(leftStickY, 3.0);
 
-        double max = Collections.max(Arrays.asList(1.0, Math.abs(powers[0]),
-                Math.abs(powers[1]), Math.abs(powers[2]), Math.abs(powers[3])));
+        final double rotation = Math.pow(-rightStickY, 3.0);
+        final double direction = Math.atan2(x, y);
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 
-        for (int i = 0; i < 4; i++) {
-            powers[i] /= max;
-        }
+        powers[0] = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
+        powers[3] = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
+        powers[1] = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
+        powers[2] = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
     }
 
     public void update() {
