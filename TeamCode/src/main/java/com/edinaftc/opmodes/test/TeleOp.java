@@ -60,5 +60,13 @@ public class TeleOp extends OpMode {
         omega = -gamepad1.right_stick_x;
 
         robot.drive.setVelocity(new Vector2d(x, y), omega);
+
+        if (gamepad1.left_trigger != 0) {
+            robot.intake.setIntakePower(gamepad1.left_trigger);
+        } else if (gamepad1.right_trigger != 0) {
+            robot.intake.setIntakePower(gamepad1.right_trigger);
+        } else {
+            robot.intake.setIntakePower(0);
+        }
     }
 }
