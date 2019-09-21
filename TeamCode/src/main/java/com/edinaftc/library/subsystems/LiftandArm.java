@@ -1,7 +1,6 @@
-Intake.javapackage com.edinaftc.library.subsystems;
+package com.edinaftc.library.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class LiftandArm extends Subsystem{
@@ -9,7 +8,7 @@ public class LiftandArm extends Subsystem{
     private DcMotor arm, lift;
     private double liftPower, armPower;
 
-    public Lift(HardwareMap map) {
+    public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
         arm = map.dcMotor.get("arm");
     }

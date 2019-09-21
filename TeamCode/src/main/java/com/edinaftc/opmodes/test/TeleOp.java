@@ -71,19 +71,19 @@ public class TeleOp extends OpMode {
         }
 
         if (gamepad2.left_stick_y > 0) {
-            robot.liftandarm.setLiftPower(1)
+            robot.liftandarm.setLiftPower(1);
         } else if (gamepad2.left_stick_y < 0) {
-            robot.liftandarm.setLiftPower(-1)
+            robot.liftandarm.setLiftPower(-1);
         } else {
-            robot.liftandarm.setLiftPower(0)
+            robot.liftandarm.setLiftPower(0);
         }
 
         if (gamepad2.right_stick_x > 0) {
-            robot.liftandarm.setArmPower(1)
+            robot.liftandarm.setArmPower(1);
         } else if(gamepad2.right_stick_x < 0) {
-            robot.liftandarm.setArmPower(-1)
+            robot.liftandarm.setArmPower(-1);
         } else {
-            robot.liftandarm.setArmPower(0)
+            robot.liftandarm.setArmPower(0);
         }
 
     }
