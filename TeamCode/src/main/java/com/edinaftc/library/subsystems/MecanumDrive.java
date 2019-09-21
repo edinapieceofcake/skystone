@@ -28,7 +28,7 @@ public class MecanumDrive extends Subsystem{
         for (int i = 0; i < 4; i ++) {
             DcMotorEx dcMotorEx = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
             motors[i] = dcMotorEx;
-            motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            //motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
         motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
