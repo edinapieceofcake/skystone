@@ -26,19 +26,22 @@ public class MecanumDrive2 extends Subsystem{
     public MecanumDrive2(HardwareMap map) {
         powers = new double[4];
         motors = new DcMotorEx[4];
+
         for (int i = 0; i < 4; i ++) {
             DcMotorEx dcMotor = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
             motors[i] = dcMotor;
             motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+
         motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
-        setVelocityPIDCoefficients(NORMAL_VELOCITY_PID);
-
+        //setVelocityPIDCoefficients(NORMAL_VELOCITY_PID);
     }
 
     public DcMotorEx[] getMotors() { return motors; }
+
+    public double[] getPowers() { return powers; }
 
     public void setVelocity(double leftStickX, double leftStickY, double rightStickY) {
         internalSetVelocity(leftStickX, leftStickY, rightStickY);
@@ -50,6 +53,13 @@ public class MecanumDrive2 extends Subsystem{
         this.rightStickY = rightStickY;
     }
 
+    public double leftX() { return this.leftStickX; }
+
+    public double leftY() { return this.leftStickY; }
+
+    public double rightY() {
+        return this.rightStickY;
+    }
 
     private void updatePowers() {
         final double x = Math.pow(-leftStickX, 3.0);
@@ -79,8 +89,6 @@ public class MecanumDrive2 extends Subsystem{
         for (int i = 0; i < 4; i++) {
             motors[i].setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidCoefficients);
         }
-
-
     }
 }
 
