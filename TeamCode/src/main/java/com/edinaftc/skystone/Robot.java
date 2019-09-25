@@ -1,6 +1,7 @@
 package com.edinaftc.skystone;
 
 import com.edinaftc.library.subsystems.Intake;
+import com.edinaftc.library.subsystems.LiftandArm;
 import com.edinaftc.library.subsystems.MecanumDrive;
 import com.edinaftc.library.subsystems.Subsystem;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -17,6 +18,8 @@ public class Robot {
     public MecanumDrive drive;
 
     public Intake intake;
+
+    public LiftandArm liftandarm;
 
     private List<Subsystem> subsystems;
 
@@ -50,6 +53,13 @@ public class Robot {
         try {
             intake = new Intake(opMode.hardwareMap);
             subsystems.add(intake);
+        } catch (IllegalArgumentException e) {
+
+        }
+
+        try {
+            liftandarm = new LiftandArm(opMode.hardwareMap);
+            subsystems.add(liftandarm);
         } catch (IllegalArgumentException e) {
 
         }

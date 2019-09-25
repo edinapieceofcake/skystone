@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake extends Subsystem{
+public class Intake extends Subsystem {
 
     private DcMotor leftIntake, rightIntake;
     private double intakePower;

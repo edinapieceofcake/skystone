@@ -67,6 +67,24 @@ public class TeleOp extends OpMode {
             robot.intake.setIntakePower(gamepad1.right_trigger);
         } else {
             robot.intake.setIntakePower(0);
+
         }
+
+        if (gamepad2.left_stick_y > 0) {
+            robot.liftandarm.setLiftPower(1);
+        } else if (gamepad2.left_stick_y < 0) {
+            robot.liftandarm.setLiftPower(-1);
+        } else {
+            robot.liftandarm.setLiftPower(0);
+        }
+
+        if (gamepad2.right_stick_x > 0) {
+            robot.liftandarm.setArmPower(1);
+        } else if(gamepad2.right_stick_x < 0) {
+            robot.liftandarm.setArmPower(-1);
+        } else {
+            robot.liftandarm.setArmPower(0);
+        }
+
     }
 }
