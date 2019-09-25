@@ -31,24 +31,6 @@ public class TeleOp extends OpMode {
         stickygamepad1.update();
         stickygamepad2.update();
 
-        if (stickygamepad1.b) {
-            slowMode = !slowMode;
-            superSlowMode = false;
-            if (slowMode) {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.SLOW_VELOCITY_PID);
-            } else {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.NORMAL_VELOCITY_PID);
-            }
-        } else if (stickygamepad1.left_bumper) {
-            superSlowMode = !superSlowMode;
-            slowMode = false;
-            if (superSlowMode) {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.SLOW_VELOCITY_PID);
-            } else {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.NORMAL_VELOCITY_PID);
-            }
-        }
-
         double x, y = 0, omega;
 
         x = -gamepad1.left_stick_y;

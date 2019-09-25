@@ -19,13 +19,10 @@ public class MecanumDrive extends Subsystem{
     private Vector2d targetVel = new Vector2d(0, 0);
     private double targetOmega = 0;
 
-    public static final PIDCoefficients NORMAL_VELOCITY_PID = new PIDCoefficients(20, 8, 12);
-    public static final PIDCoefficients SLOW_VELOCITY_PID = new PIDCoefficients(10, 3, 1);
-
     public MecanumDrive(HardwareMap map) {
         powers = new double[4];
         motors = new DcMotorEx[4];
-        for (int i = 0; i < 4; i ++) {
+        for (int i = 0; i < 4; i++) {
             DcMotorEx dcMotorEx = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
             motors[i] = dcMotorEx;
             //motors[i].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -33,8 +30,6 @@ public class MecanumDrive extends Subsystem{
         }
         motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
-        setVelocityPIDCoefficients(NORMAL_VELOCITY_PID);
-
     }
 
     public void setVelocity(Vector2d vel, double omega) {
@@ -68,14 +63,6 @@ public class MecanumDrive extends Subsystem{
         for (int i = 0; i < 4; i++) {
             motors[i].setPower(powers[i]);
         }
-
-    }
-
-    public void setVelocityPIDCoefficients(PIDCoefficients pidCoefficients) {
-        for (int i = 0; i < 4; i++) {
-            motors[i].setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidCoefficients);
-        }
-
 
     }
 }
