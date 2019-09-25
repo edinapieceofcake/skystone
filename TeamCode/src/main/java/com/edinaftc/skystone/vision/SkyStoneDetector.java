@@ -90,18 +90,26 @@ public class SkyStoneDetector extends Tracker {
         Scalar s0 = WHITE;
         Scalar s1 = WHITE;
         Scalar s2 = WHITE;
+        double r0 = 10;
+        double r1 = 10;
+        double r2 = 10;
 
         if (location == SkystoneLocation.right) {
             s2 = RED;
+            r2= 20;
         } else if (location == SkystoneLocation.left) {
             s0 = RED;
+            r0 = 20;
         } else {
             s1 = RED;
+            r1 = 20;
         }
 
-        overlay.fillCircle(new Point(cx0, cy0), r+10, s0);
-        overlay.fillCircle(new Point(cx1, cy1), r+10, s1);
-        overlay.fillCircle(new Point(cx2, cy2), r+10, s2);
+        overlay.fillCircle(new Point(cx0, cy0), r0, s0);
+        overlay.fillCircle(new Point(cx1, cy1), r1, s1);
+        overlay.fillCircle(new Point(cx2, cy2), r2, s2);
+
+        overlay.strokeLine(new Point(100,0), new Point(100,725),  new Scalar(0, 0, 255), 5);
     }
 
     public SkystoneLocation getLocation() {

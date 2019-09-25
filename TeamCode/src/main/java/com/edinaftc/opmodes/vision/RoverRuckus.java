@@ -34,11 +34,12 @@ import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
 import com.edinaftc.roverruckus.vision.DynamicMineralTracker;
 import com.edinaftc.roverruckus.vision.RoverRuckusVuMarkTracker;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//@Disabled
 @TeleOp
+@Disabled
 public class RoverRuckus extends OpMode {
     private VuforiaCamera2 camera;
     private RoverRuckusVuMarkTracker roverRuckusVuMarkTracker;
