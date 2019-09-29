@@ -28,41 +28,6 @@ public class TeleOp extends OpMode {
     }
 
     public void loop() {
-        /*
-        stickygamepad1.update();
-        stickygamepad2.update();
-
-        if (stickygamepad1.b) {
-            slowMode = !slowMode;
-            superSlowMode = false;
-            if (slowMode) {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.SLOW_VELOCITY_PID);
-            } else {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.NORMAL_VELOCITY_PID);
-            }
-        } else if (stickygamepad1.left_bumper) {
-            superSlowMode = !superSlowMode;
-            slowMode = false;
-            if (superSlowMode) {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.SLOW_VELOCITY_PID);
-            } else {
-                robot.drive.setVelocityPIDCoefficients(MecanumDrive.NORMAL_VELOCITY_PID);
-            }
-        }
-*/
-/*
-        double x, y = 0, omega;
-
-        x = -gamepad1.left_stick_y;
-
-        if (Math.abs(gamepad1.left_stick_x) > 0.5) {
-            y = -gamepad1.left_stick_x;
-        }
-
-        omega = -gamepad1.right_stick_x;
-
-        robot.drive.setVelocity(new Vector2d(x, y), omega);
-*/
 
         robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
@@ -85,6 +50,15 @@ public class TeleOp extends OpMode {
             robot.intake.setIntakePower(gamepad1.right_trigger);
         } else {
             robot.intake.setIntakePower(0);
+
+        }
+
+        if (gamepad2.left_stick_y > 0) {
+            robot.liftandarm.setLiftPower(1);
+        } else if (gamepad2.left_stick_y < 0) {
+            robot.liftandarm.setLiftPower(-1);
+        } else {
+            robot.liftandarm.setLiftPower(0);
         }
  */
     }

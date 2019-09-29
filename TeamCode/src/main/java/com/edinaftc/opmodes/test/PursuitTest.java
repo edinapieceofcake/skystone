@@ -5,11 +5,13 @@ import com.edinaftc.library.motion.PurePursuit;
 import com.edinaftc.library.motion.TelemetryMounts;
 import com.edinaftc.roverruckus.PieceOfCake;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import java.util.ArrayList;
 
 @Autonomous(name="PursuitTest")
+@Disabled
 public class PursuitTest extends LinearOpMode {
 
     private PieceOfCake r;

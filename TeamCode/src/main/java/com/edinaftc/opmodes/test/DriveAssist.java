@@ -3,11 +3,12 @@ package com.edinaftc.opmodes.test;
 import com.edinaftc.library.motion.Mecanum;
 import com.edinaftc.library.motion.TelemetryMounts;
 import com.edinaftc.roverruckus.PieceOfCake;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Drive Assist", group="Teleop")
-
+@Disabled
 public class DriveAssist extends OpMode {
     private PieceOfCake robot;
     private Mecanum mecanum;
