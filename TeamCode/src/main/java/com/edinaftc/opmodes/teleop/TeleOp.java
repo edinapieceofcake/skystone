@@ -1,4 +1,4 @@
-package com.edinaftc.opmodes.test;
+package com.edinaftc.opmodes.teleop;
 
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.Vector2d;
@@ -6,23 +6,14 @@ import com.edinaftc.skystone.Robot;
 import com.edinaftc.library.subsystems.MecanumDrive;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Subsystem Mecanum Test", group = "teleop")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Teleop", group = "teleop")
 public class TeleOp extends OpMode {
-    private Stickygamepad stickygamepad1, stickygamepad2;
+    private Robot robot;
 
     public void init() {
         robot = new Robot(this, telemetry);
         robot.start();
-
-        stickygamepad1 = new Stickygamepad(gamepad1);
-        stickygamepad2 = new Stickygamepad(gamepad2);
-
     }
-
-    private boolean slowMode, superSlowMode;
-
-
-    private Robot robot;
 
     public void start() {
     }
