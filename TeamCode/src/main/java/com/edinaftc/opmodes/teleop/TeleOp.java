@@ -22,17 +22,10 @@ public class TeleOp extends OpMode {
 
         robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-        telemetry.addData("left x", "%f", robot.drive.leftX());
-        telemetry.addData("left y", "%f", robot.drive.leftY());
-        telemetry.addData("right y", "%f", robot.drive.rightY());
-        telemetry.addData("power 0", "%f", robot.drive.getPowers()[0]);
-        telemetry.addData("power 1", "%f", robot.drive.getPowers()[1]);
-        telemetry.addData("power 2", "%f", robot.drive.getPowers()[2]);
-        telemetry.addData("power 3", "%f", robot.drive.getPowers()[3]);
-        telemetry.addData("motor 0", "%f", robot.drive.getMotors()[0].getPower());
-        telemetry.addData("motor 1", "%f", robot.drive.getMotors()[1].getPower());
-        telemetry.addData("motor 2", "%f", robot.drive.getMotors()[2].getPower());
-        telemetry.addData("motor 3", "%f", robot.drive.getMotors()[3].getPower());
+        telemetry.addData("position 0", "%d", robot.drive.getMotors()[0].getCurrentPosition());
+        telemetry.addData("position 1", "%d", robot.drive.getMotors()[1].getCurrentPosition());
+        telemetry.addData("position 2", "%d", robot.drive.getMotors()[2].getCurrentPosition());
+        telemetry.addData("position 3", "%d", robot.drive.getMotors()[3].getCurrentPosition());
         telemetry.update();
 /*
         if (gamepad1.left_trigger != 0) {

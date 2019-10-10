@@ -1,8 +1,6 @@
 package com.edinaftc.library.motion;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -26,16 +24,16 @@ public class Mecanum {
     //
     //  SlideLeft2 - Slide left a certain distance using RUN_WITH_ENCODERS
     //  Move - moves the robot with a certain power
-    //  SlideRight2 - slide right a certain distance using RUN_WITH_ENCODERS
-    //  MoveForward - move forward a certain distance using RUN_TO_POSITION
-    //  MoveForward2 - move forward a certain distance using RUN_WITH_ENCODERS
-    //  MoveBackwards - move backwards a certain distance using RUN_TO_POSITION
-    //  MoveBackwards2 - move backwards a certain distance using RUN_WITH_ENCODERS
+    //  SlideRightRunWithEncoders - slide right a certain distance using RUN_WITH_ENCODERS
+    //  MoveForwardRunToPosition - move forward a certain distance using RUN_TO_POSITION
+    //  MoveForwardRunWithEncoders - move forward a certain distance using RUN_WITH_ENCODERS
+    //  MoveBackwardsRunToPosition - move backwards a certain distance using RUN_TO_POSITION
+    //  MoveBackwardsRunWithEncoders - move backwards a certain distance using RUN_WITH_ENCODERS
     //  TurnRight - turn right with RUN_TO_POSITION
     //  TurnLeft - turn left with RUN_TO_POSITION
     //  Stop - stops the motors
     //
-    public Mecanum(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br, boolean isTeleop,
+    public Mecanum(DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br,
                    Telemetry telemetry)
     {
         _frontLeft = fl;
@@ -44,15 +42,13 @@ public class Mecanum {
         _backRight = br;
         _telemetry = telemetry;
 
-        if (isTeleop) {
-            _backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-            _frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        }
+        _backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        _frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void SlideLeft2(double power, int distance, LinearOpMode opMode) {
+    public void SlideLeftRunWithEncoders(double power, int distance, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
-        StopAndResetMotors2();
+        StopResetEncodersRunWithEncoderAndBrakekOn();
 
         int currentPosition =  Math.abs(_backRight.getCurrentPosition());
         int error = Math.abs((int)(distance * 0.95));
@@ -67,23 +63,9 @@ public class Mecanum {
         Stop();
     }
 
-    public void Move(double left, double right){
-        _frontLeft.setPower(left);
-        _frontRight.setPower(right);
-        _backLeft.setPower(left);
-        _backRight.setPower(right);
-    }
-
-    public void Move(double fl, double fr, double bl, double br) {
-        _frontLeft.setPower(fl);
-        _frontRight.setPower(fr);
-        _backLeft.setPower(bl);
-        _backRight.setPower(br);
-    }
-
-    public void SlideRight2(double power, int distance, LinearOpMode opMode) {
+    public void SlideRightRunWithEncoders(double power, int distance, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
-        StopAndResetMotors2();
+        StopResetEncodersRunWithEncoderAndBrakekOn();
 
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
         int error = Math.abs((int)(distance * 0.95));
@@ -98,27 +80,9 @@ public class Mecanum {
         Stop();
     }
 
-    public void MoveForward(double power, int distance, LinearOpMode opMode) {
-        // run with simple distance encoders as moving forward or backwards
-        StopAndResetMotors();
-        SetDistance(distance, distance, distance, distance);
-
-        int error = Math.abs((int)(distance * 0.95));
-        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
-        Move(power, power, power, power);
-
-        // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
-        while (_frontLeft.isBusy() && _frontRight.isBusy() && _backLeft.isBusy() && _backRight.isBusy() && (currentPosition < error) && opMode.opModeIsActive()) {
-            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
-            opMode.idle();
-        }
-
-        Stop();
-    }
-
-    public void MoveForward2(double power, int distance, LinearOpMode opMode) {
+    public void MoveForwardRunWithEncoders(double power, int distance, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
-        StopAndResetMotors2();
+        StopResetEncodersRunWithEncoderAndBrakekOn();
 
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
@@ -135,27 +99,9 @@ public class Mecanum {
         Stop();
     }
 
-    public void MoveBackwards(double power, int distance, LinearOpMode opMode) {
-        // run with simple distance encoders as moving forward or backwards
-        StopAndResetMotors();
-        SetDistance(-distance, -distance, -distance, -distance);
-
-        int error = Math.abs((int)(distance * 0.95));
-        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
-        Move(power, power, power, power);
-
-        // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
-        while (_frontLeft.isBusy() && _frontRight.isBusy() && _backLeft.isBusy() && _backRight.isBusy() && (currentPosition < error) && opMode.opModeIsActive()) {
-            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
-            opMode.idle();
-        }
-
-        Stop();
-    }
-
-    public void MoveBackwards2(double power, int distance, LinearOpMode opMode) {
+    public void MoveBackwardsRunWithEncoders(double power, int distance, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
-        StopAndResetMotors2();
+        StopResetEncodersRunWithEncoderAndBrakekOn();
 
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
@@ -176,9 +122,89 @@ public class Mecanum {
         Stop();
     }
 
-    public void TurnRight(double power, int distance, LinearOpMode opMode) {
+    public void TurnRightRunWithEncoders(double power, int distance, LinearOpMode opMode) {
+        StopResetEncodersRunWithEncoderAndBrakekOn();
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+
+        // ramp up and down the motor speed based on current position
+        double currentPower = CalculateRampPower(power, distance, currentPosition);
+
+        Move(currentPower, -currentPower, currentPower, -currentPower);
+
+        // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
+        while ((currentPosition < error) && opMode.opModeIsActive()) {
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            currentPower = CalculateRampPower(power, distance, currentPosition);
+            Move(currentPower, -currentPower, currentPower, -currentPower);
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void TurnLeftRunWithEncoders(double power, int distance, LinearOpMode opMode) {
+        StopResetEncodersRunWithEncoderAndBrakekOn();
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+
+        // ramp up and down the motor speed based on current position
+        double currentPower = CalculateRampPower(power, distance, currentPosition);
+
+        Move(-currentPower, currentPower, -currentPower, currentPower);
+
+        // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
+        while ((currentPosition < error) && opMode.opModeIsActive()) {
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            currentPower = CalculateRampPower(power, distance, currentPosition);
+            Move(-currentPower, currentPower, -currentPower, currentPower);
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void MoveForwardRunToPosition(double power, int distance, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
-        StopAndResetMotors();
+        StopResetEncodersAndRunToPosition();
+        SetDistance(distance, distance, distance, distance);
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+        Move(power, power, power, power);
+
+        // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
+        while (_frontLeft.isBusy() && _frontRight.isBusy() && _backLeft.isBusy() && _backRight.isBusy() && (currentPosition < error) && opMode.opModeIsActive()) {
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void MoveBackwardsRunToPosition(double power, int distance, LinearOpMode opMode) {
+        // run with simple distance encoders as moving forward or backwards
+        StopResetEncodersAndRunToPosition();
+        SetDistance(-distance, -distance, -distance, -distance);
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+        Move(power, power, power, power);
+
+        // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
+        while (_frontLeft.isBusy() && _frontRight.isBusy() && _backLeft.isBusy() && _backRight.isBusy() && (currentPosition < error) && opMode.opModeIsActive()) {
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void TurnRightRunToPosition(double power, int distance, LinearOpMode opMode) {
+        // run with simple distance encoders as moving forward or backwards
+        StopResetEncodersAndRunToPosition();
         SetDistance(distance, distance, -distance, -distance);
 
         int error = Math.abs((int)(distance * 0.95));
@@ -194,9 +220,9 @@ public class Mecanum {
         Stop();
     }
 
-    public void TurnLeft(double power, int distance, LinearOpMode opMode) {
+    public void TurnLeftRunToPosition(double power, int distance, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
-        StopAndResetMotors();
+        StopResetEncodersAndRunToPosition();
         SetDistance(-distance, -distance, distance, distance);
 
         int error = Math.abs((int)(distance * 0.95));
@@ -210,6 +236,20 @@ public class Mecanum {
         }
 
         Stop();
+    }
+
+    public void Move(double left, double right){
+        _frontLeft.setPower(left);
+        _frontRight.setPower(right);
+        _backLeft.setPower(left);
+        _backRight.setPower(right);
+    }
+
+    public void Move(double fl, double fr, double bl, double br) {
+        _frontLeft.setPower(fl);
+        _frontRight.setPower(fr);
+        _backLeft.setPower(bl);
+        _backRight.setPower(br);
     }
 
     public void Stop() {
@@ -341,15 +381,11 @@ public class Mecanum {
 
     }
 
-    public void SetCurrentPower(double power){
-        _currentPower = power;
-    }
-
     //
     // These are our helper method to set the motors to what we need for the other steps
     // They are the three different ways you can run a motor
     //
-    public void StopAndResetMotors() {
+    public void StopResetEncodersAndRunToPosition() {
         _frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         _frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -360,22 +396,22 @@ public class Mecanum {
         _backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void StopAndResetMotors2() {
-        _frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public void StopResetEncodersRunWithEncoderAndBrakekOn() {
+        //_frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //_frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //_backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        _backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //_backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         _backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void StopAndResetMotors3() {
+    public void StopResetEncodersAndRunWithoutEncoders() {
         _frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         _frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         _frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

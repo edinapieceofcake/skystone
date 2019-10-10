@@ -10,7 +10,7 @@ public class GrabPlatform extends OpMode {
 
     public void init() {
         mecanum = new Mecanum(hardwareMap.dcMotor.get("fl"), hardwareMap.dcMotor.get("fr"), hardwareMap.dcMotor.get("bl"),
-                hardwareMap.dcMotor.get("br"), true, telemetry);
+                hardwareMap.dcMotor.get("br"), telemetry);
     }
 
     public void start() {
