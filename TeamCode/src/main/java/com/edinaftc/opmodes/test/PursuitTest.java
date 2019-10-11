@@ -23,8 +23,8 @@ public class PursuitTest extends LinearOpMode {
     public void runOpMode() {
         r = new PieceOfCake();
         r.init(hardwareMap);
-        m = new Mecanum(r.getFrontL(), r.getFrontR(), r.getBackL(), r.getBackR(), true, telemetry);
-        m.StopAndResetMotors3();
+        m = new Mecanum(r.getFrontL(), r.getFrontR(), r.getBackL(), r.getBackR(), telemetry);
+        m.StopResetEncodersAndRunWithoutEncoders();
         tm = new TelemetryMounts(2,4,1400,15.5);
         p = new PurePursuit(m, tm, 5);
 

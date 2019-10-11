@@ -32,6 +32,8 @@ public class MecanumDrive extends Subsystem{
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
+    public DcMotorEx[] getMotors() { return motors; }
+
     public void setVelocity(Vector2d vel, double omega) {
         internalSetVelocity(vel, omega);
     }

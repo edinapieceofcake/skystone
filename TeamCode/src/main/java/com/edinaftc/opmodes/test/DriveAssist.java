@@ -21,7 +21,7 @@ public class DriveAssist extends OpMode {
         robot = new PieceOfCake();
         robot.init(hardwareMap);
 
-        mecanum = new Mecanum(robot.getFrontL(), robot.getFrontR(), robot.getBackL(), robot.getBackR(), true, telemetry);
+        mecanum = new Mecanum(robot.getFrontL(), robot.getFrontR(), robot.getBackL(), robot.getBackR(), telemetry);
         tm = new TelemetryMounts(2, 4, 1400, 15.5);
         oldl = 0;
         oldr = 0;
@@ -35,7 +35,7 @@ public class DriveAssist extends OpMode {
     public void loop() {
 
         if(gamepad1.a){
-            mecanum.StopAndResetMotors3();
+            mecanum.StopResetEncodersAndRunWithoutEncoders();
             tm.set(0,0,0);
         }
 
