@@ -48,6 +48,10 @@ public class MecanumTest extends LinearOpMode {
             telemetry.addData("fr", "%d", hardwareMap.dcMotor.get("fr").getCurrentPosition());
             telemetry.addData("bl", "%d", hardwareMap.dcMotor.get("bl").getCurrentPosition());
             telemetry.addData("br", "%d", hardwareMap.dcMotor.get("br").getCurrentPosition());
+            telemetry.addData("fl p", "%f", hardwareMap.dcMotor.get("fl").getPower());
+            telemetry.addData("fr p", "%f", hardwareMap.dcMotor.get("fr").getPower());
+            telemetry.addData("bl p", "%f", hardwareMap.dcMotor.get("bl").getPower());
+            telemetry.addData("br p", "%f", hardwareMap.dcMotor.get("br").getPower());
             telemetry.update();
         }
     }
