@@ -70,9 +70,12 @@ public class SkyStoneDetector extends Tracker {
         Core.bitwise_and(mask1, frame, mat1);
         Core.bitwise_and(mask2, frame, mat2);
 
-        double val0 = Core.sumElems(mat0).val[0] + Core.sumElems(mat0).val[1] + Core.sumElems(mat0).val[2];
-        double val1 = Core.sumElems(mat1).val[0] + Core.sumElems(mat1).val[1] + Core.sumElems(mat1).val[2];
-        double val2 = Core.sumElems(mat2).val[0] + Core.sumElems(mat2).val[1] + Core.sumElems(mat2).val[2];
+        double val0 = Core.sumElems(mat0).val[0] + Core.sumElems(mat0).val[1] +
+                Core.sumElems(mat0).val[2];
+        double val1 = Core.sumElems(mat1).val[0] + Core.sumElems(mat1).val[1] +
+                Core.sumElems(mat1).val[2];
+        double val2 = Core.sumElems(mat2).val[0] + Core.sumElems(mat2).val[1] +
+                Core.sumElems(mat2).val[2];
 
         if (val0 < val1 && val0 < val2) {
             location = SkystoneLocation.left;

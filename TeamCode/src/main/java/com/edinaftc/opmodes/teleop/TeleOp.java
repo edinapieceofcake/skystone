@@ -20,23 +20,18 @@ public class TeleOp extends OpMode {
 
     public void loop() {
 
-        robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y,
+                -gamepad1.right_stick_x);
 
-        telemetry.addData("position 0", "%d", robot.drive.getMotors()[0].getCurrentPosition());
-        telemetry.addData("position 1", "%d", robot.drive.getMotors()[1].getCurrentPosition());
-        telemetry.addData("position 2", "%d", robot.drive.getMotors()[2].getCurrentPosition());
-        telemetry.addData("position 3", "%d", robot.drive.getMotors()[3].getCurrentPosition());
-        telemetry.update();
-/*
         if (gamepad1.left_trigger != 0) {
             robot.intake.setIntakePower(gamepad1.left_trigger);
         } else if (gamepad1.right_trigger != 0) {
-            robot.intake.setIntakePower(gamepad1.right_trigger);
+            robot.intake.setIntakePower(-gamepad1.right_trigger);
         } else {
             robot.intake.setIntakePower(0);
 
         }
-
+/*
         if (gamepad2.left_stick_y > 0) {
             robot.liftandarm.setLiftPower(1);
         } else if (gamepad2.left_stick_y < 0) {

@@ -1,9 +1,8 @@
 package com.edinaftc.skystone;
 
-import com.edinaftc.library.motion.TelemetryMounts;
+import com.edinaftc.library.subsystems.IMU;
 import com.edinaftc.library.subsystems.Intake;
 import com.edinaftc.library.subsystems.LiftandArm;
-import com.edinaftc.library.subsystems.MecanumDrive;
 import com.edinaftc.library.subsystems.MecanumDrive2;
 import com.edinaftc.library.subsystems.Subsystem;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,15 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-public class Robot {
+public class IMURobot {
     private ExecutorService subsystemUpdateExecutor;
     private boolean started;
 
+    public IMU imu;
     public MecanumDrive2 drive;
-
-    public Intake intake;
-
-    public LiftandArm liftandarm;
 
     private List<Subsystem> subsystems;
 
@@ -48,18 +44,18 @@ public class Robot {
         }
     };
 
-    public Robot(OpMode opMode, Telemetry telemetry) {
+    public IMURobot(OpMode opMode, Telemetry telemetry) {
         this.telemetry = telemetry;
 
         subsystems = new ArrayList<>();
-/*
+
         try {
-            drive = new MecanumDrive(opMode.hardwareMap);
-            subsystems.add(drive);
+            imu = new IMU(opMode.hardwareMap, telemetry);
+            subsystems.add(imu);
         } catch (IllegalArgumentException e) {
 
         }
-*/
+
         try {
             drive = new MecanumDrive2(opMode.hardwareMap, telemetry);
             subsystems.add(drive);
@@ -67,21 +63,6 @@ public class Robot {
 
         }
 
-        try {
-            intake = new Intake(opMode.hardwareMap);
-            subsystems.add(intake);
-        } catch (IllegalArgumentException e) {
-
-        }
-/*
-        try {
-            liftandarm = new LiftandArm(opMode.hardwareMap);
-            subsystems.add(liftandarm);
-        } catch (IllegalArgumentException e) {
-
-        }
-
-*/
         subsystemUpdateExecutor = ThreadPool.newSingleThreadExecutor("subsystem update");
     }
 

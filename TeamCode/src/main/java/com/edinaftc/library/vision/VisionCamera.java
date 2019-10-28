@@ -24,7 +24,7 @@ public abstract class VisionCamera implements OpModeManagerNotifier.Notification
 
     public static class Parameters {
         public int cameraMonitorViewId;
-        public VuforiaLocalizer.CameraDirection cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        public VuforiaLocalizer.CameraDirection cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
 
         public Parameters() {
             Context context = AppUtil.getDefContext();
