@@ -8,24 +8,25 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.Arrays;
 import java.util.Collections;
 
 public class MecanumDrive2 extends Subsystem{
 
     private DcMotorEx[] motors;
+    private Telemetry telemetry;
     public static final String[] MOTOR_NAMES = {"fl", "bl", "br", "fr"};
     private double[] powers;
     private double leftStickX;
     private double leftStickY;
     private double rightStickY;
 
-    public static final PIDCoefficients NORMAL_VELOCITY_PID = new PIDCoefficients(20, 8, 12);
-    public static final PIDCoefficients SLOW_VELOCITY_PID = new PIDCoefficients(10, 3, 1);
-
-    public MecanumDrive2(HardwareMap map) {
+    public MecanumDrive2(HardwareMap map, Telemetry telemetry) {
         powers = new double[4];
         motors = new DcMotorEx[4];
+        this.telemetry = telemetry;
 
         for (int i = 0; i < 4; i ++) {
             DcMotorEx dcMotor = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
@@ -81,8 +82,9 @@ public class MecanumDrive2 extends Subsystem{
 
         for (int i = 0; i < 4; i++) {
             motors[i].setPower(powers[i]);
+            telemetry.addData("fl", "%d", motors[i].getCurrentPosition());
+            telemetry.addData("br p", "%f", motors[i].getPower());
         }
-
     }
 
     public void setVelocityPIDCoefficients(PIDCoefficients pidCoefficients) {
