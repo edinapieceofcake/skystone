@@ -92,11 +92,11 @@ public class Robot {
         }
     }
 
-    private void stop() {
+    public void stop() {
         if (subsystemUpdateExecutor != null) {
             subsystemUpdateExecutor.shutdownNow();
             subsystemUpdateExecutor = null;
+            started = false;
         }
-
     }
 }

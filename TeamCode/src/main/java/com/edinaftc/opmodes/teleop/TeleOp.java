@@ -15,6 +15,7 @@ public class TeleOp extends OpMode {
         robot.start();
     }
 
+    @Override
     public void start() {
     }
 
@@ -40,5 +41,10 @@ public class TeleOp extends OpMode {
             robot.liftandarm.setLiftPower(0);
         }
  */
+    }
+
+    @Override
+    public  void stop() {
+        robot.stop();
     }
 }
