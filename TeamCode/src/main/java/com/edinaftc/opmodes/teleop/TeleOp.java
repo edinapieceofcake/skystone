@@ -25,7 +25,7 @@ public class TeleOp extends OpMode {
         _gamepad1.update();
 
         robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y,
-                -gamepad1.right_stick_x);
+                gamepad1.right_stick_x);
 
         if (_gamepad1.left_bumper) {
             robot.intake.toggleIntake();
@@ -43,6 +43,11 @@ public class TeleOp extends OpMode {
         if (gamepad1.right_trigger > 0) {
             robot.hook.DropHooks();
         }
+
+        robot.drive.displayTelemetry(telemetry);
+        robot.liftandarm.displayTelemetry(telemetry);
+
+        telemetry.update();
     }
 
     @Override

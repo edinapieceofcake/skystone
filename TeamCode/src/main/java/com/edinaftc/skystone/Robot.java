@@ -64,7 +64,7 @@ public class Robot {
         }
 */
         try {
-            drive = new MecanumDrive2(opMode.hardwareMap, telemetry);
+            drive = new MecanumDrive2(opMode.hardwareMap);
             subsystems.add(drive);
         } catch (IllegalArgumentException e) {
 
