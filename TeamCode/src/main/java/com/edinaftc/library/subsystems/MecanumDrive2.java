@@ -16,17 +16,15 @@ import java.util.Collections;
 public class MecanumDrive2 extends Subsystem{
 
     private DcMotorEx[] motors;
-    private Telemetry telemetry;
     public static final String[] MOTOR_NAMES = {"fl", "bl", "br", "fr"};
     private double[] powers;
     private double leftStickX;
     private double leftStickY;
     private double rightStickY;
 
-    public MecanumDrive2(HardwareMap map, Telemetry telemetry) {
+    public MecanumDrive2(HardwareMap map) {
         powers = new double[4];
         motors = new DcMotorEx[4];
-        this.telemetry = telemetry;
 
         for (int i = 0; i < 4; i ++) {
             DcMotorEx dcMotor = map.get(DcMotorEx.class, MOTOR_NAMES[i]);
@@ -77,13 +75,15 @@ public class MecanumDrive2 extends Subsystem{
     }
 
     public void update() {
-
         updatePowers();
-
         for (int i = 0; i < 4; i++) {
             motors[i].setPower(powers[i]);
-            telemetry.addData("fl", "%d", motors[i].getCurrentPosition());
-            telemetry.addData("br p", "%f", motors[i].getPower());
+        }
+    }
+
+    public void displayTelemetry(Telemetry telemetry) {
+        for (int i = 0; i < 4; i++) {
+            telemetry.addData(String.format("%s: position %d power %f", MOTOR_NAMES[i], motors[i].getCurrentPosition(), motors[i].getPower()), "");
         }
     }
 

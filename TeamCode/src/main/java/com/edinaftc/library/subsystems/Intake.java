@@ -9,7 +9,10 @@ public class Intake extends Subsystem {
 
     private DcMotor leftIntake, rightIntake;
     private CRServo leftIntakeServo, rightIntakeServo;
-    private double intakePower;
+    private double motorPower;
+    private double servoPower;
+    private boolean intakeOn;
+    private boolean expelOn;
 
     public Intake(HardwareMap map) {
         leftIntake = map.dcMotor.get("il");
@@ -21,14 +24,38 @@ public class Intake extends Subsystem {
 
     @Override
     public void update() {
-        leftIntake.setPower(intakePower);
-        rightIntake.setPower(-intakePower);
-        leftIntakeServo.setPower(-intakePower);
-        rightIntakeServo.setPower(intakePower);
+        leftIntake.setPower(-motorPower);
+        rightIntake.setPower(motorPower);
+        leftIntakeServo.setPower(-servoPower);
+        rightIntakeServo.setPower(servoPower);
     }
 
 
-    public void setIntakePower(double intakePower) {
-        this.intakePower = intakePower;
+    public void toggleIntake() {
+        if (expelOn || intakeOn) {
+            motorPower = 0;
+            servoPower = 0;
+            expelOn = false;
+            intakeOn = false;
+        }
+        else
+        {
+            intakeOn = true;
+            motorPower = 1;
+            servoPower = -.8;
+        }
+    }
+
+    public void toggleExpel() {
+        if (intakeOn || expelOn) {
+            motorPower = 0;
+            servoPower = 0;
+            expelOn = false;
+            intakeOn = false;
+        } else {
+            expelOn = true;
+            motorPower = -1;
+            servoPower = .8;
+        }
     }
 }
