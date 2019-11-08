@@ -44,6 +44,30 @@ public class TeleOp extends OpMode {
             robot.hook.DropHooks();
         }
 
+        if(gamepad2.a) {
+            robot.grabber.openBothGrabbers();
+        }
+
+        if(gamepad2.y) {
+            robot.grabber.closeBothGrabbers();
+        }
+
+        if(gamepad2.x) {
+            robot.grabber.toggleBackGrabber();
+        }
+
+        if(gamepad2.b) {
+            robot.grabber.toggleFrontGrabber();
+        }
+
+        if(gamepad2.right_bumper) {
+            robot.grabber.rotateRight();
+        }
+
+        if (gamepad2.left_bumper) {
+            robot.grabber.rotateLeft();
+        }
+
         robot.drive.displayTelemetry(telemetry);
         robot.liftandarm.displayTelemetry(telemetry);
 
