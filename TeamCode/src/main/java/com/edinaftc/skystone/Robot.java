@@ -1,6 +1,7 @@
 package com.edinaftc.skystone;
 
 import com.edinaftc.library.motion.TelemetryMounts;
+import com.edinaftc.library.subsystems.Grabber;
 import com.edinaftc.library.subsystems.Hook;
 import com.edinaftc.library.subsystems.Intake;
 import com.edinaftc.library.subsystems.LiftandArm;
@@ -27,6 +28,8 @@ public class Robot {
     public LiftandArm liftandarm;
 
     public Hook hook;
+
+    public Grabber grabber;
 
     private List<Subsystem> subsystems;
 
@@ -87,6 +90,13 @@ public class Robot {
         try {
             hook = new Hook(opMode.hardwareMap);
             subsystems.add(hook);
+        } catch (IllegalArgumentException e) {
+
+        }
+
+        try {
+            grabber = new Grabber(opMode.hardwareMap);
+            subsystems.add(grabber);
         } catch (IllegalArgumentException e) {
 
         }
