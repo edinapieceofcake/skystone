@@ -22,17 +22,20 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     public AutonomousStates DriveToBlock() {
-        _mecanum.SlideRightRunWithEncoders(.5, 3600, this);
+        _mecanum.SlideLeftRunToPosition(.5, 2100, this);
 
         switch (_skyStoneDetector.getLocation())
         {
             case left:
+                _mecanum.MoveBackwardsRunToPosition(0.5, 450, this);
                 break;
 
             case middle:
+                _mecanum.MoveForwardRunToPosition(0.5, 100, this);
                 break;
 
             case right:
+                _mecanum.MoveForwardRunToPosition(0.5, 450, this);
                 break;
         }
 
@@ -40,26 +43,26 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     public AutonomousStates PickUpBlock() {
-        Servo rightArm = hardwareMap.servo.get("rightArm");
-        Servo rightPaddle = hardwareMap.servo.get("rightPaddle");
+        Servo leftArm = hardwareMap.servo.get("leftArm");
+        Servo leftPaddle = hardwareMap.servo.get("leftPaddle");
 
-        rightArm.setPosition(1);
+        leftArm.setPosition(1);
         sleep(1000);
-        rightPaddle.setPosition(0);
+        leftPaddle.setPosition(0);
         sleep(1000);
 
-        rightArm.setPosition(0);
+        leftArm.setPosition(0);
         sleep(1000);
         return AutonomousStates.PICKED_UP_BLOCK;
     }
 
     public AutonomousStates DriveToBridge() {
-        _mecanum.SlideLeftRunWithEncoders(1, 1800, this);
+        _mecanum.MoveForwardRunToPosition(0.5, 2000, this);
         return AutonomousStates.DRIVEN_TO_BRIDGE;
     }
 
     public AutonomousStates DriveUnderBridge() {
-        _mecanum.MoveForwardRunToPosition(1, 10800, this);
+        _mecanum.MoveBackwardsRunToPosition(1, 750, this);
         return AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
@@ -72,6 +75,13 @@ public class BlueAllianceSide extends LinearOpMode {
                 hardwareMap.dcMotor.get("bl"),hardwareMap.dcMotor.get("br"), telemetry);
 
         _camera.addTracker(_skyStoneDetector);
+        _skyStoneDetector.cx0 = 880;
+        _skyStoneDetector.cy0 = 400;
+        _skyStoneDetector.cx1 = 540;
+        _skyStoneDetector.cy1 = 400;
+        _skyStoneDetector.cx2 = 200;
+        _skyStoneDetector.cy2 = 400;
+
         _camera.initialize();
 
         while (!isStarted()) {

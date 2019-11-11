@@ -173,8 +173,8 @@ public class Mecanum {
 
     public void MoveForwardRunToPosition(double power, int distance, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
-        StopResetEncodersAndRunToPosition();
         SetDistance(distance, distance, distance, distance);
+        StopResetEncodersAndRunToPosition();
 
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
@@ -191,8 +191,8 @@ public class Mecanum {
 
     public void MoveBackwardsRunToPosition(double power, int distance, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
-        StopResetEncodersAndRunToPosition();
         SetDistance(-distance, -distance, -distance, -distance);
+        StopResetEncodersAndRunToPosition();
 
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
@@ -209,8 +209,8 @@ public class Mecanum {
 
     public void TurnRightRunToPosition(double power, int distance, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
-        StopResetEncodersAndRunToPosition();
         SetDistance(distance, distance, -distance, -distance);
+        StopResetEncodersAndRunToPosition();
 
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
@@ -227,8 +227,8 @@ public class Mecanum {
 
     public void TurnLeftRunToPosition(double power, int distance, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
-        StopResetEncodersAndRunToPosition();
         SetDistance(-distance, -distance, distance, distance);
+        StopResetEncodersAndRunToPosition();
 
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
