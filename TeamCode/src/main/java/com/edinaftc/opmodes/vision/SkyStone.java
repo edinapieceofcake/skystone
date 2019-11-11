@@ -28,6 +28,7 @@
  */
 package com.edinaftc.opmodes.vision;
 
+import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
@@ -40,17 +41,88 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class SkyStone extends OpMode {
     private VuforiaCamera camera;
     private SkyStoneDetector skyStoneDetector;
+    private Stickygamepad _gamepad1;
+    private Location location = Location.left;
+    private enum Location {
+        left, middle, right
+    }
 
     @Override
     public void init() {
         skyStoneDetector = new SkyStoneDetector();
         camera = new VuforiaCamera();
+        _gamepad1 = new Stickygamepad(gamepad1);
         camera.addTracker(skyStoneDetector);
         camera.initialize();
     }
 
     @Override
     public void loop() {
+        _gamepad1.update();
+        if (_gamepad1.x) {
+            if (location == Location.left) {
+                skyStoneDetector.cx0 += 10;
+            } else if (location == Location.middle) {
+                skyStoneDetector.cx1 += 10;
+            } else {
+                skyStoneDetector.cx2 += 10;
+            }
+        }
+
+        if (_gamepad1.y) {
+            if (location == Location.left) {
+                skyStoneDetector.cx0 -= 10;
+            } else if (location == Location.middle) {
+                skyStoneDetector.cx1 -= 10;
+            } else {
+                skyStoneDetector.cx2 -= 10;
+            }
+        }
+
+        if (_gamepad1.b) {
+            if (location == Location.left) {
+                skyStoneDetector.cy0 += 10;
+            } else if (location == Location.middle) {
+                skyStoneDetector.cy1 += 10;
+            } else {
+                skyStoneDetector.cy2 += 10;
+            }
+        }
+
+        if (_gamepad1.a) {
+            if (location == Location.left) {
+                skyStoneDetector.cy0 -= 10;
+            } else if (location == Location.middle) {
+                skyStoneDetector.cy1 -= 10;
+            } else {
+                skyStoneDetector.cy2 -= 10;
+            }
+        }
+
+        if (_gamepad1.left_bumper) {
+            if (location == Location.middle) {
+                location = Location.middle.left;
+            } else if (location == Location.right) {
+                location = Location.middle.middle;
+            } else {
+                location = Location.left;
+            }
+        }
+
+        if (_gamepad1.right_bumper) {
+            if (location == Location.left) {
+                location = Location.middle;
+            } else if (location == Location.middle) {
+                location = Location.right;
+            } else {
+                location = Location.right;
+            }
+        }
+
+        telemetry.addData("left (x, y)", "%f %f", skyStoneDetector.cx0, skyStoneDetector.cy0);
+        telemetry.addData("middle (x, y)", "%f %f", skyStoneDetector.cx1, skyStoneDetector.cy1);
+        telemetry.addData("right (x, y)", "%f %f", skyStoneDetector.cx2, skyStoneDetector.cy2);
+        telemetry.addData("dot location", location);
         telemetry.addData("location ", skyStoneDetector.getLocation());
         telemetry.update();
     }
