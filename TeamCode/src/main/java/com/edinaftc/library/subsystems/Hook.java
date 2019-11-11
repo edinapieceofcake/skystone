@@ -23,18 +23,18 @@ public class Hook extends Subsystem {
         }
     }
 
-    public void DropHooks() {
+    public void dropHooks() {
         _leftPosition = .55;
         _rightPosition = .3;
     }
 
 
-    public void LiftHooks() {
+    public void liftHooks() {
         _leftPosition = 0;
         _rightPosition = .9;
     }
 
-    public void TurnOnUpdate() {
+    public void turnOnUpdate() {
         _canUpdate = true;
     }
 }

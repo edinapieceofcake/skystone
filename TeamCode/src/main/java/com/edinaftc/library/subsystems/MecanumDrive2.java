@@ -22,6 +22,8 @@ public class MecanumDrive2 extends Subsystem{
     private double leftStickY;
     private double rightStickY;
 
+    private double currentPower = 1.4;
+
     public MecanumDrive2(HardwareMap map) {
         powers = new double[4];
         motors = new DcMotorEx[4];
@@ -66,7 +68,7 @@ public class MecanumDrive2 extends Subsystem{
 
         final double rotation = Math.pow(-rightStickY, 3.0);
         final double direction = Math.atan2(x, y);
-        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y)) * currentPower;
 
         powers[0] = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
         powers[3] = speed * Math.cos(direction + Math.PI / 4.0) - rotation;

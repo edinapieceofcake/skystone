@@ -8,21 +8,25 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 public class TeleOp extends OpMode {
     private Robot robot;
     private Stickygamepad _gamepad1;
+    private Stickygamepad _gamepad2;
 
     public void init() {
         _gamepad1 = new Stickygamepad(gamepad1);
+        _gamepad2 = new Stickygamepad(gamepad2);
         robot = new Robot(this, telemetry);
         robot.start();
     }
 
     @Override
     public void start() {
-        robot.hook.TurnOnUpdate();
+        robot.hook.turnOnUpdate();
+        robot.grabber.turnOnUpdate();
     }
 
     public void loop() {
 
         _gamepad1.update();
+        _gamepad2.update();
 
         robot.drive.setVelocity(gamepad1.left_stick_x, gamepad1.left_stick_y,
                 gamepad1.right_stick_x);
@@ -37,35 +41,19 @@ public class TeleOp extends OpMode {
         robot.liftandarm.setArmPower(gamepad2.right_stick_y);
 
         if (gamepad1.left_trigger > 0) {
-            robot.hook.LiftHooks();
+            robot.hook.liftHooks();
         }
 
         if (gamepad1.right_trigger > 0) {
-            robot.hook.DropHooks();
+            robot.hook.dropHooks();
         }
 
-        if(gamepad2.a) {
-            robot.grabber.openBothGrabbers();
+        if(_gamepad2.right_bumper) {
+            robot.grabber.toggleBothGrabbers();
         }
 
-        if(gamepad2.y) {
-            robot.grabber.closeBothGrabbers();
-        }
-
-        if(gamepad2.x) {
-            robot.grabber.toggleBackGrabber();
-        }
-
-        if(gamepad2.b) {
-            robot.grabber.toggleFrontGrabber();
-        }
-
-        if(gamepad2.right_bumper) {
-            robot.grabber.rotateRight();
-        }
-
-        if (gamepad2.left_bumper) {
-            robot.grabber.rotateLeft();
+        if(_gamepad2.left_bumper) {
+            robot.grabber.loadBlock();
         }
 
         robot.drive.displayTelemetry(telemetry);

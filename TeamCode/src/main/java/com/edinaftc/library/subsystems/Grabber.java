@@ -4,19 +4,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Grabber extends Subsystem {
-
-    private enum Location{
-        zerodegrees,
-        ninetydegrees,
-        oneeightydegrees
-    }
-
     private boolean frontGrabberOpen = false;
     private boolean backGrabberOpen = false;
-    private Location location = Location.zerodegrees;
     private Servo front;
     private Servo back;
     private Servo rotate;
+    private boolean _canUpdate = false;
 
     public Grabber(HardwareMap map) {
         front = map.servo.get("fg");
@@ -25,67 +18,39 @@ public class Grabber extends Subsystem {
     }
 
     public void update() {
-        if(frontGrabberOpen) {
-            front.setPosition(1);
-        } else {
-            front.setPosition(0);
-        }
-
-        if(backGrabberOpen) {
-            back.setPosition(1);
-        } else {
-            back.setPosition(0);
-        }
-
-        if(location == Location.zerodegrees) {
+        if (_canUpdate) {
             rotate.setPosition(0);
-        } else if(location == Location.ninetydegrees) {
-            rotate.setPosition(.5);
-        } else {
-            rotate.setPosition(1);
+
+            if (frontGrabberOpen) {
+                front.setPosition(1);
+            } else {
+                front.setPosition(0);
+            }
+
+            if (backGrabberOpen) {
+                back.setPosition(.7);
+            } else {
+                back.setPosition(0);
+            }
         }
     }
 
-    public void openBothGrabbers() {
-        frontGrabberOpen = true;
-        backGrabberOpen = true;
+    public void turnOnUpdate() {
+        _canUpdate = true;
     }
 
-    public void toggleFrontGrabber() {
-        if(frontGrabberOpen = false) {
+    public void toggleBothGrabbers() {
+        if(frontGrabberOpen == false && backGrabberOpen == false) {
             frontGrabberOpen = true;
-        } else {
-            frontGrabberOpen = false;
-        }
-    }
-
-    public void toggleBackGrabber() {
-        if(backGrabberOpen = false) {
             backGrabberOpen = true;
         } else {
+            frontGrabberOpen = false;
             backGrabberOpen = false;
         }
     }
 
-    public void closeBothGrabbers() {
+    public void loadBlock() {
         frontGrabberOpen = false;
-        backGrabberOpen = false;
+        backGrabberOpen = true;
     }
-
-    public void rotateLeft() {
-        if(location == Location.zerodegrees) {
-            location = Location.ninetydegrees;
-        } else if(location == Location.ninetydegrees) {
-            location = Location.oneeightydegrees;
-        }
-    }
-
-    public void rotateRight() {
-        if(location == Location.oneeightydegrees) {
-            location = Location.ninetydegrees;
-        } else if(location == Location.ninetydegrees) {
-            location = Location.zerodegrees;
-        }
-    }
-
 }
