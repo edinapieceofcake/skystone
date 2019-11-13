@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Blue Alliance Block Side", group="Autonomous")
-public class BlueAllianceSide extends LinearOpMode {
+@Autonomous(name="Red Alliance Block Side", group="Autonomous")
+public class RedAllianceSide extends LinearOpMode {
     private Mecanum _mecanum;
     private VuforiaCamera _camera;
     private SkyStoneDetector _skyStoneDetector;
@@ -29,9 +29,9 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     public AutonomousStates DriveToFirstBlock() {
-        _mecanum.SlideLeftRunToPosition(.5, 1650, this);
+        _mecanum.SlideRightRunToPosition(.5, 1650, this);
 
-        _flap.setPosition(0);
+        _flap.setPosition(1);
 
         switch (_skyStoneDetector.getLocation()) {
             case left:
@@ -48,13 +48,13 @@ public class BlueAllianceSide extends LinearOpMode {
         }
 
         sleep(500); // need time for flap to open
-
+        
         return AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
     }
 
     public AutonomousStates DriveToSecondBlock() {
 
-        _flap.setPosition(0);
+        _flap.setPosition(1);
         sleep(2000);
         return AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
     }
@@ -72,12 +72,12 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     private void PickUpBlock() {
-        _arm.setPosition(0);
+        _arm.setPosition(1);
         sleep(1000);
-        _flap.setPosition(1);
+        _flap.setPosition(0);
         sleep(1000);
 
-        _arm.setPosition(1);
+        _arm.setPosition(0);
         sleep(1000);
     }
 
@@ -96,14 +96,14 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     private void DropOffBlock() {
-        _arm.setPosition(0);
-        sleep(1000);
-        _flap.setPosition(0);
-        sleep(1000);
-
         _arm.setPosition(1);
         sleep(1000);
         _flap.setPosition(1);
+        sleep(1000);
+
+        _arm.setPosition(0);
+        sleep(1000);
+        _flap.setPosition(0);
         sleep(1000);
     }
 
@@ -126,8 +126,8 @@ public class BlueAllianceSide extends LinearOpMode {
 
         _mecanum = new Mecanum(hardwareMap.dcMotor.get("fl"), hardwareMap.dcMotor.get("fr"),
                 hardwareMap.dcMotor.get("bl"),hardwareMap.dcMotor.get("br"), telemetry);
-        _arm = hardwareMap.servo.get("leftArm");
-        _flap = hardwareMap.servo.get("leftFlap");
+        _arm = hardwareMap.servo.get("rightArm");
+        _flap = hardwareMap.servo.get("rightFlap");
 
         _camera.addTracker(_skyStoneDetector);
         _skyStoneDetector.cx0 = 880;
