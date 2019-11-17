@@ -44,7 +44,7 @@ public class SkyStone extends OpMode {
     private Stickygamepad _gamepad1;
     private Location location = Location.left;
     private enum Location {
-        left, middle, right
+        left, middle, right, line
     }
 
     @Override
@@ -60,11 +60,13 @@ public class SkyStone extends OpMode {
     public void loop() {
         _gamepad1.update();
         if (_gamepad1.x) {
-            if (location == Location.left) {
+            if (location == Location.line) {
+                skyStoneDetector.lineX -= 10;
+            } else if (location == Location.left) {
                 skyStoneDetector.cx0 += 10;
             } else if (location == Location.middle) {
                 skyStoneDetector.cx1 += 10;
-            } else {
+            } else if (location == Location.right){
                 skyStoneDetector.cx2 += 10;
             }
         }
@@ -74,17 +76,19 @@ public class SkyStone extends OpMode {
                 skyStoneDetector.cx0 -= 10;
             } else if (location == Location.middle) {
                 skyStoneDetector.cx1 -= 10;
-            } else {
+            } else if (location == Location.right){
                 skyStoneDetector.cx2 -= 10;
             }
         }
 
         if (_gamepad1.b) {
-            if (location == Location.left) {
+            if (location == Location.line) {
+                skyStoneDetector.lineX += 10;
+            } else if (location == Location.left) {
                 skyStoneDetector.cy0 += 10;
             } else if (location == Location.middle) {
                 skyStoneDetector.cy1 += 10;
-            } else {
+            } else if (location == Location.right) {
                 skyStoneDetector.cy2 += 10;
             }
         }
@@ -94,7 +98,7 @@ public class SkyStone extends OpMode {
                 skyStoneDetector.cy0 -= 10;
             } else if (location == Location.middle) {
                 skyStoneDetector.cy1 -= 10;
-            } else {
+            } else if (location == Location.right){
                 skyStoneDetector.cy2 -= 10;
             }
         }
@@ -104,13 +108,17 @@ public class SkyStone extends OpMode {
                 location = Location.middle.left;
             } else if (location == Location.right) {
                 location = Location.middle.middle;
+            } else if (location == Location.left){
+                location = Location.line;
             } else {
-                location = Location.left;
+                location = Location.line;
             }
         }
 
         if (_gamepad1.right_bumper) {
-            if (location == Location.left) {
+            if (location == Location.line) {
+                location = Location.left;
+            } else if (location == Location.left) {
                 location = Location.middle;
             } else if (location == Location.middle) {
                 location = Location.right;
@@ -122,6 +130,7 @@ public class SkyStone extends OpMode {
         telemetry.addData("left (x, y)", "%f %f", skyStoneDetector.cx0, skyStoneDetector.cy0);
         telemetry.addData("middle (x, y)", "%f %f", skyStoneDetector.cx1, skyStoneDetector.cy1);
         telemetry.addData("right (x, y)", "%f %f", skyStoneDetector.cx2, skyStoneDetector.cy2);
+        telemetry.addData("line x", "%f", skyStoneDetector.lineX);
         telemetry.addData("dot location", location);
         telemetry.addData("location ", skyStoneDetector.getLocation());
         telemetry.update();

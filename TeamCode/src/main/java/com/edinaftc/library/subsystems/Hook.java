@@ -24,8 +24,8 @@ public class Hook extends Subsystem {
     }
 
     public void dropHooks() {
-        _leftPosition = .55;
-        _rightPosition = .3;
+        _leftPosition = .65;
+        _rightPosition = .18;
     }
 
 

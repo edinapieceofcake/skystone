@@ -32,6 +32,8 @@ public class SkyStoneDetector extends Tracker {
     public double cx2 = 900;
     public double cy2 = 400;
 
+    public double lineX = 100;
+
     private int r = 10;
     private int strokeWidth = 3;
 
@@ -112,7 +114,7 @@ public class SkyStoneDetector extends Tracker {
         overlay.fillCircle(new Point(cx1, cy1), r1, s1);
         overlay.fillCircle(new Point(cx2, cy2), r2, s2);
 
-        overlay.strokeLine(new Point(100,0), new Point(100,725),  new Scalar(51, 255, 51), 25);
+        overlay.strokeLine(new Point(lineX,0), new Point(lineX,725),  new Scalar(51, 255, 51), 25);
     }
 
     public SkystoneLocation getLocation() {
