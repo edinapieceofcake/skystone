@@ -1,7 +1,6 @@
 package com.edinaftc.library.subsystems;
 
 
-import com.edinaftc.library.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -9,9 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 public class MecanumDrive2 extends Subsystem{
 
@@ -21,6 +17,10 @@ public class MecanumDrive2 extends Subsystem{
     private double leftStickX;
     private double leftStickY;
     private double rightStickY;
+    private boolean dpadLeft;
+    private boolean dpadRight;
+    private long startPosition;
+    private long tolerance = 100;
 
     private double currentPower = 1.4;
 
@@ -52,6 +52,8 @@ public class MecanumDrive2 extends Subsystem{
         this.leftStickX = leftStickX;
         this.leftStickY = leftStickY;
         this.rightStickY = rightStickY;
+        dpadLeft = false;
+        dpadRight = false;
     }
 
     public double leftX() { return this.leftStickX; }
@@ -77,10 +79,46 @@ public class MecanumDrive2 extends Subsystem{
     }
 
     public void update() {
-        updatePowers();
-        for (int i = 0; i < 4; i++) {
-            motors[i].setPower(powers[i]);
+        if (dpadLeft) {
+            if (Math.abs(startPosition - Math.abs(motors[0].getCurrentPosition())) < tolerance) {
+                motors[0].setPower(.25);
+                motors[1].setPower(-.25);
+                motors[2].setPower(.25);
+                motors[3].setPower(-.25);
+            } else {
+                motors[0].setPower(0);
+                motors[1].setPower(0);
+                motors[2].setPower(0);
+                motors[3].setPower(0);
+            }
+        } else if (dpadRight) {
+            if (Math.abs(startPosition - Math.abs(motors[0].getCurrentPosition())) < tolerance) {
+                motors[0].setPower(-.25);
+                motors[1].setPower(.25);
+                motors[2].setPower(-.25);
+                motors[3].setPower(.25);
+            } else {
+                motors[0].setPower(0);
+                motors[1].setPower(0);
+                motors[2].setPower(0);
+                motors[3].setPower(0);
+            }
+        } else {
+            updatePowers();
+            for (int i = 0; i < 4; i++) {
+                motors[i].setPower(powers[i]);
+            }
         }
+    }
+
+    public void dpadLeft() {
+        startPosition = Math.abs(motors[0].getCurrentPosition());
+        dpadLeft = true;
+    }
+
+    public void dpadRight() {
+        startPosition = Math.abs(motors[0].getCurrentPosition());
+        dpadRight = true;
     }
 
     public void displayTelemetry(Telemetry telemetry) {

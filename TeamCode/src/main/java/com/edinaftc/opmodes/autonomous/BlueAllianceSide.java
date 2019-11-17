@@ -3,6 +3,7 @@ package com.edinaftc.opmodes.autonomous;
 import com.edinaftc.library.motion.Mecanum;
 import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.skystone.vision.SkyStoneDetector;
+import com.edinaftc.skystone.vision.SkystoneLocation;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -14,6 +15,7 @@ public class BlueAllianceSide extends LinearOpMode {
     private SkyStoneDetector _skyStoneDetector;
     private Servo _arm;
     private Servo _flap;
+    private SkystoneLocation _location = SkystoneLocation.left;
 
     public enum AutonomousStates{
         STARTED,
@@ -29,21 +31,21 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     public AutonomousStates DriveToFirstBlock() {
-        _mecanum.SlideLeftRunToPosition(.5, 1650, this);
+        _mecanum.SlideRightRunToPosition(.5, 1725, this);
 
-        _flap.setPosition(0);
+        _flap.setPosition(1);
 
-        switch (_skyStoneDetector.getLocation()) {
+        switch (_location) {
             case left:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 450, this);
+                _mecanum.MoveForwardRunToPosition(0.5, 1100, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 100, this);
+                _mecanum.MoveForwardRunToPosition(0.5, 600, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 450, this);
+                _mecanum.MoveForwardRunToPosition(0.5, 150, this);
                 break;
         }
 
@@ -53,9 +55,22 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     public AutonomousStates DriveToSecondBlock() {
+        switch (_location) {
+            case left:
+                _mecanum.MoveBackwardsRunToPosition(0.5, 4550, this);
+                break;
 
-        _flap.setPosition(0);
-        sleep(2000);
+            case middle:
+                _mecanum.MoveBackwardsRunToPosition(0.5, 4950, this);
+                break;
+
+            case right:
+                _mecanum.MoveBackwardsRunToPosition(0.5, 5300, this);
+                break;
+        }
+
+        _flap.setPosition(1);
+        sleep(500); // need time for flap to open
         return AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
     }
 
@@ -72,39 +87,62 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     private void PickUpBlock() {
-        _arm.setPosition(0);
-        sleep(1000);
-        _flap.setPosition(1);
-        sleep(1000);
-
         _arm.setPosition(1);
-        sleep(1000);
+        sleep(500);
+        _flap.setPosition(0);
+        sleep(500);
+
+        _arm.setPosition(0);
+        sleep(500);
     }
 
     public AutonomousStates DriveToBridgeForFirstBlock() {
-        //_mecanum.MoveForwardRunToPosition(0.5, 2000, this);
+        switch (_location) {
+            case left:
+                _mecanum.MoveForwardRunToPosition(0.5, 3000, this);
+                break;
+
+            case middle:
+                _mecanum.MoveForwardRunToPosition(0.5, 3500, this);
+                break;
+
+            case right:
+                _mecanum.MoveForwardRunToPosition(0.5, 3850, this);
+                break;
+        }
+
         return AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
     }
 
     public AutonomousStates DriveToBridgeForSecondBlock() {
+        switch (_location) {
+            case left:
+                _mecanum.MoveForwardRunToPosition(0.5, 3550, this);
+                break;
+
+            case middle:
+                _mecanum.MoveForwardRunToPosition(0.5, 3950, this);
+                break;
+
+            case right:
+                _mecanum.MoveForwardRunToPosition(0.5, 4500, this);
+                break;
+        }
+
         return AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
     }
 
     public AutonomousStates DriveUnderBridge() {
-        //_mecanum.MoveBackwardsRunToPosition(1, 750, this);
+        _mecanum.MoveBackwardsRunToPosition(0.5, 650, this);
         return AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
     private void DropOffBlock() {
-        _arm.setPosition(0);
-        sleep(1000);
-        _flap.setPosition(0);
-        sleep(1000);
-
-        _arm.setPosition(1);
-        sleep(1000);
         _flap.setPosition(1);
-        sleep(1000);
+        sleep(500);
+
+        _flap.setPosition(0);
+        sleep(500);
     }
 
     public AutonomousStates DropOffFirstBlock() {
@@ -126,23 +164,24 @@ public class BlueAllianceSide extends LinearOpMode {
 
         _mecanum = new Mecanum(hardwareMap.dcMotor.get("fl"), hardwareMap.dcMotor.get("fr"),
                 hardwareMap.dcMotor.get("bl"),hardwareMap.dcMotor.get("br"), telemetry);
-        _arm = hardwareMap.servo.get("leftArm");
-        _flap = hardwareMap.servo.get("leftFlap");
+        _arm = hardwareMap.servo.get("rightArm");
+        _flap = hardwareMap.servo.get("rightFlap");
 
         _camera.addTracker(_skyStoneDetector);
-        _skyStoneDetector.cx0 = 880;
-        _skyStoneDetector.cy0 = 400;
-        _skyStoneDetector.cx1 = 540;
-        _skyStoneDetector.cy1 = 400;
-        _skyStoneDetector.cx2 = 200;
-        _skyStoneDetector.cy2 = 400;
+        _skyStoneDetector.cx0 = 190;
+        _skyStoneDetector.cy0 = 210;
+        _skyStoneDetector.cx1 = 520;
+        _skyStoneDetector.cy1 = 210;
+        _skyStoneDetector.cx2 = 810;
+        _skyStoneDetector.cy2 = 210;
 
         _camera.initialize();
 
         while (!isStarted()) {
             synchronized (this) {
                 try {
-                    telemetry.addData("location ", _skyStoneDetector.getLocation());
+                    _location = _skyStoneDetector.getLocation();
+                    telemetry.addData("location ", _location);
                     telemetry.update();
                     this.wait();
                 } catch (InterruptedException e) {

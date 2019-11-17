@@ -37,6 +37,14 @@ public class TeleOp extends OpMode {
             robot.intake.toggleExpel();
         }
 
+        if (_gamepad1.dpad_left) {
+            robot.drive.dpadLeft();
+        }
+
+        if (_gamepad1.dpad_right) {
+            robot.drive.dpadRight();
+        }
+
         robot.liftandarm.setLiftPower(-gamepad2.left_stick_y);
         robot.liftandarm.setArmPower(gamepad2.right_stick_y);
 

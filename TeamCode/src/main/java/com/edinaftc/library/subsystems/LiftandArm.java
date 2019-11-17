@@ -13,8 +13,8 @@ public class LiftandArm extends Subsystem{
 
     public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
-        //lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         arm = map.dcMotor.get("arm");
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

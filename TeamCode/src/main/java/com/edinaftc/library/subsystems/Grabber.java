@@ -8,19 +8,15 @@ public class Grabber extends Subsystem {
     private boolean backGrabberOpen = false;
     private Servo front;
     private Servo back;
-    private Servo rotate;
     private boolean _canUpdate = false;
 
     public Grabber(HardwareMap map) {
         front = map.servo.get("fg");
         back = map.servo.get("bg");
-        rotate = map.servo.get("rg");
     }
 
     public void update() {
         if (_canUpdate) {
-            rotate.setPosition(0);
-
             if (frontGrabberOpen) {
                 front.setPosition(1);
             } else {
@@ -28,7 +24,7 @@ public class Grabber extends Subsystem {
             }
 
             if (backGrabberOpen) {
-                back.setPosition(.7);
+                back.setPosition(1);
             } else {
                 back.setPosition(0);
             }
