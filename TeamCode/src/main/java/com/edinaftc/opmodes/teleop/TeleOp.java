@@ -21,6 +21,7 @@ public class TeleOp extends OpMode {
     public void start() {
         robot.hook.turnOnUpdate();
         robot.grabber.turnOnUpdate();
+        robot.arm.turnOnUpdate();
     }
 
     public void loop() {
