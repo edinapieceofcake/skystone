@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp()
-public class MecanumTest extends LinearOpMode {
+public class MecanumTestPosition extends LinearOpMode {
     Mecanum _mecanum;
     Stickygamepad _gamepad1;
 
@@ -31,21 +31,13 @@ public class MecanumTest extends LinearOpMode {
             } else if (_gamepad1.y) {
                 _mecanum.MoveForwardRunToPosition(.75, moveDistance, this);
             } else if (_gamepad1.dpad_down) {
-                //_mecanum.MoveBackwardsRunWithEncoders(.75, moveDistance, this);
                 _mecanum.DiagonalLeftAndDownRunToPosition(.75, moveDistance, this);
             } else if (_gamepad1.dpad_up) {
-                //_mecanum.MoveForwardRunWithEncoders(.75, moveDistance, this);
                 _mecanum.DiagonalRightAndUpRunToPosition(.75, moveDistance, this);
             } else if (_gamepad1.dpad_left) {
-                //_mecanum.TurnLeftRunWithEncoders(.75, moveDistance, this);
                 _mecanum.DiagonalLeftAndUpRunToPosition(.75, moveDistance, this);
             } else if (_gamepad1.dpad_right) {
-                //_mecanum.TurnRightRunWithEncoders(.75, moveDistance, this);
                 _mecanum.DiagonalRightAndDownRunToPosition(.75, moveDistance, this);
-            } else if (_gamepad1.left_bumper) {
-                _mecanum.SlideLeftRunWithEncoders(.75, moveDistance, this);
-            } else if (_gamepad1.right_bumper) {
-                _mecanum.SlideRightRunWithEncoders(.75, moveDistance, this);
             } else if (gamepad1.right_trigger != 0) {
                 _mecanum.SlideRightRunToPosition(.75, moveDistance, this);
             } else if (gamepad1.left_trigger != 0) {
