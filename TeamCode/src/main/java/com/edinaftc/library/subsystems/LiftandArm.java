@@ -12,6 +12,7 @@ public class LiftandArm extends Subsystem{
     private double liftPower, armPower;
     private boolean zeroPowerChanged = false;
     private boolean zeroPowerOn = true;
+    private boolean lockLiftOn = false;
 
     public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
@@ -24,7 +25,12 @@ public class LiftandArm extends Subsystem{
 
     @Override
     public void update() {
-        lift.setPower(liftPower);
+        if (lockLiftOn) {
+            lift.setPower(0.02);
+        } else {
+            lift.setPower(liftPower);
+        }
+
         arm.setPower(armPower);
 
         if (zeroPowerChanged) {
@@ -48,8 +54,9 @@ public class LiftandArm extends Subsystem{
     }
 
     public void displayTelemetry(Telemetry telemetry) {
-        telemetry.addData("position, power", "%d %f", lift.getCurrentPosition(), lift.getPower());
+        telemetry.addData("lift position, power", "%d %f", lift.getCurrentPosition(), lift.getPower());
         telemetry.addData("lift brake on", lift.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE);
+        telemetry.addData("lock lift on", lockLiftOn);
     }
 
     public void setArmPower(double armPower) {
@@ -68,5 +75,9 @@ public class LiftandArm extends Subsystem{
             zeroPowerChanged = true;
             zeroPowerOn = false;
         }
+    }
+
+    public void lockLift(boolean lockSetting) {
+        lockLiftOn = lockSetting;
     }
 }

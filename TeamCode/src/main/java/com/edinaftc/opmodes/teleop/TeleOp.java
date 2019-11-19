@@ -46,9 +46,6 @@ public class TeleOp extends OpMode {
             robot.drive.dpadRight();
         }
 
-        robot.liftandarm.setLiftPower(-gamepad2.left_stick_y);
-        robot.liftandarm.setArmPower(gamepad2.right_stick_y);
-
         if (gamepad1.left_trigger > 0) {
             robot.hook.liftHooks();
         }
@@ -56,6 +53,9 @@ public class TeleOp extends OpMode {
         if (gamepad1.right_trigger > 0) {
             robot.hook.dropHooks();
         }
+
+        robot.liftandarm.setLiftPower(-gamepad2.left_stick_y);
+        robot.liftandarm.setArmPower(gamepad2.right_stick_y);
 
         if(_gamepad2.right_bumper) {
             robot.grabber.toggleBothGrabbers();
@@ -72,6 +72,8 @@ public class TeleOp extends OpMode {
         if (_gamepad2.dpad_right) {
             robot.liftandarm.setZeroPowerToBrake();
         }
+
+        robot.liftandarm.lockLift(gamepad2.left_stick_button);
 
         robot.drive.displayTelemetry(telemetry);
         robot.liftandarm.displayTelemetry(telemetry);
