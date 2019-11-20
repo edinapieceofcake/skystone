@@ -1,5 +1,6 @@
 package com.edinaftc.opmodes.autonomous;
 
+import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.Mecanum;
 import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.skystone.vision.SkyStoneDetector;
@@ -16,7 +17,8 @@ public class RedAllianceSide extends LinearOpMode {
     private Servo _arm;
     private Servo _flap;
     private SkystoneLocation _location = SkystoneLocation.left;
-    private double motorPower = 0.5;
+    private double motorPower = 1;
+    private Stickygamepad _gamepad1;
 
     public enum AutonomousStates{
         STARTED,
@@ -169,6 +171,8 @@ public class RedAllianceSide extends LinearOpMode {
 
     public void runOpMode() {
         BlueAllianceSide.AutonomousStates currentState = BlueAllianceSide.AutonomousStates.STARTED;
+        long sleepTime = 0;
+
         _skyStoneDetector = new SkyStoneDetector();
         _camera = new VuforiaCamera();
 
@@ -176,6 +180,7 @@ public class RedAllianceSide extends LinearOpMode {
                 hardwareMap.dcMotor.get("bl"),hardwareMap.dcMotor.get("br"), telemetry);
         _arm = hardwareMap.servo.get("leftArm");
         _flap = hardwareMap.servo.get("leftFlap");
+        _gamepad1 = new Stickygamepad(gamepad1);
 
         _camera.addTracker(_skyStoneDetector);
         _skyStoneDetector.cx0 = 330;
@@ -197,6 +202,19 @@ public class RedAllianceSide extends LinearOpMode {
             synchronized (this) {
                 try {
                     _location = _skyStoneDetector.getLocation();
+                    _gamepad1.update();
+                    if (_gamepad1.left_bumper) {
+                        if (sleepTime > 0) {
+                            sleepTime -= 500;
+                        }
+                    } else if (_gamepad1.right_bumper) {
+                        if (sleepTime < 9000) {
+                            sleepTime += 500;
+                        }
+                    }
+
+                    telemetry.addData("use left/right bumper to adjust sleep time", "");
+                    telemetry.addData("sleep time (ms)", sleepTime);
                     telemetry.addData("location ", _location);
                     telemetry.update();
                     this.wait();
@@ -206,6 +224,8 @@ public class RedAllianceSide extends LinearOpMode {
                 }
             }
         }
+
+        sleep(sleepTime);
 
         while (opModeIsActive() && (currentState != BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
             switch (currentState) {
