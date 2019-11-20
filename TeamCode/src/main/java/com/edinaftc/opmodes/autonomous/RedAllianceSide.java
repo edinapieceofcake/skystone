@@ -16,6 +16,7 @@ public class RedAllianceSide extends LinearOpMode {
     private Servo _arm;
     private Servo _flap;
     private SkystoneLocation _location = SkystoneLocation.left;
+    private double motorPower = 0.5;
 
     public enum AutonomousStates{
         STARTED,
@@ -37,15 +38,15 @@ public class RedAllianceSide extends LinearOpMode {
 
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunToPosition(0.5, 1100, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 1125, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 600, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 575, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 150, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 100, this);
                 break;
         }
 
@@ -57,15 +58,15 @@ public class RedAllianceSide extends LinearOpMode {
     public BlueAllianceSide.AutonomousStates DriveToSecondBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 4550, this);
+                _mecanum.MoveBackwardsRunWithEncoders(motorPower, 4575, this);
                 break;
 
             case middle:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 4950, this);
+                _mecanum.MoveBackwardsRunWithEncoders(motorPower, 5075, this);
                 break;
 
             case right:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 5300, this);
+                _mecanum.MoveBackwardsRunWithEncoders(motorPower, 5550, this);
                 break;
         }
 
@@ -81,8 +82,17 @@ public class RedAllianceSide extends LinearOpMode {
     }
 
     public BlueAllianceSide.AutonomousStates PickUpSecondBlock() {
-        PickUpBlock();
+        _arm.setPosition(.35);
+        sleep(350);
+        _mecanum.SlideLeftRunWithEncoders(.5, 300, this);
+        _arm.setPosition(0);
+        sleep(150);
+        _flap.setPosition(1);
+        sleep(500);
+        _arm.setPosition(1);
+        sleep(500);
 
+        _mecanum.SlideRightRunWithEncoders(.5, 300, this);
         return BlueAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
     }
 
@@ -99,15 +109,15 @@ public class RedAllianceSide extends LinearOpMode {
     public BlueAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunToPosition(0.5, 3000, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 3000, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 3500, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 3500, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 3850, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 3950, this);
                 break;
         }
 
@@ -117,15 +127,15 @@ public class RedAllianceSide extends LinearOpMode {
     public BlueAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunToPosition(0.5, 3550, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 4575, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 3950, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 5075, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 4500, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 5550, this);
                 break;
         }
 
@@ -133,7 +143,7 @@ public class RedAllianceSide extends LinearOpMode {
     }
 
     public BlueAllianceSide.AutonomousStates DriveUnderBridge() {
-        _mecanum.MoveBackwardsRunToPosition(0.5, 650, this);
+        _mecanum.MoveBackwardsRunWithEncoders(motorPower, 1450, this);
         return BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
@@ -176,6 +186,12 @@ public class RedAllianceSide extends LinearOpMode {
         _skyStoneDetector.cy2 = 420;
 
         _camera.initialize();
+
+        _arm.setPosition(1);
+        _flap.setPosition(1);
+
+        hardwareMap.servo.get("rightArm").setPosition(0);
+        hardwareMap.servo.get("rightFlap").setPosition(0);
 
         while (!isStarted()) {
             synchronized (this) {
