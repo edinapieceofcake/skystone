@@ -3,6 +3,7 @@ package com.edinaftc.library.subsystems;
 import com.edinaftc.opmodes.teleop.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -60,7 +61,7 @@ public class LiftandArm extends Subsystem{
     }
 
     public void setArmPower(double armPower) {
-        this.armPower = armPower;
+        this.armPower = Range.clip(Math.pow(armPower, 3), -1, 1);
     }
 
     public void setZeroPowerToBrake() {

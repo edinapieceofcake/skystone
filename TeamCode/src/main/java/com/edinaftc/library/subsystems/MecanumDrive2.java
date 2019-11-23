@@ -17,10 +17,6 @@ public class MecanumDrive2 extends Subsystem{
     private double leftStickX;
     private double leftStickY;
     private double rightStickY;
-    private boolean dpadLeft;
-    private boolean dpadRight;
-    private long startPosition;
-    private long tolerance = 100;
 
     private double currentPower = 1.4;
 
@@ -37,34 +33,15 @@ public class MecanumDrive2 extends Subsystem{
 
         motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
-        //setVelocityPIDCoefficients(NORMAL_VELOCITY_PID);
     }
-
-    public DcMotorEx[] getMotors() { return motors; }
-
-    public double[] getPowers() { return powers; }
 
     public void setVelocity(double leftStickX, double leftStickY, double rightStickY) {
-        internalSetVelocity(leftStickX, leftStickY, rightStickY);
-    }
-
-    private void internalSetVelocity(double leftStickX, double leftStickY, double rightStickY) {
         this.leftStickX = leftStickX;
         this.leftStickY = leftStickY;
         this.rightStickY = rightStickY;
-        dpadLeft = false;
-        dpadRight = false;
     }
 
-    public double leftX() { return this.leftStickX; }
-
-    public double leftY() { return this.leftStickY; }
-
-    public double rightY() {
-        return this.rightStickY;
-    }
-
-    private void updatePowers() {
+    public void update() {
         final double x = Math.pow(-leftStickX, 3.0);
         final double y = Math.pow(leftStickY, 3.0);
 
@@ -76,49 +53,10 @@ public class MecanumDrive2 extends Subsystem{
         powers[3] = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
         powers[1] = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
         powers[2] = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
-    }
 
-    public void update() {
-        if (dpadLeft) {
-            if (Math.abs(startPosition - Math.abs(motors[0].getCurrentPosition())) < tolerance) {
-                motors[0].setPower(.25);
-                motors[1].setPower(-.25);
-                motors[2].setPower(.25);
-                motors[3].setPower(-.25);
-            } else {
-                motors[0].setPower(0);
-                motors[1].setPower(0);
-                motors[2].setPower(0);
-                motors[3].setPower(0);
-            }
-        } else if (dpadRight) {
-            if (Math.abs(startPosition - Math.abs(motors[0].getCurrentPosition())) < tolerance) {
-                motors[0].setPower(-.25);
-                motors[1].setPower(.25);
-                motors[2].setPower(-.25);
-                motors[3].setPower(.25);
-            } else {
-                motors[0].setPower(0);
-                motors[1].setPower(0);
-                motors[2].setPower(0);
-                motors[3].setPower(0);
-            }
-        } else {
-            updatePowers();
-            for (int i = 0; i < 4; i++) {
-                motors[i].setPower(powers[i]);
-            }
+        for (int i = 0; i < 4; i++) {
+            motors[i].setPower(powers[i]);
         }
-    }
-
-    public void dpadLeft() {
-        startPosition = Math.abs(motors[0].getCurrentPosition());
-        dpadLeft = true;
-    }
-
-    public void dpadRight() {
-        startPosition = Math.abs(motors[0].getCurrentPosition());
-        dpadRight = true;
     }
 
     public void displayTelemetry(Telemetry telemetry) {
@@ -126,14 +64,4 @@ public class MecanumDrive2 extends Subsystem{
             telemetry.addData(String.format("%s: position %d power %f", MOTOR_NAMES[i], motors[i].getCurrentPosition(), motors[i].getPower()), "");
         }
     }
-
-    public void setVelocityPIDCoefficients(PIDCoefficients pidCoefficients) {
-        for (int i = 0; i < 4; i++) {
-            motors[i].setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidCoefficients);
-        }
-    }
 }
-
-
-
-

@@ -10,8 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="Blue Alliance Block Side", group="Autonomous")
-public class BlueAllianceSide extends LinearOpMode {
+@Autonomous(name="Single Stone Blue Alliance Block Side", group="Autonomous")
+public class SingleStoneBlueAllianceSide extends LinearOpMode {
     private Mecanum _mecanum;
     private VuforiaCamera _camera;
     private SkyStoneDetector _skyStoneDetector;
@@ -40,7 +40,7 @@ public class BlueAllianceSide extends LinearOpMode {
         DRIVEN_UNDER_BRIDGE
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToFirstBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DriveToFirstBlock() {
         _mecanum.SlideRightRunToPosition(.5, 1725, this);
 
         _flap.setPosition(1);
@@ -61,10 +61,10 @@ public class BlueAllianceSide extends LinearOpMode {
 
         sleep(500); // need time for flap to open
 
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToSecondBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DriveToSecondBlock() {
         switch (_location) {
             case left:
                 _mecanum.MoveBackwardsRunWithEncoders(motorPower, MINIMUMDISTANCEFORSECONDBLOCK, this);
@@ -81,19 +81,19 @@ public class BlueAllianceSide extends LinearOpMode {
 
         _flap.setPosition(1);
         sleep(500); // need time for flap to open
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates PickUpFirstBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates PickUpFirstBlock() {
         PickUpBlock2();
 
-        return BlueAllianceSide.AutonomousStates.PICKED_UP_FIRST_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.PICKED_UP_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates PickUpSecondBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates PickUpSecondBlock() {
         PickUpBlock2();
 
-        return BlueAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
     }
 
     private void PickUpBlock() {
@@ -120,7 +120,7 @@ public class BlueAllianceSide extends LinearOpMode {
         _mecanum.SlideLeftRunWithEncoders(.5, 200, this);
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
         switch (_location) {
             case left:
                 _mecanum.MoveForwardRunWithEncoders(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK, this);
@@ -135,10 +135,10 @@ public class BlueAllianceSide extends LinearOpMode {
                 break;
         }
 
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
         _mecanum.SlideLeftRunWithEncoders(0.5, 50, this);
         switch (_location) {
             case left:
@@ -154,13 +154,13 @@ public class BlueAllianceSide extends LinearOpMode {
                 break;
         }
 
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DriveUnderBridge() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DriveUnderBridge() {
         _mecanum.MoveBackwardsRunWithEncoders(motorPower, 1150, this);
         _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
-        return BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
     private void DropOffBlock() {
@@ -173,20 +173,20 @@ public class BlueAllianceSide extends LinearOpMode {
         sleep(500);
     }
 
-    public BlueAllianceSide.AutonomousStates DropOffFirstBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DropOffFirstBlock() {
         DropOffBlock();
 
-        return BlueAllianceSide.AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DropOffSecondBlock() {
+    public SingleStoneBlueAllianceSide.AutonomousStates DropOffSecondBlock() {
         DropOffBlock();
 
-        return BlueAllianceSide.AutonomousStates.DROPPED_OFF_SECOND_BLOCK;
+        return SingleStoneBlueAllianceSide.AutonomousStates.DROPPED_OFF_SECOND_BLOCK;
     }
 
     public void runOpMode() {
-        BlueAllianceSide.AutonomousStates currentState = BlueAllianceSide.AutonomousStates.STARTED;
+        SingleStoneBlueAllianceSide.AutonomousStates currentState = SingleStoneBlueAllianceSide.AutonomousStates.STARTED;
         int counter = 0;
         String[] messages = new String[]{ "\\", "|", "/", "-", "\\", "|", "/", "-" };
         long sleepTime = 0;
@@ -262,7 +262,7 @@ public class BlueAllianceSide extends LinearOpMode {
 
         sleep(sleepTime);
 
-        while (opModeIsActive() && (currentState != BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
+        while (opModeIsActive() && (currentState != SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
             switch (currentState) {
                 case STARTED:
                     currentState = DriveToFirstBlock();
@@ -277,18 +277,6 @@ public class BlueAllianceSide extends LinearOpMode {
                     currentState = DropOffFirstBlock();
                     break;
                 case DROPPED_OFF_FIRST_BLOCK:
-                    currentState = DriveToSecondBlock();
-                    break;
-                case DRIVEN_TO_SECOND_BLOCK:
-                    currentState = PickUpSecondBlock();
-                    break;
-                case PICKED_UP_SECOND_BLOCK:
-                    currentState = DriveToBridgeForSecondBlock();
-                    break;
-                case DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK:
-                    currentState = DropOffSecondBlock();
-                    break;
-                case DROPPED_OFF_SECOND_BLOCK:
                     currentState = DriveUnderBridge();
                     break;
             }

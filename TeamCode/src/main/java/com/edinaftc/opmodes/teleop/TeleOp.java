@@ -38,14 +38,6 @@ public class TeleOp extends OpMode {
             robot.intake.toggleExpel();
         }
 
-        if (_gamepad1.dpad_left) {
-            robot.drive.dpadLeft();
-        }
-
-        if (_gamepad1.dpad_right) {
-            robot.drive.dpadRight();
-        }
-
         if (gamepad1.left_trigger > 0) {
             robot.hook.liftHooks();
         }

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Grabber extends Subsystem {
     private boolean frontGrabberOpen = false;
-    private boolean backGrabberOpen = false;
+    private boolean backGrabberOpen = true;
     private Servo front;
     private Servo back;
     private boolean _canUpdate = false;

@@ -1,9 +1,11 @@
 package com.edinaftc.opmodes.test;
 
 import com.edinaftc.skystone.IMURobot;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "IMUTeleop", group = "teleop")
+@Disabled
 public class IMUTeleOp extends OpMode {
     private IMURobot robot;
 

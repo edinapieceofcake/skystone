@@ -32,7 +32,7 @@ public class SkyStoneDetector extends Tracker {
     public double cx2 = 900;
     public double cy2 = 400;
 
-    public double lineX = 100;
+    public double lineX = 110;
 
     private int r = 10;
     private int strokeWidth = 3;

@@ -1,9 +1,11 @@
 package com.edinaftc.opmodes.autonomous;
 
+import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.Mecanum;
 import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.skystone.vision.SkyStoneDetector;
 import com.edinaftc.skystone.vision.SkystoneLocation;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -16,6 +18,14 @@ public class RedAllianceSide extends LinearOpMode {
     private Servo _arm;
     private Servo _flap;
     private SkystoneLocation _location = SkystoneLocation.left;
+    private double motorPower = .5;
+    private Stickygamepad _gamepad1;
+    private BNO055IMU _imu = null;
+
+    private int MINIMUMDISTANCEFORFIRSTBLOCK = 2640;
+    private int MINIMUMDISTANCEFORSECONDBLOCK = 4190;
+    private int MONIMUMDISTANCVETOBRIDGE = 4190;
+
 
     public enum AutonomousStates{
         STARTED,
@@ -30,60 +40,60 @@ public class RedAllianceSide extends LinearOpMode {
         DRIVEN_UNDER_BRIDGE
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToFirstBlock() {
+    public RedAllianceSide.AutonomousStates DriveToFirstBlock() {
         _mecanum.SlideLeftRunToPosition(.5, 1725, this);
 
         _flap.setPosition(0);
 
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunToPosition(0.5, 1100, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 1125, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 600, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 575, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 150, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, 80, this);
                 break;
         }
 
         sleep(500); // need time for flap to open
 
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
+        return RedAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToSecondBlock() {
+    public RedAllianceSide.AutonomousStates DriveToSecondBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 4550, this);
+                _mecanum.MoveBackwardsRunWithEncoders(motorPower, MINIMUMDISTANCEFORSECONDBLOCK, this);
                 break;
 
             case middle:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 4950, this);
+                _mecanum.MoveBackwardsRunWithEncoders(motorPower, MINIMUMDISTANCEFORSECONDBLOCK + 500, this);
                 break;
 
             case right:
-                _mecanum.MoveBackwardsRunToPosition(0.5, 5300, this);
+                _mecanum.MoveBackwardsRunWithEncoders(motorPower, MINIMUMDISTANCEFORSECONDBLOCK + 975, this);
                 break;
         }
 
         _flap.setPosition(0);
         sleep(500); // need time for flap to open
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
+        return RedAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates PickUpFirstBlock() {
-        PickUpBlock();
+    public RedAllianceSide.AutonomousStates PickUpFirstBlock() {
+        PickUpBlock2();
 
-        return BlueAllianceSide.AutonomousStates.PICKED_UP_FIRST_BLOCK;
+        return RedAllianceSide.AutonomousStates.PICKED_UP_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates PickUpSecondBlock() {
-        PickUpBlock();
+    public RedAllianceSide.AutonomousStates PickUpSecondBlock() {
+        PickUpBlock2();
 
-        return BlueAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
+        return RedAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
     }
 
     private void PickUpBlock() {
@@ -96,45 +106,60 @@ public class RedAllianceSide extends LinearOpMode {
         sleep(500);
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
+    private void PickUpBlock2() {
+        _arm.setPosition(.35);
+        sleep(400);
+        _mecanum.SlideLeftRunWithEncoders(.5, 200, this);
+        _arm.setPosition(0);
+        sleep(400);
+        _flap.setPosition(1);
+        sleep(750);
+        _arm.setPosition(1);
+        sleep(500);
+
+        _mecanum.SlideRightRunWithEncoders(.5, 200, this);
+    }
+
+    public RedAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunToPosition(0.5, 3000, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 3500, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK + 500, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 3850, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK + 950, this);
                 break;
         }
 
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
+        return RedAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
+    public RedAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
+        _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunToPosition(0.5, 3550, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, MONIMUMDISTANCVETOBRIDGE, this);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunToPosition(0.5, 3950, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, MONIMUMDISTANCVETOBRIDGE + 500, this);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunToPosition(0.5, 4500, this);
+                _mecanum.MoveForwardRunWithEncoders(motorPower, MONIMUMDISTANCVETOBRIDGE + 975, this);
                 break;
         }
 
-        return BlueAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
+        return RedAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DriveUnderBridge() {
-        _mecanum.MoveBackwardsRunToPosition(0.5, 650, this);
-        return BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
+    public RedAllianceSide.AutonomousStates DriveUnderBridge() {
+        _mecanum.MoveBackwardsRunWithEncoders(motorPower, 1150, this);
+        return RedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
     private void DropOffBlock() {
@@ -145,20 +170,24 @@ public class RedAllianceSide extends LinearOpMode {
         sleep(500);
     }
 
-    public BlueAllianceSide.AutonomousStates DropOffFirstBlock() {
+    public RedAllianceSide.AutonomousStates DropOffFirstBlock() {
         DropOffBlock();
 
-        return BlueAllianceSide.AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
+        return RedAllianceSide.AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
     }
 
-    public BlueAllianceSide.AutonomousStates DropOffSecondBlock() {
+    public RedAllianceSide.AutonomousStates DropOffSecondBlock() {
         DropOffBlock();
 
-        return BlueAllianceSide.AutonomousStates.DROPPED_OFF_SECOND_BLOCK;
+        return RedAllianceSide.AutonomousStates.DROPPED_OFF_SECOND_BLOCK;
     }
 
     public void runOpMode() {
-        BlueAllianceSide.AutonomousStates currentState = BlueAllianceSide.AutonomousStates.STARTED;
+        RedAllianceSide.AutonomousStates currentState = RedAllianceSide.AutonomousStates.STARTED;
+        int counter = 0;
+        String[] messages = new String[]{ "\\", "|", "/", "-", "\\", "|", "/", "-" };
+        long sleepTime = 0;
+
         _skyStoneDetector = new SkyStoneDetector();
         _camera = new VuforiaCamera();
 
@@ -166,6 +195,7 @@ public class RedAllianceSide extends LinearOpMode {
                 hardwareMap.dcMotor.get("bl"),hardwareMap.dcMotor.get("br"), telemetry);
         _arm = hardwareMap.servo.get("leftArm");
         _flap = hardwareMap.servo.get("leftFlap");
+        _gamepad1 = new Stickygamepad(gamepad1);
 
         _camera.addTracker(_skyStoneDetector);
         _skyStoneDetector.cx0 = 330;
@@ -177,10 +207,45 @@ public class RedAllianceSide extends LinearOpMode {
 
         _camera.initialize();
 
+        _flap.setPosition(1);
+
+        hardwareMap.servo.get("rightArm").setPosition(0);
+        hardwareMap.servo.get("rightFlap").setPosition(0);
+
+        _imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        _imu.initialize(parameters);
+
+        while (!_imu.isGyroCalibrated()) {
+            idle();
+            telemetry.addData("Calibrating IMU", "%s", messages[counter]);
+            telemetry.update();
+            if (counter == 7) {
+                counter = 0;
+            } else {
+                counter++;
+            }
+        }
+
         while (!isStarted()) {
             synchronized (this) {
                 try {
                     _location = _skyStoneDetector.getLocation();
+                    _gamepad1.update();
+                    if (_gamepad1.left_bumper) {
+                        if (sleepTime > 0) {
+                            sleepTime -= 500;
+                        }
+                    } else if (_gamepad1.right_bumper) {
+                        if (sleepTime < 9000) {
+                            sleepTime += 500;
+                        }
+                    }
+
+                    telemetry.addData("use left/right bumper to adjust sleep time", "");
+                    telemetry.addData("sleep time (ms)", sleepTime);
                     telemetry.addData("location ", _location);
                     telemetry.update();
                     this.wait();
@@ -191,7 +256,9 @@ public class RedAllianceSide extends LinearOpMode {
             }
         }
 
-        while (opModeIsActive() && (currentState != BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
+        sleep(sleepTime);
+
+        while (opModeIsActive() && (currentState != RedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
             switch (currentState) {
                 case STARTED:
                     currentState = DriveToFirstBlock();
