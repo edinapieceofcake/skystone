@@ -1,11 +1,13 @@
 package com.edinaftc.opmodes.test;
 
 import com.edinaftc.library.Stickygamepad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp()
+@Disabled
 public class LeftFlapperTest extends OpMode {
     Stickygamepad _gamepad1;
     Servo _leftArm;

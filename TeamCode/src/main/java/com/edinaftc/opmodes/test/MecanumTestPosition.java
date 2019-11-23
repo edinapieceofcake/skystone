@@ -2,10 +2,12 @@ package com.edinaftc.opmodes.test;
 
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.Mecanum;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp()
+@Disabled
 public class MecanumTestPosition extends LinearOpMode {
     Mecanum _mecanum;
     Stickygamepad _gamepad1;

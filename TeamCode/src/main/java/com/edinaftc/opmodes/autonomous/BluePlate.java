@@ -59,18 +59,18 @@ public class BluePlate extends LinearOpMode {
         sleep(sleepTime);
 
         _mecanum.MoveBackwardsRunToPosition(0.5, 500, this);
-        _mecanum.SlideRightRunToPosition(0.5, 300, this);
+        _mecanum.SlideRightRunToPosition(0.5, 600, this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1400, this);
         DropHooks();
         sleep(500);
         _mecanum.MoveForwardRunToPosition(0.5, 1900, this);
         LiftHooks();
         sleep(250);
-        _mecanum.SlideLeftRunToPosition(0.5, 1800, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 2100, this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1200, this);
-        _mecanum.SlideRightRunToPosition(0.5, 600, this);
+        _mecanum.SlideRightRunToPosition(0.5, 800, this);
         _mecanum.DiagonalLeftAndUpRunToPosition(0.5, 1700, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 700, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
         _mecanum.MoveForwardRunToPosition(0.5, 300, this);
 
     }

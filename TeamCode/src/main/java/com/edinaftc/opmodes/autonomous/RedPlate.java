@@ -58,20 +58,19 @@ public class RedPlate extends LinearOpMode {
         sleep(sleepTime);
 
         _mecanum.MoveBackwardsRunToPosition(0.5, 500, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 300, this);
-        _mecanum.MoveBackwardsRunToPosition(0.5, 1400, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 600, this);
+        _mecanum.MoveBackwardsRunToPosition(0.5, 1500, this);
         DropHooks();
-        sleep(500);
-        _mecanum.MoveForwardRunToPosition(0.5, 1900, this);
+        sleep(1000);
+        _mecanum.MoveForwardRunToPosition(0.5, 2000, this);
         LiftHooks();
-        sleep(250);
-        _mecanum.SlideRightRunToPosition(0.5, 1800, this);
+        sleep(500);
+        _mecanum.SlideRightRunToPosition(0.5, 2100, this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1200, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 700, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
         _mecanum.DiagonalRightAndUpRunToPosition(0.5, 1700, this);
-        _mecanum.SlideRightRunToPosition(0.5, 800, this);
+        _mecanum.SlideRightRunToPosition(0.5, 1200, this);
         _mecanum.MoveForwardRunToPosition(0.5, 300, this);
-
     }
 
     public void DropHooks() {
