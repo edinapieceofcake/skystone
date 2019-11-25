@@ -4,11 +4,10 @@ import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.Mecanum;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class BluePlate extends LinearOpMode {
+public class RedPlateFar extends LinearOpMode {
     Mecanum _mecanum;
     private Servo _left;
     private Servo _right;
@@ -23,7 +22,6 @@ public class BluePlate extends LinearOpMode {
         //_mecanum.StopResetEncodersAndRunToPosition();
         _left = hardwareMap.servo.get("blhook");
         _right = hardwareMap.servo.get("brhook");
-
         _gamepad1 = new Stickygamepad(gamepad1);
 
         hardwareMap.servo.get("rightArm").setPosition(0);
@@ -59,20 +57,18 @@ public class BluePlate extends LinearOpMode {
         sleep(sleepTime);
 
         _mecanum.MoveBackwardsRunToPosition(0.5, 500, this);
-        _mecanum.SlideRightRunToPosition(0.5, 600, this);
-        _mecanum.MoveBackwardsRunToPosition(0.5, 1400, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 600, this);
+        _mecanum.MoveBackwardsRunToPosition(0.5, 1500, this);
         DropHooks();
-        sleep(500);
-        _mecanum.MoveForwardRunToPosition(0.5, 1900, this);
+        sleep(1000);
+        _mecanum.MoveForwardRunToPosition(0.5, 2000, this);
         LiftHooks();
-        sleep(250);
-        _mecanum.SlideLeftRunToPosition(0.5, 2100, this);
+        sleep(500);
+        _mecanum.SlideRightRunToPosition(0.5, 2100, this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1200, this);
-        _mecanum.SlideRightRunToPosition(0.5, 800, this);
-        _mecanum.DiagonalLeftAndUpRunToPosition(0.5, 1700, this);
         _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
-        _mecanum.MoveForwardRunToPosition(0.5, 300, this);
-
+        _mecanum.DiagonalRightAndDownRunToPosition(0.5, 700, this);
+        _mecanum.SlideRightRunToPosition(0.5, 1200, this);
     }
 
     public void DropHooks() {
@@ -85,4 +81,3 @@ public class BluePlate extends LinearOpMode {
         _right.setPosition(0.9);
     }
 }
-

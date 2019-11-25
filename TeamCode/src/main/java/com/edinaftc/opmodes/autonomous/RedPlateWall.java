@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
-public class RedPlate extends LinearOpMode {
+public class RedPlateWall extends LinearOpMode {
     Mecanum _mecanum;
     private Servo _left;
     private Servo _right;
