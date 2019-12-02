@@ -1,6 +1,7 @@
 package com.edinaftc.library.subsystems;
 
 import com.edinaftc.opmodes.teleop.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -9,7 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LiftandArm extends Subsystem{
 
-    private DcMotor arm, lift;
+    private DcMotor lift;
+    private CRServo arm;
     private double liftPower, armPower;
     private boolean zeroPowerChanged = false;
     private boolean zeroPowerOn = true;
@@ -20,8 +22,7 @@ public class LiftandArm extends Subsystem{
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        arm = map.dcMotor.get("arm");
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm = map.crservo.get("arm");
     }
 
     @Override
@@ -46,9 +47,9 @@ public class LiftandArm extends Subsystem{
 
     public void setLiftPower(double liftPower) {
         if (liftPower > 0) {
-            this.liftPower = liftPower / 3;
+            this.liftPower = liftPower;
         } else if (liftPower < 0) {
-            this.liftPower = -.1;
+            this.liftPower = Range.clip(liftPower, -.5, 0);
         } else {
             this.liftPower = 0;
         }
@@ -61,7 +62,13 @@ public class LiftandArm extends Subsystem{
     }
 
     public void setArmPower(double armPower) {
-        this.armPower = Range.clip(Math.pow(armPower, 3), -1, 1);
+        if(armPower == 0) {
+            this.armPower = .5;
+        } else if(armPower > 0) {
+            this.armPower = armPower * .25;
+        } else if(armPower < 0) {
+            this.armPower = -armPower * .25 + .5;
+        }
     }
 
     public void setZeroPowerToBrake() {
