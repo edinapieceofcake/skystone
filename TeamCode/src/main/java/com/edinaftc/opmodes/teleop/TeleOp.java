@@ -57,16 +57,6 @@ public class TeleOp extends OpMode {
             robot.grabber.loadBlock();
         }
 
-        if (_gamepad2.dpad_left) {
-            robot.liftandarm.setZeroPowerToFloat();
-        }
-
-        if (_gamepad2.dpad_right) {
-            robot.liftandarm.setZeroPowerToBrake();
-        }
-
-        robot.liftandarm.lockLift(gamepad2.left_stick_button);
-
         robot.drive.displayTelemetry(telemetry);
         robot.liftandarm.displayTelemetry(telemetry);
 
