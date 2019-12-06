@@ -29,7 +29,13 @@ public class LiftandArm extends Subsystem{
     }
 
     public void setLiftPower(double liftPower) {
-        this.liftPower = liftPower;
+        if (liftPower < 0) {
+            this.liftPower = -liftPower;
+        } else if (liftPower > 0) {
+            this.liftPower = -liftPower * .5;
+        } else {
+            this.liftPower = 0;
+        }
     }
 
     public void displayTelemetry(Telemetry telemetry) {
