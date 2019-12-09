@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -13,10 +15,13 @@ public class MecanumDrive2 extends Subsystem{
 
     private DcMotorEx[] motors;
     public static final String[] MOTOR_NAMES = {"fl", "bl", "br", "fr"};
+    private boolean slowMode = false;
     private double[] powers;
     private double leftStickX;
     private double leftStickY;
     private double rightStickY;
+    private PIDFCoefficients normalVelocityPID = null;
+    private PIDFCoefficients slowVelocityPID = new PIDFCoefficients(10, 3, 1, 0, MotorControlAlgorithm.LegacyPID);
 
     private double currentPower = 1.4;
 
@@ -33,6 +38,8 @@ public class MecanumDrive2 extends Subsystem{
 
         motors[2].setDirection(DcMotorSimple.Direction.REVERSE);
         motors[3].setDirection(DcMotorSimple.Direction.REVERSE);
+
+        normalVelocityPID = motors[0].getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setVelocity(double leftStickX, double leftStickY, double rightStickY) {
@@ -47,12 +54,12 @@ public class MecanumDrive2 extends Subsystem{
 
         final double rotation = Math.pow(-rightStickY, 3.0);
         final double direction = Math.atan2(x, y);
-        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y)) * currentPower;
+        final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 
-        powers[0] = speed * Math.sin(direction + Math.PI / 4.0) + rotation;
-        powers[3] = speed * Math.cos(direction + Math.PI / 4.0) - rotation;
-        powers[1] = speed * Math.cos(direction + Math.PI / 4.0) + rotation;
-        powers[2] = speed * Math.sin(direction + Math.PI / 4.0) - rotation;
+        powers[0] = (speed * Math.sin(direction + Math.PI / 4.0) + rotation) * currentPower;
+        powers[3] = (speed * Math.cos(direction + Math.PI / 4.0) - rotation) * currentPower;
+        powers[1] = (speed * Math.cos(direction + Math.PI / 4.0) + rotation) * currentPower;
+        powers[2] = (speed * Math.sin(direction + Math.PI / 4.0) - rotation) * currentPower;
 
         for (int i = 0; i < 4; i++) {
             motors[i].setPower(powers[i]);
@@ -62,6 +69,28 @@ public class MecanumDrive2 extends Subsystem{
     public void displayTelemetry(Telemetry telemetry) {
         for (int i = 0; i < 4; i++) {
             telemetry.addData(String.format("%s: position %d power %f", MOTOR_NAMES[i], motors[i].getCurrentPosition(), motors[i].getPower()), "");
+        }
+
+        PIDFCoefficients currentPIDF = motors[0].getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("Slow, P, I, D, F", "%s %f %f %f %f", slowMode, currentPIDF.p, currentPIDF.i, currentPIDF.d, currentPIDF.f);
+    }
+
+    public void togglePID() {
+        if (slowMode) {
+            for (int i = 0; i < 4; i ++) {
+                motors[i].setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, normalVelocityPID);
+            }
+
+            currentPower = 1.4;
+
+            slowMode = false;
+        } else {
+            for (int i = 0; i < 4; i ++) {
+                motors[i].setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, slowVelocityPID);
+            }
+
+            currentPower = .25;
+            slowMode = true;
         }
     }
 }

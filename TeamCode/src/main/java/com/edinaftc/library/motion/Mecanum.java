@@ -1,10 +1,20 @@
 package com.edinaftc.library.motion;
 
+import com.edinaftc.library.subsystems.IMU;
+import com.edinaftc.library.subsystems.Subsystem;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.concurrent.ExecutorService;
 
 public class Mecanum {
     private DcMotor _frontLeft;
@@ -12,8 +22,23 @@ public class Mecanum {
     private DcMotor _backLeft;
     private DcMotor _backRight;
     private Telemetry _telemetry;
+    private ExecutorService imuUpdateExecutor;
+    private BNO055IMU imu;
+    private boolean imuStarted = false;
+    public Orientation angles;
 
     private double _currentPower = 1.0;
+
+    private Runnable imuUpdateRunnable = () -> {
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            } catch (Throwable t) {
+                this._telemetry.addData("Exception running thread 2", "");
+                this._telemetry.update();
+            }
+        }
+    };
 
     //
     // This is our class that we use to drive the robot in autonomous and teleop.  It has a bunch
@@ -49,6 +74,34 @@ public class Mecanum {
 
         _backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         _frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void enableIMU(BNO055IMU imu, LinearOpMode opMode) {
+        this.imu = imu;
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        this.imu.initialize(parameters);
+
+        while (!imu.isGyroCalibrated()) {
+            opMode.idle();
+        }
+
+        imuUpdateExecutor = ThreadPool.newSingleThreadExecutor("subsystem update");
+    }
+
+    public void startIMU() {
+        if (!imuStarted) {
+            imuUpdateExecutor.submit(imuUpdateRunnable);
+            imuStarted = true;
+        }
+    }
+
+    public void stopIMU() {
+        if (imuStarted) {
+            imuUpdateExecutor.shutdownNow();
+            imuStarted = false;
+        }
     }
 
     public void SlideLeftRunWithEncoders(double power, int distance, LinearOpMode opMode) {
@@ -351,6 +404,90 @@ public class Mecanum {
         // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
         while (_frontLeft.isBusy() && _frontRight.isBusy() && _backLeft.isBusy() && _backRight.isBusy() && (currentPosition < error) && opMode.opModeIsActive()) {
             currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void MoveForwardRunWithEncodersAndIMU(double power, int distance, double correctionPower,
+                                                 float targetAngle, LinearOpMode opMode,
+                                                 Telemetry telemetry) {
+        // put the motors into run with encoders so they run with even power
+        StopResetEncodersRunWithEncoderAndBrakekOn();
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+        double leftPower, rightPower;
+        leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+        Move(leftPower, rightPower, leftPower, rightPower);
+
+        while ((currentPosition < error) && opMode.opModeIsActive()) {
+            float currentAngle = angles.firstAngle;
+            float difference = Math.abs(targetAngle - Math.abs(currentAngle));
+
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+
+            if (difference > 2) {
+                if (targetAngle > currentAngle) {
+                    // turn right
+                    // decrease right power
+                    leftPower -= difference / 10 * correctionPower;
+                } else if (targetAngle < currentAngle) {
+                    // turn left
+                    // decrease left power
+                    rightPower -= difference / 10 * correctionPower;
+                }
+            }
+
+            Move(leftPower, rightPower, leftPower, rightPower);
+
+            telemetry.addData("left, right, start, current", "%f %f %f %f", leftPower,
+                    rightPower, targetAngle, currentAngle);
+            telemetry.update();
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void MoveBackwardRunWithEncodersAndIMU(double power, int distance, double correctionPower,
+                                                  float targetAngle, LinearOpMode opMode,
+                                                  Telemetry telemetry) {
+        // put the motors into run with encoders so they run with even power
+        StopResetEncodersRunWithEncoderAndBrakekOn();
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+        double leftPower, rightPower;
+        leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+        Move(-leftPower, -rightPower, -leftPower, -rightPower);
+
+        while ((currentPosition < error) && opMode.opModeIsActive()) {
+            float currentAngle = angles.firstAngle;
+            float difference = Math.abs(targetAngle - Math.abs(currentAngle));
+
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+
+            if (difference > 2) {
+                if (targetAngle > currentAngle) {
+                    // turn right
+                    // decrease right power
+                    rightPower -= difference / 10 * correctionPower;
+                } else if (targetAngle < currentAngle) {
+                    // turn left
+                    // decrease left power
+                    leftPower -= difference / 10 * correctionPower;
+                }
+            }
+
+            Move(-leftPower, -rightPower, -leftPower, -rightPower);
+
+            telemetry.addData("left, right, start, current", "%f %f %f %f", leftPower,
+                    rightPower, targetAngle, currentAngle);
+            telemetry.update();
             opMode.idle();
         }
 

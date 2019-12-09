@@ -76,13 +76,13 @@ public class BluePlateWall extends LinearOpMode {
     }
 
     public void DropHooks() {
-        _left.setPosition(.55);
-        _right.setPosition(0.3);
+        _left.setPosition(.3);
+        _right.setPosition(.6);
     }
 
     public void LiftHooks() {
-        _left.setPosition(0);
-        _right.setPosition(0.9);
+        _left.setPosition(.7);
+        _right.setPosition(0.17);
     }
 }
 

@@ -1,6 +1,7 @@
 package com.edinaftc.library.subsystems;
 
 import com.edinaftc.opmodes.teleop.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -8,77 +9,106 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LiftandArm extends Subsystem{
-
-    private DcMotor arm, lift;
+    private double liftIndex = 1;
+    private boolean autoLocation = false;
+    private int liftLocation;
+    private DcMotor lift;
+    private CRServo arm;
     private double liftPower, armPower;
-    private boolean zeroPowerChanged = false;
-    private boolean zeroPowerOn = true;
-    private boolean lockLiftOn = false;
 
     public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        arm = map.dcMotor.get("arm");
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm = map.crservo.get("arm");
     }
 
     @Override
     public void update() {
-        if (lockLiftOn) {
-            lift.setPower(0.02);
+        if (autoLocation) {
+            int pos = lift.getCurrentPosition();
+            if ((liftLocation - pos) > 0) {
+                if (Math.abs(liftLocation - pos) < 10) {
+                    // close enough so stop
+                    lift.setPower(0);
+                    autoLocation = false;
+                } else if (Math.abs(liftLocation - pos) < 50) {
+                    lift.setPower(.25);
+                } else {
+                    lift.setPower(1);
+                }
+            } else if ((liftLocation - pos) < 0) {
+                if (Math.abs(liftLocation - pos) < 10) {
+                    // close enough so stop
+                    lift.setPower(0);
+                    autoLocation = false;
+                } else if (Math.abs(liftLocation - pos) < 50) {
+                    lift.setPower(-.25);
+                } else {
+                    // move down
+                    lift.setPower(-.5);
+                }
+            }
         } else {
-            lift.setPower(liftPower);
+            if (liftPower < 0) {
+                if ((lift.getCurrentPosition() > -10) && (lift.getCurrentPosition() < 1000)) {
+                    lift.setPower(liftPower * .5);
+                } else if (lift.getCurrentPosition() >= 1000) {
+                    lift.setPower(liftPower);
+                } else {
+                    lift.setPower(0);
+                }
+            } else {
+                lift.setPower(liftPower);
+            }
         }
 
         arm.setPower(armPower);
-
-        if (zeroPowerChanged) {
-            zeroPowerChanged = false;
-            if (zeroPowerOn) {
-                lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            } else {
-                lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            }
-        }
     }
 
     public void setLiftPower(double liftPower) {
-        if (liftPower > 0) {
-            this.liftPower = liftPower / 3;
-        } else if (liftPower < 0) {
-            this.liftPower = -.1;
-        } else {
-            this.liftPower = 0;
+        this.liftPower = -liftPower;
+        if (liftPower != 0) {
+            autoLocation = false;
         }
     }
 
     public void displayTelemetry(Telemetry telemetry) {
         telemetry.addData("lift position, power", "%d %f", lift.getCurrentPosition(), lift.getPower());
+        telemetry.addData("arm power", "%f", arm.getPower());
         telemetry.addData("lift brake on", lift.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE);
-        telemetry.addData("lock lift on", lockLiftOn);
+        telemetry.addData("auto on, location", "%s %d", autoLocation, liftLocation);
     }
 
     public void setArmPower(double armPower) {
-        this.armPower = Range.clip(Math.pow(armPower, 3), -1, 1);
-    }
-
-    public void setZeroPowerToBrake() {
-        if (!zeroPowerChanged) {
-            zeroPowerChanged = true;
-            zeroPowerOn = true;
+        this.armPower = - armPower * .8;
+        if (armPower != 0) {
+            autoLocation = false;
         }
     }
 
-    public void setZeroPowerToFloat() {
-        if (!zeroPowerChanged) {
-            zeroPowerChanged = true;
-            zeroPowerOn = false;
-        }
+    public void increaseHHeight() {
+        liftIndex++;
+        computeLocation();
     }
 
-    public void lockLift(boolean lockSetting) {
-        lockLiftOn = lockSetting;
+    public void decreaseHeight() {
+        if (liftIndex > 0) {
+            liftIndex--;
+        }
+
+        computeLocation();
+    }
+
+    private void computeLocation() {
+        if (liftIndex == 0) {
+            liftLocation = 0;
+        } else {
+            liftLocation = (int) ((1.1 * liftIndex - .6) * 1000);
+        }
+
+        autoLocation = true;
     }
 }

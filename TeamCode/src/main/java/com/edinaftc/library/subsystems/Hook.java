@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Hook extends Subsystem {
     private Servo _left;
     private Servo _right;
-    private double _leftPosition = 0;
-    private double _rightPosition = .9;
+    private double _leftPosition = .7;
+    private double _rightPosition = .17;
     private boolean _canUpdate = false;
 
     public Hook(HardwareMap map) {
@@ -24,14 +24,14 @@ public class Hook extends Subsystem {
     }
 
     public void dropHooks() {
-        _leftPosition = .65;
-        _rightPosition = .18;
+        _leftPosition = .3;
+        _rightPosition = .6;
     }
 
 
     public void liftHooks() {
-        _leftPosition = 0;
-        _rightPosition = .9;
+        _leftPosition = .7;
+        _rightPosition = .17;
     }
 
     public void turnOnUpdate() {
