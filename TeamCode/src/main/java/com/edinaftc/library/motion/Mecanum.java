@@ -410,7 +410,7 @@ public class Mecanum {
         Stop();
     }
 
-    public void MoveForwardRunWithEncodersAndIMU(double power, int distance, float correctionPower, LinearOpMode opMode) {
+    public void MoveForwardRunWithEncodersAndIMU(double power, int distance, double correctionPower, LinearOpMode opMode, Telemetry telemetry) {
         // put the motors into run with encoders so they run with even power
         StopResetEncodersRunWithEncoderAndBrakekOn();
 
@@ -422,10 +422,28 @@ public class Mecanum {
         Move(leftPower, rightPower, leftPower, rightPower);
 
         while ((currentPosition < error) && opMode.opModeIsActive()) {
-            float difference = startAngle - angles.firstAngle;
+            float currentAngle = angles.firstAngle;
+            float difference = Math.abs(startAngle - Math.abs(currentAngle));
+
             currentPosition =  Math.abs(_frontRight.getCurrentPosition());
             leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+
+            if (difference > 2) {
+                if (startAngle > currentAngle) {
+                    // turn right
+                    // decrease right power
+                    leftPower -= difference / 10 * correctionPower;
+                } else if (startAngle < currentAngle) {
+                    // turn left
+                    // decrease left power
+                    rightPower -= difference / 10 * correctionPower;
+                }
+            }
+
             Move(leftPower, rightPower, leftPower, rightPower);
+
+            telemetry.addData("left, right, start, current", "%f %f %f %f", leftPower, rightPower, startAngle, currentAngle);
+            telemetry.update();
             opMode.idle();
         }
 

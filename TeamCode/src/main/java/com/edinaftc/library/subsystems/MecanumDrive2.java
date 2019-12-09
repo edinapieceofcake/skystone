@@ -15,6 +15,7 @@ public class MecanumDrive2 extends Subsystem{
 
     private DcMotorEx[] motors;
     public static final String[] MOTOR_NAMES = {"fl", "bl", "br", "fr"};
+    private boolean slowMode = false;
     private double[] powers;
     private double leftStickX;
     private double leftStickY;
@@ -71,22 +72,25 @@ public class MecanumDrive2 extends Subsystem{
         }
 
         PIDFCoefficients currentPIDF = motors[0].getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
-        telemetry.addData("PID values P, I, D, F", "%f %f %f %f", currentPIDF.p, currentPIDF.i, currentPIDF.d, currentPIDF.f);
+        telemetry.addData("Slow, P, I, D, F", "%s %f %f %f %f", slowMode, currentPIDF.p, currentPIDF.i, currentPIDF.d, currentPIDF.f);
     }
 
-    public void setSlowPID() {
-        for (int i = 0; i < 4; i ++) {
-            motors[i].setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, slowVelocityPID);
+    public void togglePID() {
+        if (slowMode) {
+            for (int i = 0; i < 4; i ++) {
+                motors[i].setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, normalVelocityPID);
+            }
+
+            currentPower = 1.4;
+
+            slowMode = false;
+        } else {
+            for (int i = 0; i < 4; i ++) {
+                motors[i].setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, slowVelocityPID);
+            }
+
+            currentPower = .25;
+            slowMode = true;
         }
-
-        currentPower = .25;
-    }
-
-    public void setNormalPID() {
-        for (int i = 0; i < 4; i ++) {
-            motors[i].setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, normalVelocityPID);
-        }
-
-        currentPower = 1.4;
     }
 }

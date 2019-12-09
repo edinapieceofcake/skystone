@@ -3,6 +3,7 @@ package com.edinaftc.opmodes.test;
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.Mecanum;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp
-public class TurnTest extends OpMode {
+public class TurnTest extends LinearOpMode {
     BNO055IMU gyro;
     public IMU imu;
     private Mecanum driveTrain;
@@ -21,41 +22,45 @@ public class TurnTest extends OpMode {
     private double _speedModifier = -25;
 
     @Override
-    public void init() {
+    public void runOpMode() {
+        double angles[];
+
         gyro = hardwareMap.get(BNO055IMU.class, "imu");
         imu = new IMU(gyro);
         imu.initialize();
 //         driveTrain = new DriveTrain(lf, rf, lr, rr);
         driveTrain = new Mecanum(hardwareMap.dcMotor.get("fl"), hardwareMap.dcMotor.get("fr"), hardwareMap.dcMotor.get("bl"), hardwareMap.dcMotor.get("br"), telemetry);
+        driveTrain.StopResetEncodersRunWithEncoderAndBrakekOn();
         _gamepad1 = new Stickygamepad(gamepad1);
-    }
 
-    @Override
-    public void loop() {
-        double angles[];
+        waitForStart();
 
-        _gamepad1.update();
-        if (_gamepad1.left_bumper) {
-            _speedModifier--;
-        } else if (_gamepad1.right_bumper) {
-            _speedModifier++;
+        while (opModeIsActive()) {
+            _gamepad1.update();
+            if (_gamepad1.left_bumper) {
+                _speedModifier--;
+            } else if (_gamepad1.right_bumper) {
+                _speedModifier++;
+            }
+
+            if (_gamepad1.x) {
+                turn_to_heading(270, _speedModifier);
+            } else if (_gamepad1.y) {
+                turn_to_heading(0, _speedModifier);
+            } else if (_gamepad1.b) {
+                turn_to_heading(90, _speedModifier);
+            } else if (_gamepad1.a) {
+                turn_to_heading(180, _speedModifier);
+            } else if (_gamepad1.dpad_left) {
+                driveTrain.TurnLeftRunToPosition(1, 1415, this);
+            }
+
+            angles = imu.printAngles();
+
+            telemetry.addData("first, second, third angles", "%f, %f, %f,", angles[0], angles[1], angles[2]);
+            telemetry.addData("speed modifier", "%f", _speedModifier);
+            telemetry.update();
         }
-
-        if (_gamepad1.x) {
-            turn_to_heading(270, _speedModifier);
-        } else if (_gamepad1.y) {
-            turn_to_heading(0, _speedModifier);
-        } else if (_gamepad1.b) {
-            turn_to_heading(90, _speedModifier);
-        } else if (_gamepad1.a) {
-            turn_to_heading(180, _speedModifier);
-        }
-
-        angles = imu.printAngles();
-
-        telemetry.addData("first, second, third angles", "%f, %f, %f,", angles[0], angles[1], angles[2]);
-        telemetry.addData("speed modifier", "%f", _speedModifier);
-        telemetry.update();
     }
 
     public void turn_to_heading(double target_heading, double speedModifier) {
@@ -97,6 +102,9 @@ public class TurnTest extends OpMode {
             if (goRight) {
                 wheelPower = -wheelPower;
             }
+
+            telemetry.addData("degrees, timeout, power", "%f %f %f", degreesToTurn, timeoutTimer.milliseconds(), wheelPower);
+            telemetry.update();
 
             driveTrain.Move(-wheelPower, wheelPower, -wheelPower, wheelPower);
 

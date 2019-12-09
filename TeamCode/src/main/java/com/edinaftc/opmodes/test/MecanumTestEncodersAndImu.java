@@ -36,25 +36,16 @@ public class MecanumTestEncodersAndImu extends LinearOpMode {
             _mecanum.Drive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
             if (_gamepad1.a) {
-                _mecanum.MoveBackwardsRunWithEncoders(.5, moveDistance, this);
             } else if (_gamepad1.x) {
-                _mecanum.TurnLeftRunWithEncoders(.5, moveDistance, this);
             } else if (_gamepad1.b) {
-                _mecanum.TurnRightRunWithEncoders(.5, moveDistance, this);
             } else if (_gamepad1.y) {
-                _mecanum.MoveForwardRunWithEncoders(.5, moveDistance, this);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(1, 20 * moveDistance, .2, this, telemetry);
             } else if (_gamepad1.dpad_down) {
-                _mecanum.DiagonalLeftAndDownRunToPosition(.5, moveDistance, this);
             } else if (_gamepad1.dpad_up) {
-                _mecanum.DiagonalRightAndUpRunToPosition(.5, moveDistance, this);
             } else if (_gamepad1.dpad_left) {
-                _mecanum.DiagonalLeftAndUpRunToPosition(.5, moveDistance, this);
             } else if (_gamepad1.dpad_right) {
-                _mecanum.DiagonalRightAndDownRunToPosition(.5, moveDistance, this);
             } else if (_gamepad1.left_bumper) {
-                _mecanum.SlideLeftRunWithEncoders(.5, moveDistance, this);
             } else if (_gamepad1.right_bumper) {
-                _mecanum.SlideRightRunWithEncoders(.5, moveDistance, this);
             }
 
             telemetry.addData("first angle", _mecanum.angles.firstAngle);
