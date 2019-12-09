@@ -27,20 +27,19 @@ public class RedPlatePullTurnPark extends LinearOpMode {
         DropHooks();
         sleep(1000);
         _mecanum.MoveForwardRunToPosition(0.5, 1000, this);
-        _mecanum.TurnRightRunToPosition(0.5,900, this);
+        _mecanum.TurnRightRunToPosition(0.5,1415, this);
         _mecanum.MoveBackwardsRunToPosition(0.5,500,this);
         LiftHooks();
         sleep(1000);
     }
 
     public void DropHooks() {
-        _left.setPosition(.55);
-        _right.setPosition(0.3);
+        _left.setPosition(.3);
+        _right.setPosition(.6);
     }
 
     public void LiftHooks() {
-        _left.setPosition(0);
-        _right.setPosition(0.9);
+        _left.setPosition(.7);
+        _right.setPosition(0.17);
     }
-
 }

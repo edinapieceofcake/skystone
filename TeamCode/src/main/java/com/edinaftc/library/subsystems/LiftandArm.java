@@ -103,7 +103,12 @@ public class LiftandArm extends Subsystem{
     }
 
     private void computeLocation() {
-        liftLocation = (int)((1.1 * liftIndex - .6) * 1000);
+        if (liftIndex == 0) {
+            liftLocation = 0;
+        } else {
+            liftLocation = (int) ((1.1 * liftIndex - .6) * 1000);
+        }
+
         autoLocation = true;
     }
 }

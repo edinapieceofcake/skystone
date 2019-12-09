@@ -410,11 +410,12 @@ public class Mecanum {
         Stop();
     }
 
-    public void MoveForwardRunWithEncodersAndIMU(double power, int distance, double correctionPower, LinearOpMode opMode, Telemetry telemetry) {
+    public void MoveForwardRunWithEncodersAndIMU(double power, int distance, double correctionPower,
+                                                 float targetAngle, LinearOpMode opMode,
+                                                 Telemetry telemetry) {
         // put the motors into run with encoders so they run with even power
         StopResetEncodersRunWithEncoderAndBrakekOn();
 
-        float startAngle = angles.firstAngle;
         int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
         double leftPower, rightPower;
@@ -423,17 +424,17 @@ public class Mecanum {
 
         while ((currentPosition < error) && opMode.opModeIsActive()) {
             float currentAngle = angles.firstAngle;
-            float difference = Math.abs(startAngle - Math.abs(currentAngle));
+            float difference = Math.abs(targetAngle - Math.abs(currentAngle));
 
             currentPosition =  Math.abs(_frontRight.getCurrentPosition());
             leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
 
             if (difference > 2) {
-                if (startAngle > currentAngle) {
+                if (targetAngle > currentAngle) {
                     // turn right
                     // decrease right power
                     leftPower -= difference / 10 * correctionPower;
-                } else if (startAngle < currentAngle) {
+                } else if (targetAngle < currentAngle) {
                     // turn left
                     // decrease left power
                     rightPower -= difference / 10 * correctionPower;
@@ -442,7 +443,50 @@ public class Mecanum {
 
             Move(leftPower, rightPower, leftPower, rightPower);
 
-            telemetry.addData("left, right, start, current", "%f %f %f %f", leftPower, rightPower, startAngle, currentAngle);
+            telemetry.addData("left, right, start, current", "%f %f %f %f", leftPower,
+                    rightPower, targetAngle, currentAngle);
+            telemetry.update();
+            opMode.idle();
+        }
+
+        Stop();
+    }
+
+    public void MoveBackwardRunWithEncodersAndIMU(double power, int distance, double correctionPower,
+                                                  float targetAngle, LinearOpMode opMode,
+                                                  Telemetry telemetry) {
+        // put the motors into run with encoders so they run with even power
+        StopResetEncodersRunWithEncoderAndBrakekOn();
+
+        int error = Math.abs((int)(distance * 0.95));
+        int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+        double leftPower, rightPower;
+        leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+        Move(-leftPower, -rightPower, -leftPower, -rightPower);
+
+        while ((currentPosition < error) && opMode.opModeIsActive()) {
+            float currentAngle = angles.firstAngle;
+            float difference = Math.abs(targetAngle - Math.abs(currentAngle));
+
+            currentPosition =  Math.abs(_frontRight.getCurrentPosition());
+            leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
+
+            if (difference > 2) {
+                if (targetAngle > currentAngle) {
+                    // turn right
+                    // decrease right power
+                    rightPower -= difference / 10 * correctionPower;
+                } else if (targetAngle < currentAngle) {
+                    // turn left
+                    // decrease left power
+                    leftPower -= difference / 10 * correctionPower;
+                }
+            }
+
+            Move(-leftPower, -rightPower, -leftPower, -rightPower);
+
+            telemetry.addData("left, right, start, current", "%f %f %f %f", leftPower,
+                    rightPower, targetAngle, currentAngle);
             telemetry.update();
             opMode.idle();
         }

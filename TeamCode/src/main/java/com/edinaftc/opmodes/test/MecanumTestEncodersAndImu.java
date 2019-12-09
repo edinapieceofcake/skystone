@@ -36,10 +36,11 @@ public class MecanumTestEncodersAndImu extends LinearOpMode {
             _mecanum.Drive(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
 
             if (_gamepad1.a) {
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(1, 20 * moveDistance, .2, 0, this, telemetry);
             } else if (_gamepad1.x) {
             } else if (_gamepad1.b) {
             } else if (_gamepad1.y) {
-                _mecanum.MoveForwardRunWithEncodersAndIMU(1, 20 * moveDistance, .2, this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(1, 20 * moveDistance, .2, 0, this, telemetry);
             } else if (_gamepad1.dpad_down) {
             } else if (_gamepad1.dpad_up) {
             } else if (_gamepad1.dpad_left) {
