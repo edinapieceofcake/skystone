@@ -11,20 +11,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="Red Alliance Block Side", group="Autonomous")
-public class RedAllianceSide extends LinearOpMode {
+public class GodRedAllianceSide extends LinearOpMode {
     private Mecanum _mecanum;
     private VuforiaCamera _camera;
     private SkyStoneDetector _skyStoneDetector;
     private Servo _arm;
     private Servo _flap;
+    private Servo _left;
+    private Servo _right;
     private SkystoneLocation _location = SkystoneLocation.left;
     private double motorPower = .5;
     private Stickygamepad _gamepad1;
     private BNO055IMU _imu = null;
 
-    private int MINIMUMDISTANCEFORFIRSTBLOCK = 2640;
-    private int MINIMUMDISTANCEFORSECONDBLOCK = 4190;
-    private int MONIMUMDISTANCVETOBRIDGE = 4190;
+    private int MINIMUMDISTANCEFORFIRSTBLOCK = 3140;
+    private int MINIMUMDISTANCEFORSECONDBLOCK = 4690;
+    private int MONIMUMDISTANCVETOBRIDGE = 4690;
 
 
     public enum AutonomousStates{
@@ -37,10 +39,13 @@ public class RedAllianceSide extends LinearOpMode {
         PICKED_UP_SECOND_BLOCK,
         DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK,
         DROPPED_OFF_SECOND_BLOCK,
+        TURNED_RIGHT_TOWARDS_WALL,
+        BACKED_AND_GRABBED_PLATE,
+        PULLED_AND_TURNED_RIGHT_WITH_PLATE,
         DRIVEN_UNDER_BRIDGE
     }
 
-    public RedAllianceSide.AutonomousStates DriveToFirstBlock() {
+    public GodRedAllianceSide.AutonomousStates DriveToFirstBlock() {
         _mecanum.SlideLeftRunToPosition(.5, 1725, this);
 
         _flap.setPosition(0);
@@ -61,10 +66,10 @@ public class RedAllianceSide extends LinearOpMode {
 
         sleep(500); // need time for flap to open
 
-        return RedAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
     }
 
-    public RedAllianceSide.AutonomousStates DriveToSecondBlock() {
+    public GodRedAllianceSide.AutonomousStates DriveToSecondBlock() {
         switch (_location) {
             case left:
                 _mecanum.MoveBackwardsRunWithEncoders(motorPower, MINIMUMDISTANCEFORSECONDBLOCK, this);
@@ -81,19 +86,19 @@ public class RedAllianceSide extends LinearOpMode {
 
         _flap.setPosition(0);
         sleep(500); // need time for flap to open
-        return RedAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
     }
 
-    public RedAllianceSide.AutonomousStates PickUpFirstBlock() {
+    public GodRedAllianceSide.AutonomousStates PickUpFirstBlock() {
         PickUpBlock2();
 
-        return RedAllianceSide.AutonomousStates.PICKED_UP_FIRST_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.PICKED_UP_FIRST_BLOCK;
     }
 
-    public RedAllianceSide.AutonomousStates PickUpSecondBlock() {
+    public GodRedAllianceSide.AutonomousStates PickUpSecondBlock() {
         PickUpBlock2();
 
-        return RedAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
     }
 
     private void PickUpBlock() {
@@ -120,7 +125,7 @@ public class RedAllianceSide extends LinearOpMode {
         _mecanum.SlideRightRunWithEncoders(.5, 200, this);
     }
 
-    public RedAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
+    public GodRedAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
         switch (_location) {
             case left:
                 _mecanum.MoveForwardRunWithEncoders(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK, this);
@@ -135,10 +140,10 @@ public class RedAllianceSide extends LinearOpMode {
                 break;
         }
 
-        return RedAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK;
     }
 
-    public RedAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
+    public GodRedAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
         _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
         switch (_location) {
             case left:
@@ -154,12 +159,42 @@ public class RedAllianceSide extends LinearOpMode {
                 break;
         }
 
-        return RedAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK;
     }
 
-    public RedAllianceSide.AutonomousStates DriveUnderBridge() {
-        _mecanum.MoveBackwardsRunWithEncoders(motorPower, 1150, this);
-        return RedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
+    public GodRedAllianceSide.AutonomousStates TurnRightTowardsWall() {
+        _mecanum.TurnRightRunToPosition(1, 1415, this);
+
+        return AutonomousStates.TURNED_RIGHT_TOWARDS_WALL;
+    }
+
+    public GodRedAllianceSide.AutonomousStates BackupAndGrabPlate() {
+        _mecanum.MoveBackwardsRunToPosition(1, 200, this);
+
+        _left.setPosition(.3);
+        _right.setPosition(.6);
+
+        sleep(500);
+
+        return AutonomousStates.BACKED_AND_GRABBED_PLATE;
+    }
+
+    public GodRedAllianceSide.AutonomousStates PullAndTurnPlate() {
+        _mecanum.MoveForwardRunToPosition(1, 200, this);
+        _mecanum.TurnRightRunToPosition(1, 1415, this);
+        _mecanum.MoveBackwardsRunToPosition(1, 200, this);
+
+        return AutonomousStates.PULLED_AND_TURNED_RIGHT_WITH_PLATE;
+    }
+
+    public GodRedAllianceSide.AutonomousStates DriveUnderBridge() {
+        _left.setPosition(.7);
+        _right.setPosition(0.17);
+
+        sleep(500);
+
+        _mecanum.MoveForwardRunWithEncoders(motorPower, 1150, this);
+        return GodRedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
     private void DropOffBlock() {
@@ -172,20 +207,20 @@ public class RedAllianceSide extends LinearOpMode {
         sleep(500);
     }
 
-    public RedAllianceSide.AutonomousStates DropOffFirstBlock() {
+    public GodRedAllianceSide.AutonomousStates DropOffFirstBlock() {
         DropOffBlock();
 
-        return RedAllianceSide.AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
     }
 
-    public RedAllianceSide.AutonomousStates DropOffSecondBlock() {
+    public GodRedAllianceSide.AutonomousStates DropOffSecondBlock() {
         DropOffBlock();
 
-        return RedAllianceSide.AutonomousStates.DROPPED_OFF_SECOND_BLOCK;
+        return GodRedAllianceSide.AutonomousStates.DROPPED_OFF_SECOND_BLOCK;
     }
 
     public void runOpMode() {
-        RedAllianceSide.AutonomousStates currentState = RedAllianceSide.AutonomousStates.STARTED;
+        GodRedAllianceSide.AutonomousStates currentState = GodRedAllianceSide.AutonomousStates.STARTED;
         int counter = 0;
         String[] messages = new String[]{ "\\", "|", "/", "-", "\\", "|", "/", "-" };
         long sleepTime = 0;
@@ -198,6 +233,8 @@ public class RedAllianceSide extends LinearOpMode {
         _arm = hardwareMap.servo.get("leftArm");
         _flap = hardwareMap.servo.get("leftFlap");
         _gamepad1 = new Stickygamepad(gamepad1);
+        _left = hardwareMap.servo.get("blhook");
+        _right = hardwareMap.servo.get("brhook");
 
         _camera.addTracker(_skyStoneDetector);
         _skyStoneDetector.cx0 = 330;
@@ -260,7 +297,7 @@ public class RedAllianceSide extends LinearOpMode {
 
         sleep(sleepTime);
 
-        while (opModeIsActive() && (currentState != RedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
+        while (opModeIsActive() && (currentState != GodRedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
             switch (currentState) {
                 case STARTED:
                     currentState = DriveToFirstBlock();
@@ -287,6 +324,15 @@ public class RedAllianceSide extends LinearOpMode {
                     currentState = DropOffSecondBlock();
                     break;
                 case DROPPED_OFF_SECOND_BLOCK:
+                    currentState = TurnRightTowardsWall();
+                    break;
+                case TURNED_RIGHT_TOWARDS_WALL:
+                    currentState = BackupAndGrabPlate();
+                    break;
+                case BACKED_AND_GRABBED_PLATE:
+                    currentState = PullAndTurnPlate();
+                    break;
+                case PULLED_AND_TURNED_RIGHT_WITH_PLATE:
                     currentState = DriveUnderBridge();
                     break;
             }
