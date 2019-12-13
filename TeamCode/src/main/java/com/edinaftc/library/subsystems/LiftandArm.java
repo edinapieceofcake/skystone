@@ -15,6 +15,8 @@ public class LiftandArm extends Subsystem{
     private DcMotor lift;
     private CRServo arm;
     private double liftPower, armPower;
+    private boolean toggleArmPower = false;
+    private double armPowerMulti = 1;
 
     public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
@@ -83,7 +85,7 @@ public class LiftandArm extends Subsystem{
     }
 
     public void setArmPower(double armPower) {
-        this.armPower = - armPower * .8;
+        this.armPower = -.8 * armPower * armPowerMulti;
         if (armPower != 0) {
             autoLocation = false;
         }
@@ -110,5 +112,13 @@ public class LiftandArm extends Subsystem{
         }
 
         autoLocation = true;
+    }
+
+    public void toggleArmPower() {
+        if (armPowerMulti == 1) {
+            armPowerMulti = .25;
+        } else {
+            armPowerMulti = 1;
+        }
     }
 }
