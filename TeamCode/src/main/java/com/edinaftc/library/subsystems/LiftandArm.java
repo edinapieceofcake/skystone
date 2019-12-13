@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LiftandArm extends Subsystem{
     private double liftIndex = 1;
-    private boolean autoLocation = false;
+    private boolean autoLiftLocation = false;
     private boolean autoArmLocation = false;
     private int liftLocation;
     private int armLocation;
@@ -36,13 +36,13 @@ public class LiftandArm extends Subsystem{
 
     @Override
     public void update() {
-        if (autoLocation) {
+        if (autoLiftLocation) {
             int pos = lift.getCurrentPosition();
             if ((liftLocation - pos) > 0) {
                 if (Math.abs(liftLocation - pos) < 10) {
                     // close enough so stop
                     lift.setPower(0);
-                    autoLocation = false;
+                    autoLiftLocation = false;
                 } else if (Math.abs(liftLocation - pos) < 50) {
                     lift.setPower(.25);
                 } else {
@@ -52,7 +52,7 @@ public class LiftandArm extends Subsystem{
                 if (Math.abs(liftLocation - pos) < 10) {
                     // close enough so stop
                     lift.setPower(0);
-                    autoLocation = false;
+                    autoLiftLocation = false;
                 } else if (Math.abs(liftLocation - pos) < 50) {
                     lift.setPower(-.25);
                 } else {
@@ -75,16 +75,38 @@ public class LiftandArm extends Subsystem{
         }
 
         if (autoArmLocation) {
-
+            int pos = dummyarm.getCurrentPosition();
+            if ((armLocation - pos) > 0) {
+                if (Math.abs(armLocation - pos) < 10) {
+                    // close enough so stop
+                    arm.setPower(0);
+                    autoArmLocation = false;
+                } else if (Math.abs(armLocation - pos) < 50) {
+                    arm.setPower(-.25);
+                } else {
+                    arm.setPower(-.5);
+                }
+            } else if ((armLocation - pos) < 0) {
+                if (Math.abs(armLocation - pos) < 10) {
+                    // close enough so stop
+                    arm.setPower(0);
+                    autoArmLocation = false;
+                } else if (Math.abs(armLocation - pos) < 50) {
+                    arm.setPower(.25);
+                } else {
+                    // move down
+                    arm.setPower(.5);
+                }
+            }
+        } else {
+            arm.setPower(armPower);
         }
-
-        arm.setPower(armPower);
     }
 
     public void setLiftPower(double liftPower) {
         this.liftPower = -liftPower;
         if (liftPower != 0) {
-            autoLocation = false;
+            autoLiftLocation = false;
             autoArmLocation = false;
         }
     }
@@ -93,13 +115,13 @@ public class LiftandArm extends Subsystem{
         telemetry.addData("lift position, power", "%d %f", lift.getCurrentPosition(), lift.getPower());
         telemetry.addData("arm power, location", "%f %d", arm.getPower(), dummyarm.getCurrentPosition());
         telemetry.addData("lift brake on", lift.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE);
-        telemetry.addData("auto on, location", "%s %d", autoLocation, liftLocation);
+        telemetry.addData("auto on, location", "%s %d", autoLiftLocation, liftLocation);
     }
 
     public void setArmPower(double armPower) {
         this.armPower = -.8 * armPower * armPowerMulti;
         if (armPower != 0) {
-            autoLocation = false;
+            autoLiftLocation = false;
             autoArmLocation = false;
         }
     }
@@ -124,7 +146,7 @@ public class LiftandArm extends Subsystem{
             liftLocation = (int) ((1.1 * liftIndex - .6) * 1000);
         }
 
-        autoLocation = true;
+        autoLiftLocation = true;
     }
 
     public void toggleArmPower() {
@@ -133,6 +155,8 @@ public class LiftandArm extends Subsystem{
         } else {
             armPowerMulti = 1;
         }
+    }
+
     public void sendArmOut() {
         armLocation = 16324;
         autoArmLocation = true;
