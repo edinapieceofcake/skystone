@@ -11,11 +11,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class LiftandArm extends Subsystem{
     private double liftIndex = 1;
     private boolean autoLocation = false;
+    private boolean autoArmLocation = false;
     private int liftLocation;
+    private int armLocation;
     private DcMotor lift;
     private DcMotor dummyarm;
     private CRServo arm;
     private double liftPower, armPower;
+// 16324
 
     public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
@@ -69,6 +72,10 @@ public class LiftandArm extends Subsystem{
             }
         }
 
+        if (autoArmLocation) {
+
+        }
+
         arm.setPower(armPower);
     }
 
@@ -76,6 +83,7 @@ public class LiftandArm extends Subsystem{
         this.liftPower = -liftPower;
         if (liftPower != 0) {
             autoLocation = false;
+            autoArmLocation = false;
         }
     }
 
@@ -90,6 +98,7 @@ public class LiftandArm extends Subsystem{
         this.armPower = - armPower * .8;
         if (armPower != 0) {
             autoLocation = false;
+            autoArmLocation = false;
         }
     }
 
@@ -114,5 +123,15 @@ public class LiftandArm extends Subsystem{
         }
 
         autoLocation = true;
+    }
+
+    public void sendArmOut() {
+        armLocation = 16324;
+        autoArmLocation = true;
+    }
+
+    public void sendArmIn() {
+        armLocation = 0;
+        autoArmLocation = true;
     }
 }
