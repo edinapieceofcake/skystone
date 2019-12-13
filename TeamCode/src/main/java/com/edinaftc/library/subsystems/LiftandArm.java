@@ -13,6 +13,7 @@ public class LiftandArm extends Subsystem{
     private boolean autoLocation = false;
     private int liftLocation;
     private DcMotor lift;
+    private DcMotor dummyarm;
     private CRServo arm;
     private double liftPower, armPower;
 
@@ -21,6 +22,9 @@ public class LiftandArm extends Subsystem{
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        dummyarm = map.dcMotor.get("arm");
+        dummyarm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         arm = map.crservo.get("arm");
     }
@@ -77,7 +81,7 @@ public class LiftandArm extends Subsystem{
 
     public void displayTelemetry(Telemetry telemetry) {
         telemetry.addData("lift position, power", "%d %f", lift.getCurrentPosition(), lift.getPower());
-        telemetry.addData("arm power", "%f", arm.getPower());
+        telemetry.addData("arm power, location", "%f %d", arm.getPower(), dummyarm.getCurrentPosition());
         telemetry.addData("lift brake on", lift.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("auto on, location", "%s %d", autoLocation, liftLocation);
     }
