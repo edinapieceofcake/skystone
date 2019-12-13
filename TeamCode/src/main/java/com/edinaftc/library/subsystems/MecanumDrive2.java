@@ -93,4 +93,27 @@ public class MecanumDrive2 extends Subsystem{
             slowMode = true;
         }
     }
+
+    public void strafeLeft(double power) {
+        Move(-power, power, power, -power);
+    }
+
+    public void strafeRight(double power) {
+        Move(power, -power, -power, power);
+    }
+
+    public void Move(double fl, double fr, double bl, double br) {
+        motors[0].setPower(fl);
+        motors[3].setPower(fr);
+        motors[1].setPower(bl);
+        motors[2].setPower(br);
+    }
+
+    public void Stop() {
+        motors[0].setPower(0);
+        motors[3].setPower(0);
+        motors[1].setPower(0);
+        motors[2].setPower(0);
+    }
+
 }

@@ -11,18 +11,25 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class LiftandArm extends Subsystem{
     private double liftIndex = 1;
     private boolean autoLocation = false;
+    private boolean autoArmLocation = false;
     private int liftLocation;
+    private int armLocation;
     private DcMotor lift;
+    private DcMotor dummyarm;
     private CRServo arm;
     private double liftPower, armPower;
     private boolean toggleArmPower = false;
     private double armPowerMulti = 1;
+// 16324
 
     public LiftandArm(HardwareMap map) {
         lift = map.dcMotor.get("lift");
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        dummyarm = map.dcMotor.get("arm");
+        dummyarm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         arm = map.crservo.get("arm");
     }
@@ -67,6 +74,10 @@ public class LiftandArm extends Subsystem{
             }
         }
 
+        if (autoArmLocation) {
+
+        }
+
         arm.setPower(armPower);
     }
 
@@ -74,12 +85,13 @@ public class LiftandArm extends Subsystem{
         this.liftPower = -liftPower;
         if (liftPower != 0) {
             autoLocation = false;
+            autoArmLocation = false;
         }
     }
 
     public void displayTelemetry(Telemetry telemetry) {
         telemetry.addData("lift position, power", "%d %f", lift.getCurrentPosition(), lift.getPower());
-        telemetry.addData("arm power", "%f", arm.getPower());
+        telemetry.addData("arm power, location", "%f %d", arm.getPower(), dummyarm.getCurrentPosition());
         telemetry.addData("lift brake on", lift.getZeroPowerBehavior() == DcMotor.ZeroPowerBehavior.BRAKE);
         telemetry.addData("auto on, location", "%s %d", autoLocation, liftLocation);
     }
@@ -88,6 +100,7 @@ public class LiftandArm extends Subsystem{
         this.armPower = -.8 * armPower * armPowerMulti;
         if (armPower != 0) {
             autoLocation = false;
+            autoArmLocation = false;
         }
     }
 
@@ -120,5 +133,13 @@ public class LiftandArm extends Subsystem{
         } else {
             armPowerMulti = 1;
         }
+    public void sendArmOut() {
+        armLocation = 16324;
+        autoArmLocation = true;
+    }
+
+    public void sendArmIn() {
+        armLocation = 0;
+        autoArmLocation = true;
     }
 }
