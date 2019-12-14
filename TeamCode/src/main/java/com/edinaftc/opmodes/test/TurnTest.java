@@ -3,6 +3,7 @@ package com.edinaftc.opmodes.test;
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.Mecanum;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp
+@Disabled
 public class TurnTest extends LinearOpMode {
     private Mecanum driveTrain;
     private Stickygamepad _gamepad1;

@@ -7,10 +7,12 @@ import com.edinaftc.skystone.vision.SkyStoneDetector;
 import com.edinaftc.skystone.vision.SkystoneLocation;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="God Red Alliance Block Side", group="Autonomous")
+@Disabled
 public class GodRedAllianceSide extends LinearOpMode {
     private Mecanum _mecanum;
     private VuforiaCamera _camera;
@@ -52,11 +54,11 @@ public class GodRedAllianceSide extends LinearOpMode {
 
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 1125, .2,0,this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 925, .2,0,this, telemetry);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 575, .2,0,this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 275, .2,0,this, telemetry);
                 break;
 
             case right:
@@ -252,21 +254,8 @@ public class GodRedAllianceSide extends LinearOpMode {
         hardwareMap.servo.get("rightFlap").setPosition(0);
 
         _imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        _imu.initialize(parameters);
-
-        while (!_imu.isGyroCalibrated()) {
-            idle();
-            telemetry.addData("Calibrating IMU", "%s", messages[counter]);
-            telemetry.update();
-            if (counter == 7) {
-                counter = 0;
-            } else {
-                counter++;
-            }
-        }
+        _mecanum.enableIMU(_imu, this);
+        _mecanum.startIMU();
 
         while (!isStarted()) {
             synchronized (this) {
@@ -339,6 +328,7 @@ public class GodRedAllianceSide extends LinearOpMode {
         }
 
         _camera.close();
+        _mecanum.stopIMU();
     }
 
 }

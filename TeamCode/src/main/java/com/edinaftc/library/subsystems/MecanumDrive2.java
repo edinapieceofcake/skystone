@@ -61,6 +61,14 @@ public class MecanumDrive2 extends Subsystem{
             x = Math.pow(-leftStickX, 3.0);
             y = Math.pow(leftStickY, 3.0);
             rotation = Math.pow(-rightStickY, 3.0);
+        } else if (rightTrigger != 0) {
+            x = Math.pow(rightTrigger, 3.0) * .2;
+            y = 0;
+            rotation = 0;
+        } else if (leftTrigger != 0) {
+            x = Math.pow(-leftTrigger, 3.0) * .2;
+            y = 0;
+            rotation = 0;
         } else {
             x = 0;
             y = 0;

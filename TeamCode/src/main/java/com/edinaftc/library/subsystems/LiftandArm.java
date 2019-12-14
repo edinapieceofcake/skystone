@@ -82,9 +82,9 @@ public class LiftandArm extends Subsystem{
                     arm.setPower(0);
                     autoArmLocation = false;
                 } else if (Math.abs(armLocation - pos) < 50) {
-                    arm.setPower(-.25);
+                    arm.setPower(.25);
                 } else {
-                    arm.setPower(-.5);
+                    arm.setPower(.5);
                 }
             } else if ((armLocation - pos) < 0) {
                 if (Math.abs(armLocation - pos) < 10) {
@@ -92,10 +92,10 @@ public class LiftandArm extends Subsystem{
                     arm.setPower(0);
                     autoArmLocation = false;
                 } else if (Math.abs(armLocation - pos) < 50) {
-                    arm.setPower(.25);
+                    arm.setPower(-.25);
                 } else {
                     // move down
-                    arm.setPower(.5);
+                    arm.setPower(-.5);
                 }
             }
         } else {
