@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp()
+@Disabled
 public class MecanumTestEncodersAndImu extends LinearOpMode {
     private Mecanum _mecanum;
     private Stickygamepad _gamepad1;

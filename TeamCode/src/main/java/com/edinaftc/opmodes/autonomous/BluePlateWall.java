@@ -17,6 +17,7 @@ public class BluePlateWall extends LinearOpMode {
     @Override
     public void runOpMode() {
         long sleepTime = 0;
+        boolean runToWall = true;
 
         _mecanum = new Mecanum(hardwareMap.dcMotor.get("fl"), hardwareMap.dcMotor.get("fr"),
                 hardwareMap.dcMotor.get("bl"),hardwareMap.dcMotor.get("br"), telemetry);
@@ -45,8 +46,16 @@ public class BluePlateWall extends LinearOpMode {
                         }
                     }
 
+                    if (_gamepad1.a) {
+                        runToWall = true;
+                    } else if (_gamepad1.b) {
+                        runToWall = false;
+                    }
+
                     telemetry.addData("use left/right bumper to adjust sleep time", "");
+                    telemetry.addData("use a or b to run to wall or middle", "");
                     telemetry.addData("sleep time (ms)", sleepTime);
+                    telemetry.addData("run to wall", runToWall);
                     telemetry.update();
                     this.wait();
                 } catch (InterruptedException e) {
@@ -69,10 +78,16 @@ public class BluePlateWall extends LinearOpMode {
         _mecanum.SlideLeftRunToPosition(0.5, 2100, this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1200, this);
         _mecanum.SlideRightRunToPosition(0.5, 800, this);
-        _mecanum.DiagonalLeftAndUpRunToPosition(0.5, 1700, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
-        _mecanum.MoveForwardRunToPosition(0.5, 300, this);
+        if (runToWall) {
+            _mecanum.DiagonalLeftAndUpRunToPosition(0.5, 1700, this);
+            _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
+            _mecanum.MoveForwardRunToPosition(0.5, 300, this);
+        } else {
+            _mecanum.DiagonalLeftAndDownRunToPosition(0.5, 500, this);
+            _mecanum.SlideLeftRunToPosition(0.5, 1500, this);
+            _mecanum.MoveBackwardsRunToPosition(0.5, 200, this);
 
+        }
     }
 
     public void DropHooks() {

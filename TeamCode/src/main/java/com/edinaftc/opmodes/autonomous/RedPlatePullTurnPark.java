@@ -2,10 +2,12 @@ package com.edinaftc.opmodes.autonomous;
 
 import com.edinaftc.library.motion.Mecanum;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous
+@Disabled
 public class RedPlatePullTurnPark extends LinearOpMode {
 
     private Mecanum _mecanum;

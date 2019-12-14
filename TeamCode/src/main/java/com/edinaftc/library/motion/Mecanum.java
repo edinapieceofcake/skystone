@@ -6,6 +6,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -493,6 +494,88 @@ public class Mecanum {
 
         Stop();
     }
+
+    public void TurnToHeading(double target_heading, double speedModifier, Telemetry telemetry) {
+        boolean goRight;
+        double currentHeading;
+        double degreesToTurn;
+        double wheelPower;
+        double prevHeading = 0;
+        ElapsedTime timeoutTimer = new ElapsedTime();
+
+        double wheel_encoder_ticks = 2400;
+        double wheel_diameter = 2.3622;  // size of wheels
+        double ticks_per_inch = wheel_encoder_ticks / (wheel_diameter * Math.PI);
+
+        currentHeading = readCurrentHeading();
+        degreesToTurn = Math.abs(target_heading - currentHeading);
+
+        goRight = target_heading > currentHeading;
+
+        if (degreesToTurn > 180) {
+            goRight = !goRight;
+            degreesToTurn = 360 - degreesToTurn;
+        }
+
+        timeoutTimer.reset();
+        prevHeading = currentHeading;
+        while (degreesToTurn > .5 && timeoutTimer.seconds() < 2) {  // 11/21 changed from .5 to .3
+
+            if (speedModifier < 0) {
+                wheelPower = (Math.pow((degreesToTurn + 25) / -speedModifier, 3) + 15) / 100;
+            } else {
+                if (speedModifier != 0) {
+                    wheelPower = (Math.pow((degreesToTurn) / speedModifier, 4) + 35) / 100;
+                } else {
+                    wheelPower = (Math.pow((degreesToTurn) / 30, 4) + 15) / 100;
+                }
+            }
+
+            if (goRight) {
+                wheelPower = -wheelPower;
+            }
+
+            telemetry.addData("degrees, timeout, power", "%f %f %f", degreesToTurn, timeoutTimer.milliseconds(), wheelPower);
+            telemetry.update();
+
+            Move(-wheelPower, wheelPower, -wheelPower, wheelPower);
+
+            currentHeading = readCurrentHeading();
+
+            degreesToTurn = Math.abs(target_heading - currentHeading);       // Calculate how far is remaining to turn
+
+            goRight = target_heading > currentHeading;
+
+            if (degreesToTurn > 180) {
+                goRight = !goRight;
+                degreesToTurn = 360 - degreesToTurn;
+            }
+
+            if (Math.abs(currentHeading - prevHeading) > 1) {  // if it has turned at least one degree
+                timeoutTimer.reset();
+                prevHeading = currentHeading;
+            }
+
+        }
+
+        Move(0, 0, 0, 0);
+
+        telemetry.addData("Heading: ", currentHeading);
+        telemetry.update();
+
+    }
+
+    private double readCurrentHeading() {
+        double currentHeading;
+        currentHeading = angles.firstAngle;
+        if (currentHeading < 0) {
+            currentHeading = -currentHeading;
+        } else {
+            currentHeading = 360 - currentHeading;
+        }
+        return currentHeading;
+    }
+
 
     public void Move(double left, double right){
         _frontLeft.setPower(left);

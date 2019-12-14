@@ -20,6 +20,8 @@ public class MecanumDrive2 extends Subsystem{
     private double leftStickX;
     private double leftStickY;
     private double rightStickY;
+    private double leftTrigger;
+    private double rightTrigger;
     private PIDFCoefficients normalVelocityPID = null;
     private PIDFCoefficients slowVelocityPID = new PIDFCoefficients(10, 3, 1, 0, MotorControlAlgorithm.LegacyPID);
 
@@ -42,17 +44,37 @@ public class MecanumDrive2 extends Subsystem{
         normalVelocityPID = motors[0].getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setVelocity(double leftStickX, double leftStickY, double rightStickY) {
+    public void setVelocity(double leftStickX, double leftStickY, double rightStickY, double leftTrigger, double rightTrigger) {
         this.leftStickX = leftStickX;
         this.leftStickY = leftStickY;
         this.rightStickY = rightStickY;
+        this.leftTrigger = leftTrigger;
+        this.rightTrigger = rightTrigger;
     }
 
     public void update() {
-        final double x = Math.pow(-leftStickX, 3.0);
-        final double y = Math.pow(leftStickY, 3.0);
+        double x;
+        double y;
+        double rotation;
 
-        final double rotation = Math.pow(-rightStickY, 3.0);
+        if (leftStickX != 0 || leftStickY != 0 || rightStickY != 0) {
+            x = Math.pow(-leftStickX, 3.0);
+            y = Math.pow(leftStickY, 3.0);
+            rotation = Math.pow(-rightStickY, 3.0);
+        } else if (rightTrigger != 0) {
+            x = Math.pow(rightTrigger, 3.0) * .2;
+            y = 0;
+            rotation = 0;
+        } else if (leftTrigger != 0) {
+            x = Math.pow(-leftTrigger, 3.0) * .2;
+            y = 0;
+            rotation = 0;
+        } else {
+            x = 0;
+            y = 0;
+            rotation = 0;
+        }
+
         final double direction = Math.atan2(x, y);
         final double speed = Math.min(1.0, Math.sqrt(x * x + y * y));
 
@@ -72,6 +94,8 @@ public class MecanumDrive2 extends Subsystem{
         }
 
         PIDFCoefficients currentPIDF = motors[0].getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER);
+        telemetry.addData("x, y, r", "%f %f %f", leftStickX, leftStickY, rightStickY);
+        telemetry.addData("lt rt", "%f %f", leftTrigger, rightTrigger);
         telemetry.addData("Slow, P, I, D, F", "%s %f %f %f %f", slowMode, currentPIDF.p, currentPIDF.i, currentPIDF.d, currentPIDF.f);
     }
 
@@ -93,4 +117,19 @@ public class MecanumDrive2 extends Subsystem{
             slowMode = true;
         }
     }
+
+    public void Move(double fl, double fr, double bl, double br) {
+        motors[0].setPower(fl);
+        motors[3].setPower(fr);
+        motors[1].setPower(bl);
+        motors[2].setPower(br);
+    }
+
+    public void Stop() {
+        motors[0].setPower(0);
+        motors[3].setPower(0);
+        motors[1].setPower(0);
+        motors[2].setPower(0);
+    }
+
 }
