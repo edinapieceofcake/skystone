@@ -91,6 +91,7 @@ public class BlueAllianceSide extends LinearOpMode {
     }
 
     public BlueAllianceSide.AutonomousStates PickUpSecondBlock() {
+        _mecanum.SlideLeftRunWithEncoders(0.5, 150, this);
         PickUpBlock2();
 
         return BlueAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
@@ -159,7 +160,7 @@ public class BlueAllianceSide extends LinearOpMode {
 
     public BlueAllianceSide.AutonomousStates DriveUnderBridge() {
         _mecanum.MoveBackwardsRunWithEncoders(motorPower, 1150, this);
-        _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
+        _mecanum.SlideRightRunWithEncoders(0.5, 250, this);
         return BlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 
