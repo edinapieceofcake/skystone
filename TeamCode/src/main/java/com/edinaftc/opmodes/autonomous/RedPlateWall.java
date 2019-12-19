@@ -67,7 +67,7 @@ public class RedPlateWall extends LinearOpMode {
         sleep(sleepTime);
 
         _mecanum.MoveBackwardsRunToPosition(0.5, 500, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 600, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 600, Math.abs((int)(600*.95)),this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1500, this);
         DropHooks();
         sleep(1000);
@@ -76,7 +76,7 @@ public class RedPlateWall extends LinearOpMode {
         sleep(500);
         _mecanum.SlideRightRunToPosition(0.5, 2100, this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1200, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 1000, Math.abs((int)(1000*.95)), this);
         if (runToWall) {
             _mecanum.DiagonalRightAndUpRunToPosition(0.5, 1700, this);
             _mecanum.SlideRightRunToPosition(0.5, 1200, this);

@@ -73,9 +73,9 @@ public class MecanumTestEncoders extends LinearOpMode {
             } else if (_gamepad1.dpad_right) {
                 _mecanum.DiagonalRightAndDownRunToPosition(.5, moveDistance, this);
             } else if (_gamepad1.left_bumper) {
-                _mecanum.SlideLeftRunWithEncoders(.5, moveDistance, this);
+                _mecanum.SlideLeftRunWithEncoders(.5, moveDistance, Math.abs((int)(moveDistance*.95)),this);
             } else if (_gamepad1.right_bumper) {
-                _mecanum.SlideRightRunWithEncoders(.5, moveDistance, this);
+                _mecanum.SlideRightRunWithEncoders(.5, moveDistance, Math.abs((int)(moveDistance*.95)),this);
             }
 
             angles = _imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);

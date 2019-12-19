@@ -41,7 +41,7 @@ public class RedAllianceSide extends LinearOpMode {
     }
 
     public RedAllianceSide.AutonomousStates DriveToFirstBlock() {
-        _mecanum.SlideLeftRunToPosition(.5, 1725, this);
+        _mecanum.SlideLeftRunToPosition(.5, 1725, Math.abs((int)(1725*.95)),this);
 
         _flap.setPosition(0);
 
@@ -109,7 +109,7 @@ public class RedAllianceSide extends LinearOpMode {
     private void PickUpBlock2() {
         _arm.setPosition(.35);
         sleep(400);
-        _mecanum.SlideLeftRunWithEncoders(.5, 200, this);
+        _mecanum.SlideLeftRunWithEncoders(.5, 200, Math.abs((int)(200*.95)),this);
         _arm.setPosition(0);
         sleep(400);
         _flap.setPosition(1);
@@ -117,7 +117,7 @@ public class RedAllianceSide extends LinearOpMode {
         _arm.setPosition(1);
         sleep(500);
 
-        _mecanum.SlideRightRunWithEncoders(.5, 200, this);
+        _mecanum.SlideRightRunWithEncoders(.5, 200, Math.abs((int)(200*.95)),this);
     }
 
     public RedAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
@@ -139,7 +139,7 @@ public class RedAllianceSide extends LinearOpMode {
     }
 
     public RedAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
-        _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
+        _mecanum.SlideRightRunWithEncoders(0.5, 100, Math.abs((int)(100*.95)),this);
         switch (_location) {
             case left:
                 _mecanum.MoveForwardRunWithEncoders(motorPower, MONIMUMDISTANCVETOBRIDGE, this);

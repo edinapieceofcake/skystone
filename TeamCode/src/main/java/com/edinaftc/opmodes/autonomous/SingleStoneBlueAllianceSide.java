@@ -109,7 +109,7 @@ public class SingleStoneBlueAllianceSide extends LinearOpMode {
     private void PickUpBlock2() {
         _arm.setPosition(.8);
         sleep(400);
-        _mecanum.SlideRightRunWithEncoders(.5, 200, this);
+        _mecanum.SlideRightRunWithEncoders(.5, 200, Math.abs((int)(200*.95)),this);
         _arm.setPosition(1);
         sleep(400);
         _flap.setPosition(0);
@@ -117,7 +117,7 @@ public class SingleStoneBlueAllianceSide extends LinearOpMode {
         _arm.setPosition(0);
         sleep(500);
 
-        _mecanum.SlideLeftRunWithEncoders(.5, 200, this);
+        _mecanum.SlideLeftRunWithEncoders(.5, 200, Math.abs((int)(200*.95)),this);
     }
 
     public SingleStoneBlueAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
@@ -139,7 +139,7 @@ public class SingleStoneBlueAllianceSide extends LinearOpMode {
     }
 
     public SingleStoneBlueAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
-        _mecanum.SlideLeftRunWithEncoders(0.5, 50, this);
+        _mecanum.SlideLeftRunWithEncoders(0.5, 50, Math.abs((int)(50*.95)),this);
         switch (_location) {
             case left:
                 _mecanum.MoveForwardRunWithEncoders(motorPower, MONIMUMDISTANCVETOBRIDGE, this);
@@ -159,7 +159,7 @@ public class SingleStoneBlueAllianceSide extends LinearOpMode {
 
     public SingleStoneBlueAllianceSide.AutonomousStates DriveUnderBridge() {
         _mecanum.MoveBackwardsRunWithEncoders(motorPower, 1150, this);
-        _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
+        _mecanum.SlideRightRunWithEncoders(0.5, 100, Math.abs((int)(100*.95)),this);
         return SingleStoneBlueAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 

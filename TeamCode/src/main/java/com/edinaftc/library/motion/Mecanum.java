@@ -105,12 +105,11 @@ public class Mecanum {
         }
     }
 
-    public void SlideLeftRunWithEncoders(double power, int distance, LinearOpMode opMode) {
+    public void SlideLeftRunWithEncoders(double power, int distance, int error, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
         StopResetEncodersRunWithEncoderAndBrakekOn();
 
         int currentPosition =  Math.abs(_backRight.getCurrentPosition());
-        int error = Math.abs((int)(distance * 0.95));
         Move(-power, power, power, -power);
 
         // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
@@ -122,12 +121,11 @@ public class Mecanum {
         Stop();
     }
 
-    public void SlideRightRunWithEncoders(double power, int distance, LinearOpMode opMode) {
+    public void SlideRightRunWithEncoders(double power, int distance, int error, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
         StopResetEncodersRunWithEncoderAndBrakekOn();
 
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
-        int error = Math.abs((int)(distance * 0.95));
         Move(power, -power, -power, power);
 
         // keep moving until we get close and the op mode is active.  close is 95% of what we want to get to
@@ -261,12 +259,11 @@ public class Mecanum {
         Stop();
     }
 
-    public void TurnRightRunToPosition(double power, int distance, LinearOpMode opMode) {
+    public void TurnRightRunToPosition(double power, int distance, int error, LinearOpMode opMode) {
         // run with simple distance encoders as moving forward or backwards
         SetDistance(distance, distance, -distance, -distance);
         StopResetEncodersAndRunToPosition();
 
-        int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
         Move(power, power, power, power);
 
@@ -316,13 +313,12 @@ public class Mecanum {
         Stop();
     }
 
-    public void SlideLeftRunToPosition(double power, int distance, LinearOpMode opMode) {
+    public void SlideLeftRunToPosition(double power, int distance, int error, LinearOpMode opMode) {
         // put the motors into run with encoders so they run with even power
 
         SetDistance(-distance, distance, distance, -distance);
         StopResetEncodersAndRunToPosition();
 
-        int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
         Move(power, power, power, power);
 
@@ -412,12 +408,11 @@ public class Mecanum {
     }
 
     public void MoveForwardRunWithEncodersAndIMU(double power, int distance, double correctionPower,
-                                                 float targetAngle, LinearOpMode opMode,
+                                                 float targetAngle, LinearOpMode opMode, int error,
                                                  Telemetry telemetry) {
         // put the motors into run with encoders so they run with even power
         StopResetEncodersRunWithEncoderAndBrakekOn();
 
-        int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
         double leftPower, rightPower;
         leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
@@ -430,7 +425,7 @@ public class Mecanum {
             currentPosition =  Math.abs(_frontRight.getCurrentPosition());
             leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
 
-            if (difference > 2) {
+            if (difference > 1) {
                 if (targetAngle > currentAngle) {
                     // turn right
                     // decrease right power
@@ -454,12 +449,11 @@ public class Mecanum {
     }
 
     public void MoveBackwardRunWithEncodersAndIMU(double power, int distance, double correctionPower,
-                                                  float targetAngle, LinearOpMode opMode,
+                                                  float targetAngle, LinearOpMode opMode, int error,
                                                   Telemetry telemetry) {
         // put the motors into run with encoders so they run with even power
         StopResetEncodersRunWithEncoderAndBrakekOn();
 
-        int error = Math.abs((int)(distance * 0.95));
         int currentPosition =  Math.abs(_frontRight.getCurrentPosition());
         double leftPower, rightPower;
         leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
@@ -472,7 +466,7 @@ public class Mecanum {
             currentPosition =  Math.abs(_frontRight.getCurrentPosition());
             leftPower = rightPower = CalculateRampPower(power, distance, currentPosition);
 
-            if (difference > 2) {
+            if (difference > 1) {
                 if (targetAngle > currentAngle) {
                     // turn right
                     // decrease right power
@@ -620,16 +614,24 @@ public class Mecanum {
         // 20-80% - full power
         // 80-90% - .85 power
         // 90-100% - .6 power
+        double firstPower = .6;
+        double secondPower = .85;
+
+        if (distance > 1000 && maxPower >= .6) {
+            firstPower = .3;
+            secondPower = .6;
+        }
+
         if (currentDistance <= (distance * .10)) {
-            return .6 * maxPower;
+            return firstPower * maxPower;
         } else if (currentDistance <= (distance * .20)) {
-            return  .85 * maxPower;
+            return  secondPower * maxPower;
         } else if (currentDistance <= (distance * .80)) {
             return maxPower;
         } else if (currentDistance <= (distance * .90)) {
-            return .85 * maxPower;
+            return secondPower * maxPower;
         } else {
-            return .6 * maxPower;
+            return firstPower * maxPower;
         }
     }
 

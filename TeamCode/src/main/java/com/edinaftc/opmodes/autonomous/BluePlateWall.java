@@ -75,16 +75,16 @@ public class BluePlateWall extends LinearOpMode {
         _mecanum.MoveForwardRunToPosition(0.5, 1900, this);
         LiftHooks();
         sleep(250);
-        _mecanum.SlideLeftRunToPosition(0.5, 2100, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 2100, Math.abs((int)(2100*.95)),this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1200, this);
         _mecanum.SlideRightRunToPosition(0.5, 800, this);
         if (runToWall) {
             _mecanum.DiagonalLeftAndUpRunToPosition(0.5, 1700, this);
-            _mecanum.SlideLeftRunToPosition(0.5, 1000, this);
+            _mecanum.SlideLeftRunToPosition(0.5, 1000, Math.abs((int)(1000*.95)), this);
             _mecanum.MoveForwardRunToPosition(0.5, 300, this);
         } else {
             _mecanum.DiagonalLeftAndDownRunToPosition(0.5, 500, this);
-            _mecanum.SlideLeftRunToPosition(0.5, 1500, this);
+            _mecanum.SlideLeftRunToPosition(0.5, 1500, Math.abs((int)(1500*.95)), this);
             _mecanum.MoveBackwardsRunToPosition(0.5, 200, this);
 
         }

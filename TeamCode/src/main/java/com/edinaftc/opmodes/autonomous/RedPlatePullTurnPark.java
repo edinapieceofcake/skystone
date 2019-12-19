@@ -24,12 +24,12 @@ public class RedPlatePullTurnPark extends LinearOpMode {
         waitForStart();
 
         _mecanum.MoveBackwardsRunToPosition(0.5, 500, this);
-        _mecanum.SlideLeftRunToPosition(0.5, 600, this);
+        _mecanum.SlideLeftRunToPosition(0.5, 600, Math.abs((int)(600*.95)),this);
         _mecanum.MoveBackwardsRunToPosition(0.5, 1500, this);
         DropHooks();
         sleep(1000);
         _mecanum.MoveForwardRunToPosition(0.5, 1000, this);
-        _mecanum.TurnRightRunToPosition(0.5,1415, this);
+        _mecanum.TurnRightRunToPosition(0.5,1415, Math.abs((int)(1415*.95)),this);
         _mecanum.MoveBackwardsRunToPosition(0.5,500,this);
         LiftHooks();
         sleep(1000);

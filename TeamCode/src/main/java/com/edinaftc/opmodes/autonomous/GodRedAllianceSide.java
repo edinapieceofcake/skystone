@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="God Red Alliance Block Side", group="Autonomous")
-@Disabled
+//@Disabled
 public class GodRedAllianceSide extends LinearOpMode {
     private Mecanum _mecanum;
     private VuforiaCamera _camera;
@@ -48,25 +48,23 @@ public class GodRedAllianceSide extends LinearOpMode {
     }
 
     public GodRedAllianceSide.AutonomousStates DriveToFirstBlock() {
-        _mecanum.SlideLeftRunToPosition(.5, 1725, this);
-
         _flap.setPosition(0);
+
+        _mecanum.SlideLeftRunToPosition(.5, 1725, 10, this);
 
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 925, .2,0,this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 925, .2,0,this, 10, telemetry);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 275, .2,0,this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 275, .2,0,this, 10, telemetry);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 80, .2,0,this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 80, .2,0,this, 10, telemetry);
                 break;
         }
-
-        sleep(500); // need time for flap to open
 
         return GodRedAllianceSide.AutonomousStates.DRIVEN_TO_FIRST_BLOCK;
     }
@@ -74,20 +72,34 @@ public class GodRedAllianceSide extends LinearOpMode {
     public GodRedAllianceSide.AutonomousStates DriveToSecondBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK, .2, 0, this, telemetry);
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK/2, .2, 0, this, 10, telemetry);
                 break;
 
             case middle:
-                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK + 500, .2, 0, this, telemetry);
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK/2 + 500, .2, 0, this, 10, telemetry);
                 break;
 
             case right:
-                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK + 975, .2, 0, this, telemetry);
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK/2 + 975, .2, 0, this, 10, telemetry);
                 break;
         }
 
+        _arm.setPosition(.35);
         _flap.setPosition(0);
-        sleep(500); // need time for flap to open
+
+        switch (_location) {
+            case left:
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK/2, .2, 0, this, 10, telemetry);
+                break;
+
+            case middle:
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK/2 + 500, .2, 0, this, 10, telemetry);
+                break;
+
+            case right:
+                _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORSECONDBLOCK/2 + 975, .2, 0, this, 10, telemetry);
+                break;
+        }
         return GodRedAllianceSide.AutonomousStates.DRIVEN_TO_SECOND_BLOCK;
     }
 
@@ -103,42 +115,29 @@ public class GodRedAllianceSide extends LinearOpMode {
         return GodRedAllianceSide.AutonomousStates.PICKED_UP_SECOND_BLOCK;
     }
 
-    private void PickUpBlock() {
-        _arm.setPosition(0);
-        sleep(500);
-        _flap.setPosition(1);
-        sleep(500);
-
-        _arm.setPosition(1);
-        sleep(500);
-    }
-
     private void PickUpBlock2() {
-        _arm.setPosition(.35);
-        sleep(400);
-        _mecanum.SlideLeftRunWithEncoders(.5, 200, this);
+        _mecanum.SlideLeftRunToPosition(.5, 200, 10, this);
         _arm.setPosition(0);
-        sleep(400);
+        sleep(200);
         _flap.setPosition(1);
-        sleep(750);
-        _arm.setPosition(1);
         sleep(500);
+        _arm.setPosition(1);
 
-        _mecanum.SlideRightRunWithEncoders(.5, 200, this);
+        _mecanum.SlideRightRunWithEncoders(.5, 200, 10,this);
     }
 
     public GodRedAllianceSide.AutonomousStates DriveToBridgeForFirstBlock() {
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK, .2, 0,this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK, .2, 0,this, 10, telemetry);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK + 500, .2, 0, this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK + 500, .2, 0, this, 10, telemetry);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK + 950, .2, 0, this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MINIMUMDISTANCEFORFIRSTBLOCK + 950, .2, 0, this, 10, telemetry);
                 break;
         }
 
@@ -146,18 +145,19 @@ public class GodRedAllianceSide extends LinearOpMode {
     }
 
     public GodRedAllianceSide.AutonomousStates DriveToBridgeForSecondBlock() {
-        _mecanum.SlideRightRunWithEncoders(0.5, 100, this);
+        _mecanum.SlideRightRunWithEncoders(0.5, 100, 10,this);
+
         switch (_location) {
             case left:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MONIMUMDISTANCVETOBRIDGE, .2, 0, this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MONIMUMDISTANCVETOBRIDGE, .2, 0, this, 10, telemetry);
                 break;
 
             case middle:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MONIMUMDISTANCVETOBRIDGE + 500, .2, 0, this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MONIMUMDISTANCVETOBRIDGE + 500, .2, 0, this, 10, telemetry);
                 break;
 
             case right:
-                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MONIMUMDISTANCVETOBRIDGE + 975, .2, 0, this, telemetry);
+                _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, MONIMUMDISTANCVETOBRIDGE + 975, .2, 0, this, 10, telemetry);
                 break;
         }
 
@@ -165,13 +165,13 @@ public class GodRedAllianceSide extends LinearOpMode {
     }
 
     public GodRedAllianceSide.AutonomousStates TurnRightTowardsWall() {
-        _mecanum.TurnRightRunToPosition(1, 1415, this);
+        _mecanum.TurnRightRunToPosition(1, 1415, 10,this);
 
         return AutonomousStates.TURNED_RIGHT_TOWARDS_WALL;
     }
 
     public GodRedAllianceSide.AutonomousStates BackupAndGrabPlate() {
-        _mecanum.MoveBackwardsRunToPosition(1, 200, this);
+        _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, 200, .2, 0, this, 10, telemetry);
 
         _left.setPosition(.3);
         _right.setPosition(.6);
@@ -182,9 +182,9 @@ public class GodRedAllianceSide extends LinearOpMode {
     }
 
     public GodRedAllianceSide.AutonomousStates PullAndTurnPlate() {
-        _mecanum.MoveForwardRunToPosition(1, 200, this);
-        _mecanum.TurnRightRunToPosition(.5, 1415, this);
-        _mecanum.MoveBackwardsRunToPosition(1, 200, this);
+        _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 200, .2, 0,this, 10, telemetry);
+        _mecanum.TurnRightRunToPosition(.5, 1415, 10,this);
+        _mecanum.MoveBackwardRunWithEncodersAndIMU(motorPower, 200, .2, 0,this, 10, telemetry);
 
         return AutonomousStates.PULLED_AND_TURNED_RIGHT_WITH_PLATE;
     }
@@ -195,7 +195,7 @@ public class GodRedAllianceSide extends LinearOpMode {
 
         sleep(500);
 
-        _mecanum.MoveForwardRunWithEncoders(motorPower, 1150, this);
+        _mecanum.MoveForwardRunWithEncodersAndIMU(motorPower, 1150, .2, 0, this, 10, telemetry);
         return GodRedAllianceSide.AutonomousStates.DRIVEN_UNDER_BRIDGE;
     }
 

@@ -29,7 +29,7 @@ public class MecanumTestPosition extends LinearOpMode {
             } else if (_gamepad1.x) {
                 _mecanum.TurnLeftRunToPosition(.75, moveDistance, this);
             } else if (_gamepad1.b) {
-                _mecanum.TurnRightRunToPosition(.75, moveDistance, this);
+                _mecanum.TurnRightRunToPosition(.75, moveDistance, Math.abs((int)(moveDistance*.95)),this);
             } else if (_gamepad1.y) {
                 _mecanum.MoveForwardRunToPosition(.75, moveDistance, this);
             } else if (_gamepad1.dpad_down) {
@@ -43,7 +43,7 @@ public class MecanumTestPosition extends LinearOpMode {
             } else if (gamepad1.right_trigger != 0) {
                 _mecanum.SlideRightRunToPosition(.75, moveDistance, this);
             } else if (gamepad1.left_trigger != 0) {
-                _mecanum.SlideLeftRunToPosition(.75, moveDistance, this);
+                _mecanum.SlideLeftRunToPosition(.75, moveDistance, Math.abs((int)(moveDistance*.95)),this);
             }
 
             telemetry.addData("fl", "%d", hardwareMap.dcMotor.get("fl").getCurrentPosition());
