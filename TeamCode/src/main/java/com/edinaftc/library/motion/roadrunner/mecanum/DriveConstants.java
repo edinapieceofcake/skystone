@@ -45,7 +45,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.9685;
     public static double GEAR_RATIO = .5; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 16.4;
+    public static double TRACK_WIDTH = 15.5;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -66,8 +66,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            60.0, 50.0, 0.0,
-            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
+            50, 40, 0.0,
+            Math.toRadians(180), Math.toRadians(180), 0.0
     );
 
 

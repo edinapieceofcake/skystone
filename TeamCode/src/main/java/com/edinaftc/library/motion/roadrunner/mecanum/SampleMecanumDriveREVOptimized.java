@@ -128,10 +128,10 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
         }
 
         List<Double> wheelVelocities = new ArrayList<>();
-        wheelVelocities.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(leftFront)));
-        wheelVelocities.add(encoderTicksToInches(bulkData2.getMotorCurrentPosition(leftRear)));
-        wheelVelocities.add(encoderTicksToInches(bulkData9.getMotorCurrentPosition(rightRear)));
-        wheelVelocities.add(encoderTicksToInches(bulkData9.getMotorCurrentPosition(rightFront)));
+        wheelVelocities.add(encoderTicksToInches(bulkData2.getMotorVelocity(leftFront)));
+        wheelVelocities.add(encoderTicksToInches(bulkData2.getMotorVelocity(leftRear)));
+        wheelVelocities.add(encoderTicksToInches(bulkData9.getMotorVelocity(rightRear)));
+        wheelVelocities.add(encoderTicksToInches(bulkData9.getMotorVelocity(rightFront)));
         return wheelVelocities;
     }
 
