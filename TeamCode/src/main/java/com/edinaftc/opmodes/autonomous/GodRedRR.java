@@ -18,23 +18,27 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Autonomous(name="God Red Alliance", group="Autonomous")
 @Config
 public class GodRedRR extends LinearOpMode {
-    public static double LEFTBLOCKX = 20;
-    public static double LEFTBLOCKY = 30;
-    public static double RIGHTBLOCKX = 1.5;
-    public static double RIGHTBLOCKY = 32;
-    public static double MIDDLEBLOCKX = 11.5;
-    public static double MIDDLEBLOCKY = 30;
+    private static double LEFTBLOCKX = 20;
+    private static double LEFTBLOCKY = 30;
+    private static double RIGHTBLOCKX = 1.5;
+    private static double RIGHTBLOCKY = 32;
+    private static double MIDDLEBLOCKX = 11.5;
+    private static double MIDDLEBLOCKY = 30;
 
     public static double LEFTBLOCKDRIVEDISTANCE = 80;
-    public static double RIGHTBLOCKDRIVEDISTANCE = 100;
-    public static double MIDDLEBLOCKDRIVEDISTANCE = 90;
-
-    public static double STRAFETOPLATEFORFIRSTBLOCK = 6;
-    public static double STRAFETOSECONDBLOCK = 7;
-
     public static double BACKWARDTOLEFTBLOCK = 110;
-    public static double BACKWARDTORIGHTBLOCK = 124;
-    public static double BACKWARDTOMIDDLEBLOCK = 118;
+    public static double FRONTTOLEFTBLOCK = 102;
+
+    private static double RIGHTBLOCKDRIVEDISTANCE = 100;
+    private static double BACKWARDTORIGHTBLOCK = 126;
+    private static double FRONTTORIGHTBLOCK = 126;
+
+    private static double MIDDLEBLOCKDRIVEDISTANCE = 92;
+    private static double BACKWARDTOMIDDLEBLOCK = 120;
+    private static double FRONTTOMIDDLEBLOCK = 120;
+
+    public static double STRAFETOPLATEFORFIRSTBLOCK = 7;
+    public static double STRAFETOSECONDBLOCK = 5;
 
     private VuforiaCamera _camera;
     private SkyStoneDetector _skyStoneDetector;
@@ -107,6 +111,9 @@ public class GodRedRR extends LinearOpMode {
                         _drive.trajectoryBuilder()
                                 .strafeRight(2)
                                 .forward(LEFTBLOCKDRIVEDISTANCE)
+                                .build());
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
                                 .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
                                 .build());
                 break;
@@ -116,6 +123,9 @@ public class GodRedRR extends LinearOpMode {
                         _drive.trajectoryBuilder()
                                 .strafeRight(2)
                                 .forward(MIDDLEBLOCKDRIVEDISTANCE)
+                                .build());
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
                                 .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
                                 .build());
                 break;
@@ -125,6 +135,9 @@ public class GodRedRR extends LinearOpMode {
                         _drive.trajectoryBuilder()
                                 .strafeRight(2)
                                 .forward(RIGHTBLOCKDRIVEDISTANCE)
+                                .build());
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
                                 .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
                                 .build());
                 break;
@@ -204,7 +217,7 @@ public class GodRedRR extends LinearOpMode {
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
                                 .strafeRight(2)
-                                .forward(BACKWARDTOLEFTBLOCK)
+                                .forward(FRONTTOLEFTBLOCK)
                                 .build());
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
@@ -216,7 +229,10 @@ public class GodRedRR extends LinearOpMode {
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
                                 .strafeRight(2)
-                                .forward(BACKWARDTOMIDDLEBLOCK)
+                                .forward(FRONTTOMIDDLEBLOCK)
+                                .build());
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
                                 .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
                                 .build());
                 break;
@@ -225,7 +241,10 @@ public class GodRedRR extends LinearOpMode {
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
                                 .strafeRight(2)
-                                .forward(BACKWARDTORIGHTBLOCK)
+                                .forward(FRONTTORIGHTBLOCK)
+                                .build());
+                _drive.followTrajectorySync(
+                        _drive.trajectoryBuilder()
                                 .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
                                 .build());
                 break;
@@ -241,7 +260,7 @@ public class GodRedRR extends LinearOpMode {
         _drive.followTrajectorySync(
                 _drive.trajectoryBuilder()
                         .strafeRight(3)
-                        .back(20)
+                        .back(16)
                         .build());
 
         _drive.turnSync(Math.toRadians(-90));
@@ -256,16 +275,16 @@ public class GodRedRR extends LinearOpMode {
 
         _drive.followTrajectorySync(
                 _drive.trajectoryBuilder()
-                        .forward(23)
+                        .forward(26)
                         .build());
 
-        _drive.turnSync(Math.toRadians(-110));
+        _drive.turnWithTimeoutSync(Math.toRadians(-90), 4.0);
 
         liftHooks();
 
         _drive.followTrajectorySync(
                 _drive.trajectoryBuilder()
-                        .strafeRight(3)
+                        .strafeRight(6)
                         .forward(30)
                         .build());
 

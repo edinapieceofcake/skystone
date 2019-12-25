@@ -66,6 +66,9 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
     private List<Double> lastWheelPositions;
     private double lastTimestamp;
 
+    private double turnTimeout;
+    private boolean useTimeout = false;
+
     public SampleMecanumDriveBase() {
         super(kV, kA, kStatic, TRACK_WIDTH);
 
@@ -100,8 +103,28 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
         mode = Mode.TURN;
     }
 
+    public void turnWithTimeout(double angle, double turnTimeout) {
+        double heading = getPoseEstimate().getHeading();
+        turnProfile = MotionProfileGenerator.generateSimpleMotionProfile(
+                new MotionState(heading, 0, 0, 0),
+                new MotionState(heading + angle, 0, 0, 0),
+                constraints.maxAngVel,
+                constraints.maxAngAccel,
+                constraints.maxAngJerk
+        );
+        turnStart = clock.seconds();
+        useTimeout = true;
+        this.turnTimeout = turnTimeout;
+        mode = Mode.TURN;
+    }
+
     public void turnSync(double angle) {
         turn(angle);
+        waitForIdle();
+    }
+
+    public void turnWithTimeoutSync(double angle, double turnTimeout) {
+        turnWithTimeout(angle, turnTimeout);
         waitForIdle();
     }
 
@@ -167,9 +190,16 @@ public abstract class SampleMecanumDriveBase extends MecanumDrive {
                         0, 0, targetAlpha
                 )));
 
-                if (t >= turnProfile.duration()) {
-                    mode = Mode.IDLE;
-                    setDriveSignal(new DriveSignal());
+                if (useTimeout) {
+                    if (t >= this.turnTimeout) {
+                        mode = Mode.IDLE;
+                        setDriveSignal(new DriveSignal());
+                    }
+                } else {
+                    if (t >= turnProfile.duration()) {
+                        mode = Mode.IDLE;
+                        setDriveSignal(new DriveSignal());
+                    }
                 }
 
                 break;
