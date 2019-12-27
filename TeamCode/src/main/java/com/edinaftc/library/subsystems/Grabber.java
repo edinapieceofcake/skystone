@@ -12,14 +12,17 @@ public class Grabber extends Subsystem {
     private boolean backGrabberOpen = true;
     private Servo front;
     private Servo back;
+    private Servo capstone;
     private DcMotor lift;
     private DistanceSensor sensorRange;
     private boolean _canUpdate = false;
     private boolean grabberClosed = false;
+    private boolean dropCapstone = false;
 
     public Grabber(HardwareMap map) {
         front = map.servo.get("fg");
         back = map.servo.get("bg");
+        capstone = map.servo.get("capstoneservo");
         lift = map.dcMotor.get("lift");
         sensorRange = map.get(DistanceSensor.class, "blockdetector");
     }
@@ -48,6 +51,10 @@ public class Grabber extends Subsystem {
             } else {
                 back.setPosition(0);
             }
+
+            if (dropCapstone) {
+                capstone.setPosition(1);
+            }
         }
     }
 
@@ -63,6 +70,10 @@ public class Grabber extends Subsystem {
             frontGrabberOpen = false;
             backGrabberOpen = false;
         }
+    }
+
+    public void dropCapstone() {
+        dropCapstone = true;
     }
 
     public void loadBlock() {
