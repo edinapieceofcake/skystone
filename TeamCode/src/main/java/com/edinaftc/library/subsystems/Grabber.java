@@ -53,7 +53,7 @@ public class Grabber extends Subsystem {
             }
 
             if (dropCapstone) {
-                capstone.setPosition(1);
+                capstone.setPosition(.75);
             }
         }
     }
