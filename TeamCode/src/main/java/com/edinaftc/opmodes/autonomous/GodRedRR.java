@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import kotlin.Unit;
 
 @Autonomous(name="God Red Alliance", group="Autonomous")
 @Config
@@ -79,6 +80,20 @@ public class GodRedRR extends LinearOpMode {
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
                                 .strafeTo(new Vector2d(LEFTBLOCKX, LEFTBLOCKY)) // 22,33
+                                .addMarker(() ->
+                                {
+                                    _arm.setPosition(0);
+                                    sleep(250);
+                                    return Unit.INSTANCE;
+                                })
+                                .strafeLeft(4)
+                                .addMarker(() -> {
+                                    _flap.setPosition(1);
+                                    sleep(350);
+                                    _arm.setPosition(1);
+                                    sleep(100);
+                                    return Unit.INSTANCE;
+                                })
                                 .build());
                 break;
 
@@ -86,6 +101,20 @@ public class GodRedRR extends LinearOpMode {
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
                                 .strafeTo(new Vector2d(MIDDLEBLOCKX, MIDDLEBLOCKY)) // 13.5,33
+                                .addMarker(() ->
+                                {
+                                    _arm.setPosition(0);
+                                    sleep(250);
+                                    return Unit.INSTANCE;
+                                })
+                                .strafeLeft(4)
+                                .addMarker(() -> {
+                                    _flap.setPosition(1);
+                                    sleep(350);
+                                    _arm.setPosition(1);
+                                    sleep(100);
+                                    return Unit.INSTANCE;
+                                })
                                 .build());
                 break;
 
@@ -93,10 +122,26 @@ public class GodRedRR extends LinearOpMode {
                 _drive.followTrajectorySync(
                         _drive.trajectoryBuilder()
                                 .strafeTo(new Vector2d(RIGHTBLOCKX, RIGHTBLOCKY)) // 5,33
+                                .addMarker(() ->
+                                {
+                                    _arm.setPosition(0);
+                                    sleep(250);
+                                    return Unit.INSTANCE;
+                                })
+                                .strafeLeft(4)
+                                .addMarker(() -> {
+                                    _flap.setPosition(1);
+                                    sleep(350);
+                                    _arm.setPosition(1);
+                                    sleep(100);
+                                    return Unit.INSTANCE;
+                                })
+                                .splineTo(null)
                                 .build());
                 break;
         }
 
+        /*
         _arm.setPosition(0);
         sleep(250);
         _drive.followTrajectorySync(
@@ -108,7 +153,7 @@ public class GodRedRR extends LinearOpMode {
         sleep(350);
         _arm.setPosition(1);
         sleep(100);
-
+*/
         return AutonomousStates.PICKED_UP_FIRST_BLOCK;
     }
 
