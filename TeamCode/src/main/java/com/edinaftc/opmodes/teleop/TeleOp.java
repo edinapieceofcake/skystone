@@ -72,7 +72,11 @@ public class TeleOp extends OpMode {
         if (_gamepad2.right_stick_button) {
             robot.liftandarm.toggleArmPower();
         }
-        
+
+        if (_gamepad2.x && _gamepad2.b) {
+            robot.grabber.dropCapstone();
+        }
+
         robot.drive.displayTelemetry(telemetry);
         robot.liftandarm.displayTelemetry(telemetry);
 
