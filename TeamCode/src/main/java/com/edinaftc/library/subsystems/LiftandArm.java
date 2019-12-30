@@ -31,7 +31,7 @@ public class LiftandArm extends Subsystem{
         dummyarm = map.dcMotor.get("arm");
         dummyarm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        arm = map.crservo.get("arm");
+        arm = map.crservo.get("crarm");
     }
 
     @Override
