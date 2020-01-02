@@ -3,6 +3,7 @@ package com.edinaftc.library.motion.roadrunner.mecanum;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.edinaftc.library.motortype.GoBILDA5202Series435;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 /*
