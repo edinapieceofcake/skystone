@@ -41,8 +41,8 @@ import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants.TRAC
  */
 @Config
 public abstract class SampleMecanumDriveBase extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(1, 0, .1);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(3, 0, .25);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, .0, .1);
 
 
     public enum Mode {

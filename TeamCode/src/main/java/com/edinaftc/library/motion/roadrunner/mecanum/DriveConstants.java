@@ -26,7 +26,7 @@ public class DriveConstants {
      * discrepancies. Additional motor types can be defined via an interface with the
      * @DeviceProperties and @MotorType annotations.
      */
-    private static final MotorConfigurationType MOTOR_CONFIG =
+    public static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(GoBILDA5202Series435.class);
 
     /*
@@ -34,7 +34,7 @@ public class DriveConstants {
      * MOTOR_VELO_PID with the tuned coefficients from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(5, .5, 5);
+    public static final PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(35, 1, 15);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -46,7 +46,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.9685;
     public static double GEAR_RATIO = .5; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 15.5;
+    public static double TRACK_WIDTH = 15.53;
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -67,8 +67,8 @@ public class DriveConstants {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            50, 40, 0.0,
-            Math.toRadians(180), Math.toRadians(180), 0.0
+            35, 30, 0.0,
+            Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
 
@@ -92,6 +92,7 @@ public class DriveConstants {
 
     public static double getMotorVelocityF() {
         // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
-        return 32767 / getTicksPerSec();
+        return 12;
+        //return 32767 / getTicksPerSec();
     }
 }

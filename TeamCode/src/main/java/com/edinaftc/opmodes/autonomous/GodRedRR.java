@@ -1,8 +1,13 @@
 package com.edinaftc.opmodes.autonomous;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.edinaftc.library.Stickygamepad;
+import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants;
 import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveBase;
 import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveREVOptimized;
 import com.edinaftc.library.vision.VuforiaCamera;
@@ -19,400 +24,53 @@ import kotlin.Unit;
 @Autonomous(name="God Red Alliance", group="Autonomous")
 @Config
 public class GodRedRR extends LinearOpMode {
-    private static double LEFTBLOCKX = 20;
-    private static double LEFTBLOCKY = 30;
-    private static double RIGHTBLOCKX = 1.5;
-    private static double RIGHTBLOCKY = 32;
-    private static double MIDDLEBLOCKX = 11.5;
-    private static double MIDDLEBLOCKY = 30;
-
-    public static double LEFTFIRSTBLOCKDRIVEDISTANCE = 88;
-    public static double LEFTBACKWARDTOSECONDBLOCK = 110;
-    public static double LEFTSECONDBLOCKDRIVEDISTANCE = 102;
-    public static double LEFTBACKBEFORETURN = 12;
-
-    private static double RIGHTBLOCKDRIVEDISTANCE = 100;
-    private static double BACKWARDTORIGHTBLOCK = 126;
-    private static double FRONTTORIGHTBLOCK = 126;
-
-    private static double MIDDLEBLOCKDRIVEDISTANCE = 92;
-    private static double BACKWARDTOMIDDLEBLOCK = 120;
-    private static double FRONTTOMIDDLEBLOCK = 120;
-
-    public static double STRAFETOPLATEFORFIRSTBLOCK = 9;
-    public static double STRAFETOPLATEFORSECONDBLOCK = 7;
-    public static double STRAFETOPICKUPFORSECONDBLOCK = 5;
-
-    private VuforiaCamera _camera;
-    private SkyStoneDetector _skyStoneDetector;
-    private Servo _arm;
-    private Servo _flap;
-    private Servo _left;
-    private Servo _right;
-    private SkystoneLocation _location = SkystoneLocation.left;
-    private double motorPower = 1;
+    private VuforiaCamera camera;
+    private SkyStoneDetector skyStoneDetector;
+    private Servo arm;
+    private Servo flap;
+    private Servo left;
+    private Servo right;
+    private SkystoneLocation location = SkystoneLocation.left;
     private Stickygamepad _gamepad1;
-    private SampleMecanumDriveBase _drive;
-    private DistanceSensor _distance;
-
-    public enum AutonomousStates{
-        STARTED,
-        DRIVEN_TO_FIRST_BLOCK,
-        PICKED_UP_FIRST_BLOCK,
-        DRIVEN_TO_BRIDGE_FOR_FIRST_BLOCK,
-        DROPPED_OFF_FIRST_BLOCK,
-        DRIVEN_TO_SECOND_BLOCK,
-        PICKED_UP_SECOND_BLOCK,
-        DRIVEN_TO_BRIDGE_FOR_SECOND_BLOCK,
-        DROPPED_OFF_SECOND_BLOCK,
-        TURNED_LEFT_TOWARDS_WALL,
-        BACKED_AND_GRABBED_PLATE,
-        PULLED_AND_TURNED_LEFT_WITH_PLATE,
-        DRIVEN_UNDER_BRIDGE
-    }
-
-    private AutonomousStates MoveToFirstBlock() {
-        _flap.setPosition(0);
-        _arm.setPosition(.4);
-
-        switch (_location) {
-            case left:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeTo(new Vector2d(LEFTBLOCKX, LEFTBLOCKY)) // 22,33
-                                .addMarker(() ->
-                                {
-                                    _arm.setPosition(0);
-                                    sleep(250);
-                                    return Unit.INSTANCE;
-                                })
-                                .strafeLeft(4)
-                                .addMarker(() -> {
-                                    _flap.setPosition(1);
-                                    sleep(350);
-                                    _arm.setPosition(1);
-                                    sleep(100);
-                                    return Unit.INSTANCE;
-                                })
-                                .build());
-                break;
-
-            case middle:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeTo(new Vector2d(MIDDLEBLOCKX, MIDDLEBLOCKY)) // 13.5,33
-                                .addMarker(() ->
-                                {
-                                    _arm.setPosition(0);
-                                    sleep(250);
-                                    return Unit.INSTANCE;
-                                })
-                                .strafeLeft(4)
-                                .addMarker(() -> {
-                                    _flap.setPosition(1);
-                                    sleep(350);
-                                    _arm.setPosition(1);
-                                    sleep(100);
-                                    return Unit.INSTANCE;
-                                })
-                                .build());
-                break;
-
-            case right:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeTo(new Vector2d(RIGHTBLOCKX, RIGHTBLOCKY)) // 5,33
-                                .addMarker(() ->
-                                {
-                                    _arm.setPosition(0);
-                                    sleep(250);
-                                    return Unit.INSTANCE;
-                                })
-                                .strafeLeft(4)
-                                .addMarker(() -> {
-                                    _flap.setPosition(1);
-                                    sleep(350);
-                                    _arm.setPosition(1);
-                                    sleep(100);
-                                    return Unit.INSTANCE;
-                                })
-                                .splineTo(null)
-                                .build());
-                break;
-        }
-
-        /*
-        _arm.setPosition(0);
-        sleep(250);
-        _drive.followTrajectorySync(
-                _drive.trajectoryBuilder()
-                        .strafeLeft(4)
-                        .build());
-
-        _flap.setPosition(1);
-        sleep(350);
-        _arm.setPosition(1);
-        sleep(100);
-*/
-        return AutonomousStates.PICKED_UP_FIRST_BLOCK;
-    }
-
-    public AutonomousStates DropOffFirstBlock() {
-        switch (_location) {
-            case left:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(6)
-                                .forward(LEFTFIRSTBLOCKDRIVEDISTANCE)
-                                .build());
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
-                                .build());
-                break;
-
-            case middle:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(6)
-                                .forward(MIDDLEBLOCKDRIVEDISTANCE)
-                                .build());
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
-                                .build());
-                break;
-
-            case right:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(6)
-                                .forward(RIGHTBLOCKDRIVEDISTANCE)
-                                .build());
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPLATEFORFIRSTBLOCK)
-                                .build());
-                break;
-        }
-
-        _flap.setPosition(0);
-        _arm.setPosition(0);
-        sleep(500);
-
-        _flap.setPosition(1);
-        _arm.setPosition(1);
-
-        return AutonomousStates.DROPPED_OFF_FIRST_BLOCK;
-    }
-
-    private AutonomousStates MoveToSecondBlock() {
-        switch (_location) {
-            case left:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(2)
-                                .back(LEFTBACKWARDTOSECONDBLOCK)
-                                .build());
-                _flap.setPosition(0);
-                _arm.setPosition(.4);
-                sleep(250);
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPICKUPFORSECONDBLOCK)
-                                .build());
-                break;
-
-            case middle:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(2)
-                                .back(BACKWARDTOMIDDLEBLOCK)
-                                .build());
-                _flap.setPosition(0);
-                _arm.setPosition(.4);
-                sleep(250);
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPICKUPFORSECONDBLOCK)
-                                .build());
-                break;
-
-            case right:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(2)
-                                .back(BACKWARDTORIGHTBLOCK)
-                                .build());
-                _flap.setPosition(0);
-                _arm.setPosition(.4);
-                sleep(250);
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPICKUPFORSECONDBLOCK)
-                                .build());
-                break;
-        }
-
-        _arm.setPosition(.3);
-        sleep(250);
-        _flap.setPosition(1);
-        sleep(350);
-        _arm.setPosition(1);
-        sleep(250);
-
-        return AutonomousStates.PICKED_UP_SECOND_BLOCK;
-    }
-
-    public AutonomousStates DropOffSecondBlock() {
-        switch (_location) {
-            case left:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(2)
-                                .forward(LEFTSECONDBLOCKDRIVEDISTANCE)
-                                .build());
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPLATEFORSECONDBLOCK)
-                                .build());
-                break;
-
-            case middle:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(2)
-                                .forward(FRONTTOMIDDLEBLOCK)
-                                .build());
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPLATEFORSECONDBLOCK)
-                                .build());
-                break;
-
-            case right:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeRight(2)
-                                .forward(FRONTTORIGHTBLOCK)
-                                .build());
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .strafeLeft(STRAFETOPLATEFORSECONDBLOCK)
-                                .build());
-                break;
-        }
-
-        _flap.setPosition(0);
-        _arm.setPosition(0);
-        sleep(500);
-
-        _flap.setPosition(1);
-        _arm.setPosition(1);
-
-        _drive.followTrajectorySync(
-                _drive.trajectoryBuilder()
-                        .strafeRight(3)
-                        .build());
-
-        switch (_location) {
-            case left:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .back(LEFTBACKBEFORETURN)
-                                .build());
-                break;
-
-            case middle:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .back(16)
-                                .build());
-                break;
-
-            case right:
-                _drive.followTrajectorySync(
-                        _drive.trajectoryBuilder()
-                                .back(16)
-                                .build());
-                break;
-        }
-
-
-        _drive.turnSync(Math.toRadians(-90));
-
-        _drive.followTrajectorySync(
-                _drive.trajectoryBuilder()
-                        .back(7)
-                        .build());
-
-        dropHooks();
-        sleep(1000);
-
-        _drive.followTrajectorySync(
-                _drive.trajectoryBuilder()
-                        .forward(26)
-                        .build());
-
-        _drive.turnWithTimeoutSync(Math.toRadians(-90), 4.0);
-
-        liftHooks();
-
-        _drive.followTrajectorySync(
-                _drive.trajectoryBuilder()
-                        .strafeRight(6)
-                        .forward(30)
-                        .build());
-
-        return AutonomousStates.DRIVEN_UNDER_BRIDGE;
-    }
-
-    private void dropHooks() {
-        _left.setPosition(.3);
-        _right.setPosition(.6);
-    }
-
-
-    private void liftHooks() {
-        _left.setPosition(.7);
-        _right.setPosition(.17);
-    }
+    private SampleMecanumDriveBase drive;
+    private DistanceSensor distance;
 
     public void runOpMode() {
-        GodRedRR.AutonomousStates currentState = GodRedRR.AutonomousStates.STARTED;
         long sleepTime = 0;
+        double firstBlockLocation = 0;
+        double secondBlockLocation = 0;
 
-        _skyStoneDetector = new SkyStoneDetector();
-        _camera = new VuforiaCamera();
-        _distance = hardwareMap.get(DistanceSensor.class, "testdetector");
+        skyStoneDetector = new SkyStoneDetector();
+        camera = new VuforiaCamera();
+        distance = hardwareMap.get(DistanceSensor.class, "testdetector");
 
         _gamepad1 = new Stickygamepad(gamepad1);
-        _arm = hardwareMap.servo.get("leftArm");
-        _flap = hardwareMap.servo.get("leftFlap");
-        _left = hardwareMap.servo.get("blhook");
-        _right = hardwareMap.servo.get("brhook");
+        arm = hardwareMap.servo.get("leftArm");
+        flap = hardwareMap.servo.get("leftFlap");
+        left = hardwareMap.servo.get("blhook");
+        right = hardwareMap.servo.get("brhook");
 
-        _camera.addTracker(_skyStoneDetector);
-        _skyStoneDetector.cx0 = 330;
-        _skyStoneDetector.cy0 = 420;
-        _skyStoneDetector.cx1 = 640;
-        _skyStoneDetector.cy1 = 420;
-        _skyStoneDetector.cx2 = 950;
-        _skyStoneDetector.cy2 = 420;
+        camera.addTracker(skyStoneDetector);
+        skyStoneDetector.cx0 = 330;
+        skyStoneDetector.cy0 = 420;
+        skyStoneDetector.cx1 = 640;
+        skyStoneDetector.cy1 = 420;
+        skyStoneDetector.cx2 = 950;
+        skyStoneDetector.cy2 = 420;
 
-        _camera.initialize();
+        camera.initialize();
 
-        _flap.setPosition(1);
+        flap.setPosition(1);
 
         hardwareMap.servo.get("rightArm").setPosition(0);
         hardwareMap.servo.get("rightFlap").setPosition(0);
 
-        _drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+        drive = new SampleMecanumDriveREVOptimized(hardwareMap);
 
         while (!isStarted()) {
             synchronized (this) {
                 try {
-                    _location = _skyStoneDetector.getLocation();
+                    location = skyStoneDetector.getLocation();
                     _gamepad1.update();
                     if (_gamepad1.left_bumper) {
                         if (sleepTime > 0) {
@@ -424,10 +82,11 @@ public class GodRedRR extends LinearOpMode {
                         }
                     }
 
+                    telemetry.addData("tickPerRev, Gearing, MaxRPM", "%f %f %f", DriveConstants.MOTOR_CONFIG.getTicksPerRev(), DriveConstants.MOTOR_CONFIG.getGearing(), DriveConstants.MOTOR_CONFIG.getMaxRPM());
                     telemetry.addData("use left/right bumper to adjust sleep time", "");
                     telemetry.addData("sleep time (ms)", sleepTime);
-                    telemetry.addData("location ", _location);
-                    telemetry.addData("distance should be about 55", "%f", _distance.getDistance(DistanceUnit.CM));
+                    telemetry.addData("location ", location);
+                    telemetry.addData("distance should be about 55", "%f", distance.getDistance(DistanceUnit.CM));
                     telemetry.update();
                     this.wait();
                 } catch (InterruptedException e) {
@@ -441,21 +100,110 @@ public class GodRedRR extends LinearOpMode {
 
         sleep(sleepTime);
 
-        while (opModeIsActive() && (currentState != GodRedRR.AutonomousStates.DRIVEN_UNDER_BRIDGE)) {
-            switch (currentState) {
-                case STARTED:
-                    currentState = MoveToFirstBlock();
-                    break;
-                case PICKED_UP_FIRST_BLOCK:
-                    currentState = DropOffFirstBlock();
-                    break;
-                case DROPPED_OFF_FIRST_BLOCK:
-                    currentState = MoveToSecondBlock();
-                    break;
-                case PICKED_UP_SECOND_BLOCK:
-                    currentState = DropOffSecondBlock();
-                    break;
-            }
+        switch (location) {
+            case left:
+                firstBlockLocation = -22;
+                secondBlockLocation = -46;
+                break;
+            case right:
+                firstBlockLocation = -30;
+                secondBlockLocation = -54;
+                break;
+            case middle:
+                firstBlockLocation = -38;
+                secondBlockLocation = -62;
+                break;
         }
+
+        flap.setPosition(0);
+        Trajectory driveToFirstBlock = drive.trajectoryBuilder()
+                .strafeTo(new Vector2d(firstBlockLocation, -32.0)).build(); // pick up first block
+
+        drive.followTrajectorySync(driveToFirstBlock);
+        arm.setPosition(0);
+        sleep(250);
+        flap.setPosition(1);
+        sleep(350);
+        arm.setPosition(1);
+        sleep(100);
+
+        Trajectory dropOffFirstBlock = drive.trajectoryBuilder()
+                .lineTo(new Vector2d(0.0, -36.0))
+                .splineTo(new Pose2d(55.0, -30.0)) // drop off first block
+                .build();
+
+        drive.followTrajectorySync(dropOffFirstBlock);
+        flap.setPosition(0);
+        arm.setPosition(0);
+        sleep(400);
+
+        flap.setPosition(1);
+        arm.setPosition(1);
+
+        Trajectory driveToSecondBlock = drive.trajectoryBuilder()
+                .reverse() // drive backwards
+                .splineTo(new Pose2d(0.0, -36.0))
+                .lineTo(new Vector2d(secondBlockLocation, -32.0)) // pick up second block
+                .build();
+
+        drive.followTrajectorySync(driveToSecondBlock);
+        flap.setPosition(0);
+        arm.setPosition(0);
+        sleep(450);
+        flap.setPosition(1);
+        sleep(350);
+        arm.setPosition(1);
+        sleep(100);
+
+        Trajectory dropOffSecondBlock = drive.trajectoryBuilder()
+                .splineTo(new Pose2d(0.0, -36.0))
+                .splineTo(new Pose2d(50.0, -30.0)) // drop off second block
+                .build();
+
+        drive.followTrajectorySync(dropOffSecondBlock);
+        flap.setPosition(0);
+        arm.setPosition(0);
+        sleep(400);
+
+        flap.setPosition(1);
+        arm.setPosition(1);
+
+        Trajectory backupAndPrepForTurn = drive.trajectoryBuilder()
+                .reverse() // drive backwards
+                .strafeTo(new Vector2d(42, -36.0)) // turn
+                .lineTo(new Vector2d(42, -36), new ConstantInterpolator(Math.toRadians(-90)))
+                .build();
+
+        drive.followTrajectorySync(backupAndPrepForTurn);
+
+        drive.turnSync(Math.toRadians(-90));
+
+        Trajectory backupAndGrabPlate = drive.trajectoryBuilder()
+                .reverse() // drive backwards
+                .lineTo(new Vector2d(42, -30.0)) // backup
+                .build();
+
+        drive.followTrajectorySync(backupAndGrabPlate);
+
+        left.setPosition(.3);
+        right.setPosition(.6);
+        sleep(600);
+
+        Trajectory pullAndTurn = drive.trajectoryBuilder()
+                .lineTo(new Vector2d(42.0, -53.0)) // drag forward and turn
+                .build();
+
+        drive.followTrajectorySync(pullAndTurn);
+
+        drive.turnWithTimeoutSync(Math.toRadians(-90), 3);
+
+        left.setPosition(.7);
+        right.setPosition(.17);
+        sleep(500);
+
+        Trajectory driveToBridge = drive.trajectoryBuilder()
+                .lineTo(new Vector2d(0.0, -34)) // drive to bridge
+                .build();
+        drive.followTrajectorySync(driveToBridge);
     }
 }
