@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
+import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.edinaftc.library.Stickygamepad;
@@ -38,7 +39,8 @@ public class GodRedRR extends LinearOpMode {
     public void runOpMode() {
         long sleepTime = 0;
         double firstBlockLocation = 0;
-        double secondBlockLocation = 0;
+        double secondBlockXLocation = 0;
+        double secondblockYLocation = 0;
 
         skyStoneDetector = new SkyStoneDetector();
         camera = new VuforiaCamera();
@@ -103,17 +105,22 @@ public class GodRedRR extends LinearOpMode {
         switch (location) {
             case left:
                 firstBlockLocation = -22;
-                secondBlockLocation = -46;
+                secondBlockXLocation = -46;
+                secondblockYLocation = -32;
                 break;
             case right:
-                firstBlockLocation = -30;
-                secondBlockLocation = -54;
+                firstBlockLocation = -38;
+                secondBlockXLocation = -62;
+                secondblockYLocation = -30;
                 break;
             case middle:
-                firstBlockLocation = -38;
-                secondBlockLocation = -62;
+                firstBlockLocation = -30;
+                secondBlockXLocation = -54;
+                secondblockYLocation = -32;
                 break;
         }
+
+        drive.setPoseEstimate(new Pose2d(-40.0, -63.0, Math.toRadians(0.0)));
 
         flap.setPosition(0);
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
@@ -143,15 +150,15 @@ public class GodRedRR extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, -36.0))
-                .lineTo(new Vector2d(secondBlockLocation, -32.0)) // pick up second block
+                .lineTo(new Vector2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
         drive.followTrajectorySync(driveToSecondBlock);
         flap.setPosition(0);
         arm.setPosition(0);
-        sleep(450);
+        sleep(550);
         flap.setPosition(1);
-        sleep(350);
+        sleep(450);
         arm.setPosition(1);
         sleep(100);
 
@@ -170,13 +177,10 @@ public class GodRedRR extends LinearOpMode {
 
         Trajectory backupAndPrepForTurn = drive.trajectoryBuilder()
                 .reverse() // drive backwards
-                .strafeTo(new Vector2d(42, -36.0)) // turn
-                .lineTo(new Vector2d(42, -36), new ConstantInterpolator(Math.toRadians(-90)))
+                .lineTo(new Vector2d(42.0, -36.0), new LinearInterpolator(Math.toRadians(-90), Math.toRadians(90)))
                 .build();
 
         drive.followTrajectorySync(backupAndPrepForTurn);
-
-        drive.turnSync(Math.toRadians(-90));
 
         Trajectory backupAndGrabPlate = drive.trajectoryBuilder()
                 .reverse() // drive backwards
@@ -202,7 +206,7 @@ public class GodRedRR extends LinearOpMode {
         sleep(500);
 
         Trajectory driveToBridge = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(0.0, -34)) // drive to bridge
+                .lineTo(new Vector2d(8.0, -34)) // drive to bridge
                 .build();
         drive.followTrajectorySync(driveToBridge);
     }
