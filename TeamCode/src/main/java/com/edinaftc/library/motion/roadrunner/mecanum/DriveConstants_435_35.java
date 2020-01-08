@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
  * and op modes themselves.
  */
 @Config
-public class DriveConstants {
+public class DriveConstants_435_35 {
 
     /*
      * The type of motor used on the drivetrain. While the SDK has definitions for many common

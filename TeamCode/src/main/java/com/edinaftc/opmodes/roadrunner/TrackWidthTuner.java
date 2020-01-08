@@ -5,10 +5,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants;
-import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveBase;
-import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveREVOptimized;
+import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_35;
+import com.edinaftc.library.motion.roadrunner.mecanum.MecanumDriveBase_435_35;
+import com.edinaftc.library.motion.roadrunner.mecanum.MecanumDriveREVOptimized_435_35;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.MovingStatistics;
 
@@ -25,6 +26,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
  */
 @Config
 @Autonomous(group = "drive")
+@Disabled
 public class TrackWidthTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
@@ -34,7 +36,7 @@ public class TrackWidthTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+        MecanumDriveBase_435_35 drive = new MecanumDriveREVOptimized_435_35(hardwareMap);
         // TODO: if you haven't already, set the localizer to something that doesn't depend on
         // drive encoders for computing the heading
 
@@ -68,7 +70,7 @@ public class TrackWidthTuner extends LinearOpMode {
                 drive.update();
             }
 
-            double trackWidth = DriveConstants.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
+            double trackWidth = DriveConstants_435_35.TRACK_WIDTH * Math.toRadians(ANGLE) / headingAccumulator;
             trackWidthStats.add(trackWidth);
 
             sleep(DELAY);

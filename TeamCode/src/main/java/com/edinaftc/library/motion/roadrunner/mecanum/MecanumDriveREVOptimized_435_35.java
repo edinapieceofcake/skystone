@@ -12,8 +12,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-import com.edinaftc.library.motion.roadrunner.util.LynxModuleUtil;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.openftc.revextensions2.ExpansionHubEx;
 import org.openftc.revextensions2.ExpansionHubMotor;
@@ -23,23 +21,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants.MOTOR_VELO_PID;
-import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants.RUN_USING_ENCODER;
-import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants.encoderTicksToInches;
-import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants.getMotorVelocityF;
+import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_35.MOTOR_VELO_PID;
+import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_35.RUN_USING_ENCODER;
+import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_35.encoderTicksToInches;
 
 /*
  * Optimized mecanum drive implementation for REV ExHs. The time savings may significantly improve
  * trajectory following performance with moderate additional complexity.
  */
-public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
+public class MecanumDriveREVOptimized_435_35 extends MecanumDriveBase_435_35 {
     private ExpansionHubEx hub9;
     private ExpansionHubEx hub2;
     private ExpansionHubMotor leftFront, leftRear, rightRear, rightFront;
     private List<ExpansionHubMotor> motors;
     private BNO055IMU imu;
 
-    public SampleMecanumDriveREVOptimized(HardwareMap hardwareMap) {
+    public MecanumDriveREVOptimized_435_35(HardwareMap hardwareMap) {
         super();
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -73,7 +70,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        if (RUN_USING_ENCODER && DriveConstants.MOTOR_VELO_PID != null) {
+        if (RUN_USING_ENCODER && DriveConstants_435_35.MOTOR_VELO_PID != null) {
             setPIDCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
@@ -95,7 +92,7 @@ public class SampleMecanumDriveREVOptimized extends SampleMecanumDriveBase {
     public void setPIDCoefficients(DcMotor.RunMode runMode, PIDCoefficients coefficients) {
         for (ExpansionHubMotor motor : motors) {
             motor.setPIDFCoefficients(runMode, new PIDFCoefficients(
-                    coefficients.kP, coefficients.kI, coefficients.kD, DriveConstants.getMotorVelocityF()
+                    coefficients.kP, coefficients.kI, coefficients.kD, DriveConstants_435_35.getMotorVelocityF()
             ));
         }
     }

@@ -3,14 +3,12 @@ package com.edinaftc.opmodes.autonomous;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.edinaftc.library.Stickygamepad;
-import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants;
-import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveBase;
-import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveREVOptimized;
+import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_35;
+import com.edinaftc.library.motion.roadrunner.mecanum.MecanumDriveBase_435_35;
+import com.edinaftc.library.motion.roadrunner.mecanum.MecanumDriveREVOptimized_435_35;
 import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.skystone.vision.SkyStoneDetector;
 import com.edinaftc.skystone.vision.SkystoneLocation;
@@ -20,11 +18,10 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import kotlin.Unit;
 
-@Autonomous(name="God Red Alliance", group="Autonomous")
+@Autonomous(name="RedTripleBlock", group="Autonomous")
 @Config
-public class GodRedRR extends LinearOpMode {
+public class RedTripleBlock extends LinearOpMode {
     private VuforiaCamera camera;
     private SkyStoneDetector skyStoneDetector;
     private Servo arm;
@@ -33,7 +30,7 @@ public class GodRedRR extends LinearOpMode {
     private Servo right;
     private SkystoneLocation location = SkystoneLocation.left;
     private Stickygamepad _gamepad1;
-    private SampleMecanumDriveBase drive;
+    private MecanumDriveBase_435_35 drive;
     private DistanceSensor distance;
 
     public void runOpMode() {
@@ -41,10 +38,11 @@ public class GodRedRR extends LinearOpMode {
         double firstBlockLocation = 0;
         double secondBlockXLocation = 0;
         double secondblockYLocation = 0;
+        double thirdBlockLocation = 0;
 
         skyStoneDetector = new SkyStoneDetector();
         camera = new VuforiaCamera();
-        distance = hardwareMap.get(DistanceSensor.class, "testdetector");
+        distance = hardwareMap.get(DistanceSensor.class, "reardetector");
 
         _gamepad1 = new Stickygamepad(gamepad1);
         arm = hardwareMap.servo.get("leftArm");
@@ -67,7 +65,7 @@ public class GodRedRR extends LinearOpMode {
         hardwareMap.servo.get("rightArm").setPosition(0);
         hardwareMap.servo.get("rightFlap").setPosition(0);
 
-        drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+        drive = new MecanumDriveREVOptimized_435_35(hardwareMap);
 
         while (!isStarted()) {
             synchronized (this) {
@@ -84,7 +82,7 @@ public class GodRedRR extends LinearOpMode {
                         }
                     }
 
-                    telemetry.addData("tickPerRev, Gearing, MaxRPM", "%f %f %f", DriveConstants.MOTOR_CONFIG.getTicksPerRev(), DriveConstants.MOTOR_CONFIG.getGearing(), DriveConstants.MOTOR_CONFIG.getMaxRPM());
+                    telemetry.addData("tickPerRev, Gearing, MaxRPM", "%f %f %f", DriveConstants_435_35.MOTOR_CONFIG.getTicksPerRev(), DriveConstants_435_35.MOTOR_CONFIG.getGearing(), DriveConstants_435_35.MOTOR_CONFIG.getMaxRPM());
                     telemetry.addData("use left/right bumper to adjust sleep time", "");
                     telemetry.addData("sleep time (ms)", sleepTime);
                     telemetry.addData("location ", location);
@@ -106,17 +104,20 @@ public class GodRedRR extends LinearOpMode {
             case left:
                 firstBlockLocation = -22;
                 secondBlockXLocation = -46;
-                secondblockYLocation = -32;
+                secondblockYLocation = -33;
+                thirdBlockLocation = -30;
                 break;
             case right:
                 firstBlockLocation = -38;
                 secondBlockXLocation = -62;
-                secondblockYLocation = -30;
+                secondblockYLocation = -33;
+                thirdBlockLocation = -22;
                 break;
             case middle:
                 firstBlockLocation = -30;
                 secondBlockXLocation = -54;
                 secondblockYLocation = -32;
+                thirdBlockLocation = -22;
                 break;
         }
 
@@ -135,8 +136,8 @@ public class GodRedRR extends LinearOpMode {
         sleep(100);
 
         Trajectory dropOffFirstBlock = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(0.0, -36.0))
-                .splineTo(new Pose2d(55.0, -30.0)) // drop off first block
+                .splineTo(new Pose2d(0.0, -36.0))
+                .splineTo(new Pose2d(20.0, -30.0)) // drop off first block
                 .build();
 
         drive.followTrajectorySync(dropOffFirstBlock);
@@ -150,24 +151,25 @@ public class GodRedRR extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, -36.0))
-                .lineTo(new Vector2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
+                .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
         drive.followTrajectorySync(driveToSecondBlock);
         flap.setPosition(0);
         arm.setPosition(0);
-        sleep(550);
+        sleep(650);
         flap.setPosition(1);
-        sleep(450);
+        sleep(550);
         arm.setPosition(1);
         sleep(100);
 
         Trajectory dropOffSecondBlock = drive.trajectoryBuilder()
                 .splineTo(new Pose2d(0.0, -36.0))
-                .splineTo(new Pose2d(50.0, -30.0)) // drop off second block
+                .splineTo(new Pose2d(20.0, -30.0)) // drop off second block
                 .build();
 
         drive.followTrajectorySync(dropOffSecondBlock);
+
         flap.setPosition(0);
         arm.setPosition(0);
         sleep(400);
@@ -175,39 +177,44 @@ public class GodRedRR extends LinearOpMode {
         flap.setPosition(1);
         arm.setPosition(1);
 
-        Trajectory backupAndPrepForTurn = drive.trajectoryBuilder()
+        Trajectory driveToThirdBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
-                .lineTo(new Vector2d(42.0, -36.0), new LinearInterpolator(Math.toRadians(-90), Math.toRadians(90)))
+                .splineTo(new Pose2d(0.0, -36.0))
+                .splineTo(new Pose2d(thirdBlockLocation, -32)) // pick up second block
                 .build();
 
-        drive.followTrajectorySync(backupAndPrepForTurn);
+        drive.followTrajectorySync(driveToThirdBlock);
 
-        Trajectory backupAndGrabPlate = drive.trajectoryBuilder()
-                .reverse() // drive backwards
-                .lineTo(new Vector2d(42, -30.0)) // backup
+        flap.setPosition(0);
+        arm.setPosition(0);
+        sleep(650);
+        flap.setPosition(1);
+        sleep(550);
+        arm.setPosition(1);
+        sleep(100);
+
+        Trajectory dropOffThirdBlock = drive.trajectoryBuilder()
+                .splineTo(new Pose2d(0.0, -36.0))
+                .splineTo(new Pose2d(20.0, -30.0)) // drop off second block
                 .build();
 
-        drive.followTrajectorySync(backupAndGrabPlate);
+        drive.followTrajectorySync(dropOffThirdBlock);
 
-        left.setPosition(.3);
-        right.setPosition(.6);
-        sleep(600);
+        flap.setPosition(0);
+        arm.setPosition(0);
+        sleep(400);
 
-        Trajectory pullAndTurn = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(42.0, -53.0)) // drag forward and turn
-                .build();
-
-        drive.followTrajectorySync(pullAndTurn);
-
-        drive.turnWithTimeoutSync(Math.toRadians(-90), 3);
-
-        left.setPosition(.7);
-        right.setPosition(.17);
-        sleep(500);
+        flap.setPosition(1);
+        arm.setPosition(1);
 
         Trajectory driveToBridge = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(8.0, -34)) // drive to bridge
+                .reverse()
+                .splineTo(new Pose2d(0.0, -36.0))
                 .build();
+
+
         drive.followTrajectorySync(driveToBridge);
+
+        drive.turnSync(Math.toRadians(180));
     }
 }

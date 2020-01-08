@@ -1,9 +1,10 @@
 package com.edinaftc.opmodes.roadrunner;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveBase;
-import com.edinaftc.library.motion.roadrunner.mecanum.SampleMecanumDriveREVOptimized;
+import com.edinaftc.library.motion.roadrunner.mecanum.MecanumDriveBase_435_35;
+import com.edinaftc.library.motion.roadrunner.mecanum.MecanumDriveREVOptimized_435_35;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /*
@@ -11,12 +12,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  */
 @Config
 @Autonomous(group = "drive")
+@Disabled
 public class TurnTest extends LinearOpMode {
     public static double ANGLE = 90; // deg
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDriveBase drive = new SampleMecanumDriveREVOptimized(hardwareMap);
+        MecanumDriveBase_435_35 drive = new MecanumDriveREVOptimized_435_35(hardwareMap);
 
         waitForStart();
 
