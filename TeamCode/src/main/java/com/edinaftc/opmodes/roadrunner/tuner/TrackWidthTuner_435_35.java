@@ -27,7 +27,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
 @Config
 @Autonomous(group = "drive")
 @Disabled
-public class TrackWidthTuner extends LinearOpMode {
+public class TrackWidthTuner_435_35 extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;
     public static int DELAY = 1000; // ms

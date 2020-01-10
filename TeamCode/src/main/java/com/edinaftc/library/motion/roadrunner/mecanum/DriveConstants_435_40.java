@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
  * and op modes themselves.
  */
 @Config
-public class DriveConstants_435_35 {
+public class DriveConstants_435_40 {
 
     /*
      * The type of motor used on the drivetrain. While the SDK has definitions for many common
@@ -67,7 +67,7 @@ public class DriveConstants_435_35 {
      * forces acceleration-limited profiling).
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            35, 30, 0.0,
+            40, 30, 0.0,
             Math.toRadians(180.0), Math.toRadians(180.0), 0.0
     );
 
