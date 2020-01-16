@@ -3,7 +3,6 @@ package com.edinaftc.opmodes.roadrunner;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_35;
@@ -19,23 +18,17 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="RedPullPlateAndPark", group="Autonomous")
+@Autonomous(name="DriveForward", group="Autonomous")
 @Config
-public class RedPullPlateAndPark extends LinearOpMode {
-    private Servo left;
-    private Servo right;
+public class DriveForward extends LinearOpMode {
     private Stickygamepad _gamepad1;
     private MecanumDriveBase_435_35 drive;
-    private DistanceSensor distance;
 
     public void runOpMode() {
         long sleepTime = 0;
-
-        distance = hardwareMap.get(DistanceSensor.class, "reardetector");
+        double forwardDistance = 10.0;
 
         _gamepad1 = new Stickygamepad(gamepad1);
-        left = hardwareMap.servo.get("blhook");
-        right = hardwareMap.servo.get("brhook");
 
         drive = new MecanumDriveREVOptimized_435_35(hardwareMap);
 
@@ -53,10 +46,19 @@ public class RedPullPlateAndPark extends LinearOpMode {
                         }
                     }
 
+                    if (_gamepad1.dpad_up) {
+                        forwardDistance += .5;
+                    } else if (_gamepad1.dpad_down) {
+                        if (forwardDistance > 0) {
+                            forwardDistance -= .5;
+                        }
+                    }
+
                     telemetry.addData("tickPerRev, Gearing, MaxRPM", "%f %f %f", DriveConstants_435_35.MOTOR_CONFIG.getTicksPerRev(), DriveConstants_435_35.MOTOR_CONFIG.getGearing(), DriveConstants_435_35.MOTOR_CONFIG.getMaxRPM());
                     telemetry.addData("use left/right bumper to adjust sleep time", "");
                     telemetry.addData("sleep time (ms)", sleepTime);
-                    telemetry.addData("distance should be about 55", "%f", distance.getDistance(DistanceUnit.CM));
+                    telemetry.addData("use dpad up/down to increase/decrease forward distance", "");
+                    telemetry.addData("distance", "%f", forwardDistance);
                     telemetry.update();
                     this.wait();
                 } catch (InterruptedException e) {
@@ -68,32 +70,10 @@ public class RedPullPlateAndPark extends LinearOpMode {
 
         sleep(sleepTime);
 
-        drive.setPoseEstimate(new Pose2d(40.0, -63.0, Math.toRadians(-90.0)));
-
-        Trajectory backupAndGrabPlate = drive.trajectoryBuilder()
-                .reverse()
-                .splineTo(new Pose2d(50.0, -30.0, Math.toRadians(-90.0)))
+        Trajectory driveForward = drive.trajectoryBuilder()
+                .forward(forwardDistance)
                 .build();
 
-        drive.followTrajectorySync(backupAndGrabPlate);
-
-        left.setPosition(.3);
-        right.setPosition(.6);
-        sleep(900);
-
-        Trajectory pullPlate = drive.trajectoryBuilder()
-                .lineTo(new Vector2d(50.0, -70.0)) // drag forward and turn
-                .build();
-
-        drive.followTrajectorySync(pullPlate);
-
-        left.setPosition(.7);
-        right.setPosition(.17);
-        sleep(500);
-
-        Trajectory driveToBridge = drive.trajectoryBuilder()
-                .strafeTo(new Vector2d(-8.0, -70)) // drive to bridge
-                .build();
-        drive.followTrajectorySync(driveToBridge);
+        drive.followTrajectorySync(driveForward);
     }
 }

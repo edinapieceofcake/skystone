@@ -89,7 +89,7 @@ public class RedDoubleBlockWaitForPlateAndPark extends LinearOpMode {
                     telemetry.addData("use left/right bumper to adjust sleep time", "");
                     telemetry.addData("sleep time (ms)", sleepTime);
                     telemetry.addData("location ", location);
-                    telemetry.addData("distance should be about 58", "%f", distance.getDistance(DistanceUnit.CM));
+                    telemetry.addData("distance should be about 55", "%f", distance.getDistance(DistanceUnit.CM));
                     telemetry.update();
                     this.wait();
                 } catch (InterruptedException e) {
