@@ -198,13 +198,19 @@ public class RedDoubleBlockWaitForPlateAndPark extends LinearOpMode {
         arm.setPosition(1);
         sleep(100);
 
-        Trajectory driveToBridge = drive.trajectoryBuilder()
+        Trajectory driveToPlate = drive.trajectoryBuilder()
                 .splineTo(new Pose2d(16.0, -43.0))
                 .build();
 
-        drive.followTrajectorySync(driveToBridge);
+        drive.followTrajectorySync(driveToPlate);
 
         drive.turnSync(Math.toRadians(-90));
+
+        Trajectory strafetoPlate = drive.trajectoryBuilder()
+                .strafeLeft(8.0)
+                .build();
+
+        drive.followTrajectorySync(strafetoPlate);
 
         flap.setPosition(0);
         arm.setPosition(0);
