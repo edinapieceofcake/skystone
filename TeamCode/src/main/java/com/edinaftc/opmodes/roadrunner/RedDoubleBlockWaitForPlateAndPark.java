@@ -15,6 +15,7 @@ import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.skystone.vision.SkyStoneDetector;
 import com.edinaftc.skystone.vision.SkystoneLocation;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -198,19 +199,12 @@ public class RedDoubleBlockWaitForPlateAndPark extends LinearOpMode {
         arm.setPosition(1);
         sleep(100);
 
-        Trajectory driveToPlate = drive.trajectoryBuilder()
-                .splineTo(new Pose2d(16.0, -43.0))
+        Trajectory dropOffThirdBlock = drive.trajectoryBuilder()
+                .splineTo(new Pose2d(0.0, -36.0))
+                .splineTo(new Pose2d(20.0, -36.0)) // drop off second block
                 .build();
 
-        drive.followTrajectorySync(driveToPlate);
-
-        drive.turnSync(Math.toRadians(-90));
-
-        Trajectory strafetoPlate = drive.trajectoryBuilder()
-                .strafeLeft(8.0)
-                .build();
-
-        drive.followTrajectorySync(strafetoPlate);
+        drive.followTrajectorySync(dropOffThirdBlock);
 
         flap.setPosition(0);
         arm.setPosition(0);
@@ -218,10 +212,11 @@ public class RedDoubleBlockWaitForPlateAndPark extends LinearOpMode {
         flap.setPosition(1);
         arm.setPosition(1);
 
-        Trajectory strafeToBridge = drive.trajectoryBuilder()
-                .strafeTo(new Vector2d(0, -36.0))
+        Trajectory driveToBridge = drive.trajectoryBuilder()
+                .reverse()
+                .splineTo(new Pose2d(4.0, -36.0))
                 .build();
 
-        drive.followTrajectorySync(strafeToBridge);
+        drive.followTrajectorySync(driveToBridge);
     }
 }
