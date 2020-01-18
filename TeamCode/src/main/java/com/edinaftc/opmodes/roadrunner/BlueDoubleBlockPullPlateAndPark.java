@@ -59,7 +59,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         camera.initialize();
 
-        flap.setPosition(0);
+        flap.setPosition(1);
 
         hardwareMap.servo.get("leftArm").setPosition(1);
         hardwareMap.servo.get("leftFlap").setPosition(1);
@@ -100,7 +100,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
         switch (location) {
             case left:
                 firstBlockLocation = -22;
-                secondBlockXLocation = -46;
+                secondBlockXLocation = -44;
                 secondblockYLocation = 35;
                 break;
             case right:
@@ -117,7 +117,6 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(-40.0, 63.0, Math.toRadians(0.0)));
 
-        flap.setPosition(1);
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
                 .strafeTo(new Vector2d(firstBlockLocation, 32.0)).build(); // pick up first block
 

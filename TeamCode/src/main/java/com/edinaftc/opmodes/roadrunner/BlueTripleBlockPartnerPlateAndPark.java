@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="RedTripleBlockPartnerPlateAndPark", group="Autonomous")
+@Autonomous(name="BlueTripleBlockPartnerPlateAndPark", group="Autonomous")
 @Config
 public class BlueTripleBlockPartnerPlateAndPark extends LinearOpMode {
     private VuforiaCamera camera;
@@ -60,7 +60,7 @@ public class BlueTripleBlockPartnerPlateAndPark extends LinearOpMode {
 
         camera.initialize();
 
-        flap.setPosition(0);
+        flap.setPosition(1);
 
         hardwareMap.servo.get("leftArm").setPosition(1);
         hardwareMap.servo.get("leftFlap").setPosition(1);
@@ -124,7 +124,6 @@ public class BlueTripleBlockPartnerPlateAndPark extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(-40.0, 63.0, Math.toRadians(0.0)));
 
-        flap.setPosition(1);
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
                 .strafeTo(new Vector2d(firstBlockLocation, 32)).build(); // pick up first block
 

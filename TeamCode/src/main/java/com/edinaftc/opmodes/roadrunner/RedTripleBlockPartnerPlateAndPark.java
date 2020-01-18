@@ -64,7 +64,7 @@ public class RedTripleBlockPartnerPlateAndPark extends LinearOpMode {
 
         camera.initialize();
 
-        flap.setPosition(1);
+        flap.setPosition(0);
 
         hardwareMap.servo.get("rightArm").setPosition(0);
         hardwareMap.servo.get("rightFlap").setPosition(0);
@@ -130,7 +130,6 @@ public class RedTripleBlockPartnerPlateAndPark extends LinearOpMode {
 
         drive.setPoseEstimate(new Pose2d(-40.0, -63.0, Math.toRadians(0.0)));
 
-        flap.setPosition(0);
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
                 .strafeTo(new Vector2d(firstBlockLocation, -32)).build(); // pick up first block
 

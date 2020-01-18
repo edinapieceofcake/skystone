@@ -62,7 +62,7 @@ public class BlueQuadBlockAndPark extends LinearOpMode {
 
         camera.initialize();
 
-        flap.setPosition(0);
+        flap.setPosition(1);
 
         hardwareMap.servo.get("leftArm").setPosition(1);
         hardwareMap.servo.get("leftFlap").setPosition(1);
@@ -104,36 +104,35 @@ public class BlueQuadBlockAndPark extends LinearOpMode {
         switch (location) {
             case left:
                 firstBlockLocation = -22;
-                secondBlockXLocation = -46;
+                secondBlockXLocation = -44;
                 secondblockYLocation = 35;
-                thirdBlockXLocation = -30; // middle
+                thirdBlockXLocation = -28; // middle
                 thirdBlockYLocation = 34;
-                fourthBlockXLocation = -38;
-                fourthBlockYLocation = 33.5;
+                fourthBlockXLocation = -36;
+                fourthBlockYLocation = 34;
                 break;
             case right:
                 firstBlockLocation = -38;
                 secondBlockXLocation = -62;
                 secondblockYLocation = 33;
-                thirdBlockXLocation = -22;
-                thirdBlockYLocation = 33;
-                fourthBlockXLocation = -30;
-                fourthBlockYLocation = 33;
+                thirdBlockXLocation = -20;
+                thirdBlockYLocation = 34;
+                fourthBlockXLocation = -28;
+                fourthBlockYLocation = 34;
                 break;
             case middle:
                 firstBlockLocation = -30;
                 secondBlockXLocation = -54;
                 secondblockYLocation = 34;
-                thirdBlockXLocation = -22;
+                thirdBlockXLocation = -20;
                 thirdBlockYLocation = 34;
-                fourthBlockXLocation = -38;
-                fourthBlockYLocation = 34;
+                fourthBlockXLocation = -36;
+                fourthBlockYLocation = 35;
                 break;
         }
 
         drive.setPoseEstimate(new Pose2d(-40.0, 63.0, Math.toRadians(0.0)));
 
-        flap.setPosition(1);
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
                 .strafeTo(new Vector2d(firstBlockLocation, 32.0)).build(); // pick up first block
 
