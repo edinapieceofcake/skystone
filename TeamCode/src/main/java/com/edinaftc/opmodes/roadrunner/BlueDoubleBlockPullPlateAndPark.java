@@ -19,6 +19,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import kotlin.Unit;
+
 @Autonomous(name="BlueDoubleBlockPullPlateAndPark", group="Autonomous")
 @Config
 public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
@@ -35,9 +37,6 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
     public void runOpMode() {
         long sleepTime = 0;
-        double firstBlockLocation = 0;
-        double secondBlockXLocation = 0;
-        double secondblockYLocation = 0;
 
         skyStoneDetector = new SkyStoneDetector();
         camera = new VuforiaCamera();
@@ -61,7 +60,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         flap.setPosition(1);
 
-        hardwareMap.servo.get("leftArm").setPosition(1);
+        //hardwareMap.servo.get("leftArm").setPosition(1);
         hardwareMap.servo.get("leftFlap").setPosition(1);
 
         drive = new MecanumDriveREVOptimized_435_35(hardwareMap);
@@ -97,6 +96,10 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         sleep(sleepTime);
 
+        double firstBlockLocation = 0;
+        double secondBlockXLocation = 0;
+        double secondblockYLocation = 0;
+
         switch (location) {
             case left:
                 firstBlockLocation = -22;
@@ -118,13 +121,14 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(-40.0, 63.0, Math.toRadians(0.0)));
 
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
+                .addMarker(1.0, () -> { arm.setPosition(.73);return Unit.INSTANCE; })
                 .strafeTo(new Vector2d(firstBlockLocation, 32.0)).build(); // pick up first block
 
         drive.followTrajectorySync(driveToFirstBlock);
         arm.setPosition(1);
         sleep(250);
         flap.setPosition(0);
-        sleep(350);
+        sleep(550);
         arm.setPosition(0);
         sleep(100);
 
@@ -134,8 +138,8 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
                 .build();
 
         drive.followTrajectorySync(dropOffFirstBlock);
-        flap.setPosition(1);
         arm.setPosition(1);
+        flap.setPosition(1);
         sleep(400);
 
         flap.setPosition(0);
@@ -144,13 +148,13 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, 36.0))
+                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.73); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
         drive.followTrajectorySync(driveToSecondBlock);
-        flap.setPosition(1);
         arm.setPosition(1);
-        sleep(650);
+        sleep(250);
         flap.setPosition(0);
         sleep(550);
         arm.setPosition(0);
@@ -162,8 +166,8 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
                 .build();
 
         drive.followTrajectorySync(dropOffSecondBlock);
-        flap.setPosition(1);
         arm.setPosition(1);
+        flap.setPosition(1);
         sleep(400);
 
         flap.setPosition(0);

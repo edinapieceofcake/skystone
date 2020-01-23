@@ -24,6 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="RedTripleBlockPartnerPlateAndPark", group="Autonomous")
 @Config
+@Disabled
 public class RedTripleBlockPartnerPlateAndPark extends LinearOpMode {
     private VuforiaCamera camera;
     private SkyStoneDetector skyStoneDetector;
