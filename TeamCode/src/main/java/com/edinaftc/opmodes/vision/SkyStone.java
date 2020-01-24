@@ -33,11 +33,12 @@ import com.edinaftc.library.vision.VuforiaCamera;
 import com.edinaftc.relicrecovery.vision.DynamicJewelTracker;
 import com.edinaftc.relicrecovery.vision.RelicRecoveryVuMarkTracker;
 import com.edinaftc.skystone.vision.SkyStoneDetector;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-//@Disabled
 @TeleOp
+@Disabled
 public class SkyStone extends OpMode {
     private VuforiaCamera camera;
     private SkyStoneDetector skyStoneDetector;

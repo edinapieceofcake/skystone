@@ -85,10 +85,10 @@ public class BluePullPlateAndPark extends LinearOpMode {
 
         left.setPosition(.7);
         right.setPosition(.17);
-        sleep(500);
+        sleep(700);
 
         Trajectory driveToBridge = drive.trajectoryBuilder()
-                .strafeTo(new Vector2d(8.0, 72)) // drive to bridge
+                .strafeTo(new Vector2d(-8.0, 72)) // drive to bridge
                 .build();
         drive.followTrajectorySync(driveToBridge);
     }

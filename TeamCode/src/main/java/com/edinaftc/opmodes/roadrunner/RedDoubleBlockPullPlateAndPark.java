@@ -19,6 +19,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import kotlin.Unit;
+
 @Autonomous(name="RedDoubleBlockPullPlateAndPark", group="Autonomous")
 @Config
 public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
@@ -120,13 +122,14 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(-40.0, -63.0, Math.toRadians(0.0)));
 
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
+                .addMarker(1.0, () -> { arm.setPosition(.40);return Unit.INSTANCE; })
                 .strafeTo(new Vector2d(firstBlockLocation, -32.0)).build(); // pick up first block
 
         drive.followTrajectorySync(driveToFirstBlock);
         arm.setPosition(0);
         sleep(250);
         flap.setPosition(1);
-        sleep(350);
+        sleep(550);
         arm.setPosition(1);
         sleep(100);
 
@@ -146,13 +149,13 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, -36.0))
+                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.40); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
         drive.followTrajectorySync(driveToSecondBlock);
-        flap.setPosition(0);
         arm.setPosition(0);
-        sleep(650);
+        sleep(250);
         flap.setPosition(1);
         sleep(550);
         arm.setPosition(1);
@@ -180,7 +183,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         Trajectory backupAndGrabPlate = drive.trajectoryBuilder()
                 .reverse() // drive backwards
-                .lineTo(new Vector2d(42, -29.0)) // backup
+                .lineTo(new Vector2d(42, -28.0)) // backup
                 .build();
 
         drive.followTrajectorySync(backupAndGrabPlate);
@@ -191,7 +194,6 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         Trajectory pullAndTurn = drive.trajectoryBuilder()
                 .lineTo(new Vector2d(42.0, -53.0)) // drag forward and turn
-//                .lineTo(new Vector2d(38.0, -53.0), new LinearInterpolator(Math.toRadians(-90), Math.toRadians(-90)))
                 .build();
 
         drive.followTrajectorySync(pullAndTurn);
@@ -204,7 +206,6 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         Trajectory driveToBridge = drive.trajectoryBuilder()
                 .strafeTo(new Vector2d(30, -38))
-//                .splineTo(new Pose2d(8, -34))
                 .lineTo(new Vector2d(8.0, -33)) // drive to bridge
                 .build();
         drive.followTrajectorySync(driveToBridge);
