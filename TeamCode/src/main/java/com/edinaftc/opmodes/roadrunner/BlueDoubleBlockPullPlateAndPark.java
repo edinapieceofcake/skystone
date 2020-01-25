@@ -102,26 +102,26 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         switch (location) {
             case left:
-                firstBlockLocation = -22;
-                secondBlockXLocation = -44;
-                secondblockYLocation = 35;
+                firstBlockLocation = -20;
+                secondBlockXLocation = -42;
+                secondblockYLocation = 33;
                 break;
             case right:
                 firstBlockLocation = -38;
                 secondBlockXLocation = -62;
-                secondblockYLocation = 35;
+                secondblockYLocation = 33.5;
                 break;
             case middle:
-                firstBlockLocation = -30;
-                secondBlockXLocation = -54;
-                secondblockYLocation = 34;
+                firstBlockLocation = -28;
+                secondBlockXLocation = -50;
+                secondblockYLocation = 33;
                 break;
         }
 
         drive.setPoseEstimate(new Pose2d(-40.0, 63.0, Math.toRadians(0.0)));
 
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
-                .addMarker(1.0, () -> { arm.setPosition(.73);return Unit.INSTANCE; })
+                .addMarker(1.0, () -> { arm.setPosition(.70);return Unit.INSTANCE; })
                 .strafeTo(new Vector2d(firstBlockLocation, 32.0)).build(); // pick up first block
 
         drive.followTrajectorySync(driveToFirstBlock);
@@ -148,7 +148,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, 36.0))
-                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.73); return Unit.INSTANCE;})
+                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.65); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
@@ -182,7 +182,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         Trajectory backupAndGrabPlate = drive.trajectoryBuilder()
                 .reverse() // drive backwards
-                .lineTo(new Vector2d(42, 29.0)) // backup
+                .lineTo(new Vector2d(42, 28.0)) // backup
                 .build();
 
         drive.followTrajectorySync(backupAndGrabPlate);

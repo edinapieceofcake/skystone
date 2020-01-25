@@ -103,8 +103,8 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         switch (location) {
             case left:
-                firstBlockLocation = -22;
-                secondBlockXLocation = -46;
+                firstBlockLocation = -20;
+                secondBlockXLocation = -42;
                 secondblockYLocation = -33;
                 break;
             case right:
@@ -123,13 +123,13 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
                 .addMarker(1.0, () -> { arm.setPosition(.40);return Unit.INSTANCE; })
-                .strafeTo(new Vector2d(firstBlockLocation, -32.0)).build(); // pick up first block
+                .strafeTo(new Vector2d(firstBlockLocation, -31.0)).build(); // pick up first block
 
         drive.followTrajectorySync(driveToFirstBlock);
         arm.setPosition(0);
         sleep(250);
         flap.setPosition(1);
-        sleep(550);
+        sleep(750);
         arm.setPosition(1);
         sleep(100);
 
@@ -149,7 +149,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, -36.0))
-                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.40); return Unit.INSTANCE;})
+                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.45); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
@@ -157,7 +157,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         arm.setPosition(0);
         sleep(250);
         flap.setPosition(1);
-        sleep(550);
+        sleep(750);
         arm.setPosition(1);
         sleep(100);
 
