@@ -28,8 +28,8 @@ public class ArmAndFlapper extends Subsystem {
         if (_canUpdate) {
             _leftarm.setPosition(.7);
             _rightarm.setPosition(.4);
-            _leftflap.setPosition(1);
-            _rightflap.setPosition(0);
+            _leftflap.setPosition(.8);
+            _rightflap.setPosition(.2);
         }
     }
 
