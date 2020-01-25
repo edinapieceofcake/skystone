@@ -159,7 +159,7 @@ public class RedDoubleBlockAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, -36.0))
-                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.40); return Unit.INSTANCE;})
+                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.45); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 

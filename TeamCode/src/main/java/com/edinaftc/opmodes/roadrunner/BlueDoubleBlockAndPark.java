@@ -158,7 +158,7 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, 36.0))
-                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.73); return Unit.INSTANCE;})
+                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.65); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
