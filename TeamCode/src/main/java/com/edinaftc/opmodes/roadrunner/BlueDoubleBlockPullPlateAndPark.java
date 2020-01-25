@@ -35,6 +35,17 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
     private MecanumDriveBase_435_35 drive;
     private DistanceSensor distance;
 
+    public static double LEFTFRISTX = -20;
+    public static double RIGHTFIRSTX = -38;
+    public static double MIDDLEFIRSTX = -28;
+
+    public static double LEFTSECONDX = -42;
+    public static double LEFTSECONDY = 33;
+    public static double RIGHTSECONDX = -62;
+    public static double RIGHTSECONDY = 33.5;
+    public static double MIDDLESECONDX = -50;
+    public static double MIDDLESECONDY = 33;
+
     public void runOpMode() {
         long sleepTime = 0;
 
@@ -102,19 +113,19 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         switch (location) {
             case left:
-                firstBlockLocation = -20;
-                secondBlockXLocation = -42;
-                secondblockYLocation = 33;
+                firstBlockLocation = LEFTFRISTX;
+                secondBlockXLocation = LEFTSECONDX;
+                secondblockYLocation = LEFTSECONDY;
                 break;
             case right:
-                firstBlockLocation = -38;
-                secondBlockXLocation = -62;
-                secondblockYLocation = 33.5;
+                firstBlockLocation = RIGHTFIRSTX;
+                secondBlockXLocation = RIGHTSECONDX;
+                secondblockYLocation = RIGHTSECONDY;
                 break;
             case middle:
-                firstBlockLocation = -28;
-                secondBlockXLocation = -50;
-                secondblockYLocation = 33;
+                firstBlockLocation = MIDDLEFIRSTX;
+                secondBlockXLocation = MIDDLESECONDX;
+                secondblockYLocation = MIDDLESECONDX;
                 break;
         }
 
@@ -128,7 +139,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
         arm.setPosition(1);
         sleep(250);
         flap.setPosition(0);
-        sleep(550);
+        sleep(750);
         arm.setPosition(0);
         sleep(100);
 
@@ -156,7 +167,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
         arm.setPosition(1);
         sleep(250);
         flap.setPosition(0);
-        sleep(550);
+        sleep(750);
         arm.setPosition(0);
         sleep(100);
 

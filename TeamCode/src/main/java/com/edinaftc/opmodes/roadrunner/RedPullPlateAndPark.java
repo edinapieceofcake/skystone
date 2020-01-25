@@ -20,7 +20,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="RedPullPlateAndPark", group="Autonomous")
-@Config
 public class RedPullPlateAndPark extends LinearOpMode {
     private Servo left;
     private Servo right;

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 /*
  * This is a simple routine to test turning capabilities.
  */
-@Config
+//@Config
 @Autonomous(group = "drive")
 @Disabled
 public class TurnTest_435_40 extends LinearOpMode {

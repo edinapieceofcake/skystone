@@ -35,6 +35,17 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
     private MecanumDriveBase_435_35 drive;
     private DistanceSensor distance;
 
+    public static double LEFTFRISTX = -20;
+    public static double RIGHTFIRSTX = -38;
+    public static double MIDDLEFIRSTX = -30;
+
+    public static double LEFTSECONDX = -42;
+    public static double LEFTSECONDY = -33;
+    public static double RIGHTSECONDX = -62;
+    public static double RIGHTSECONDY = -33;
+    public static double MIDDLESECONDX = -54;
+    public static double MIDDLESECONDY = -32;
+
     public void runOpMode() {
         long sleepTime = 0;
         double firstBlockLocation = 0;
@@ -103,19 +114,19 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         switch (location) {
             case left:
-                firstBlockLocation = -20;
-                secondBlockXLocation = -42;
-                secondblockYLocation = -33;
+                firstBlockLocation = LEFTFRISTX;
+                secondBlockXLocation = LEFTSECONDX;
+                secondblockYLocation = LEFTSECONDY;
                 break;
             case right:
-                firstBlockLocation = -38;
-                secondBlockXLocation = -62;
-                secondblockYLocation = -33;
+                firstBlockLocation = RIGHTFIRSTX;
+                secondBlockXLocation = RIGHTSECONDX;
+                secondblockYLocation = RIGHTSECONDY;
                 break;
             case middle:
-                firstBlockLocation = -30;
-                secondBlockXLocation = -54;
-                secondblockYLocation = -32;
+                firstBlockLocation = MIDDLEFIRSTX;
+                secondBlockXLocation = MIDDLESECONDX;
+                secondblockYLocation = MIDDLESECONDY;
                 break;
         }
 

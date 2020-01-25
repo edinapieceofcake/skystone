@@ -35,7 +35,7 @@ import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_
  * Base class with shared functionality for sample mecanum drives. All hardware-specific details are
  * handled in subclasses.
  */
-@Config
+//@Config
 public abstract class MecanumDriveBase_435_40 extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, .0, .1);

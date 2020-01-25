@@ -3,7 +3,6 @@ package com.edinaftc.opmodes.roadrunner;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.path.heading.LinearInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.edinaftc.library.Stickygamepad;
 import com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_40;
@@ -34,6 +33,17 @@ public class RedDoubleBlockAndPark extends LinearOpMode {
     private Stickygamepad _gamepad1;
     private MecanumDriveBase_435_40 drive;
     private DistanceSensor distance;
+
+    public static double LEFTFRISTX = -20;
+    public static double RIGHTFIRSTX = -38;
+    public static double MIDDLEFIRSTX = -30;
+
+    public static double LEFTSECONDX = -46;
+    public static double LEFTSECONDY = -30;
+    public static double RIGHTSECONDX = -62;
+    public static double RIGHTSECONDY = -30;
+    public static double MIDDLESECONDX = -54;
+    public static double MIDDLESECONDY = -29.5;
 
     public void runOpMode() {
         long sleepTime = 0;
@@ -103,19 +113,19 @@ public class RedDoubleBlockAndPark extends LinearOpMode {
 
         switch (location) {
             case left:
-                firstBlockLocation = -20;
-                secondBlockXLocation = -46;
-                secondblockYLocation = -30;
+                firstBlockLocation = LEFTFRISTX;
+                secondBlockXLocation = LEFTSECONDX;
+                secondblockYLocation = LEFTSECONDY;
                 break;
             case right:
-                firstBlockLocation = -38;
-                secondBlockXLocation = -62;
-                secondblockYLocation = -30;
+                firstBlockLocation = RIGHTFIRSTX;
+                secondBlockXLocation = RIGHTSECONDX;
+                secondblockYLocation = RIGHTSECONDY;
                 break;
             case middle:
-                firstBlockLocation = -30;
-                secondBlockXLocation = -54;
-                secondblockYLocation = -29.5;
+                firstBlockLocation = MIDDLEFIRSTX;
+                secondBlockXLocation = MIDDLESECONDX;
+                secondblockYLocation = MIDDLESECONDY;
                 break;
         }
 

@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Misc;
  * this procedure a few times and averages the values for additional accuracy. Note: a relatively
  * accurate track width estimate is important or else the angular constraints will be thrown off.
  */
-@Config
+//@Config
 @Autonomous(group = "drive")
 @Disabled
 public class TrackWidthTuner_435_35 extends LinearOpMode {
