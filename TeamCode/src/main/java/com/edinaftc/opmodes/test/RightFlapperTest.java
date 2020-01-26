@@ -1,5 +1,6 @@
 package com.edinaftc.opmodes.test;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.edinaftc.library.Stickygamepad;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -8,11 +9,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp()
-@Disabled
+//@Disabled
+@Config
 public class RightFlapperTest extends OpMode {
     Stickygamepad _gamepad1;
     Servo _rightArm;
     Servo _rightFlap;
+
+    public static double XPOSITION = 0;
+    public static double YPOSITION = 1;
 
     @Override
     public void init() {
@@ -26,11 +31,11 @@ public class RightFlapperTest extends OpMode {
         _gamepad1.update();
 
         if (_gamepad1.x) {
-            _rightFlap.setPosition(0);
+            _rightFlap.setPosition(XPOSITION);
         }
 
         if (_gamepad1.y) {
-            _rightFlap.setPosition(1);
+            _rightFlap.setPosition(YPOSITION);
         }
 
         if (_gamepad1.b) {
