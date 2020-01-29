@@ -8,15 +8,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp()
-//@Disabled
+@Disabled
 @Config
 public class LeftFlapperTest extends OpMode {
     Stickygamepad _gamepad1;
     Servo _leftArm;
     Servo _leftFlap;
 
-    public static double XPOSITION = 0;
-    public static double YPOSITION = 1;
+    public static double FLAPXPOSITION = 0;
+    public static double FLAPYPOSITION = 1;
+    public static double ARMAPOSITION = 1;
+    public static double ARMBPOSITION = 0;
 
     @Override
     public void init() {
@@ -30,19 +32,19 @@ public class LeftFlapperTest extends OpMode {
         _gamepad1.update();
 
         if (_gamepad1.x) {
-            _leftFlap.setPosition(XPOSITION);
+            _leftFlap.setPosition(FLAPXPOSITION);
         }
 
         if (_gamepad1.y) {
-            _leftFlap.setPosition(YPOSITION);
+            _leftFlap.setPosition(FLAPYPOSITION);
         }
 
         if (_gamepad1.b) {
-            _leftArm.setPosition(0);
+            _leftArm.setPosition(ARMBPOSITION);
         }
 
         if (_gamepad1.a) {
-            _leftArm.setPosition(1);
+            _leftArm.setPosition(ARMAPOSITION);
         }
 
         if (_gamepad1.dpad_right) {

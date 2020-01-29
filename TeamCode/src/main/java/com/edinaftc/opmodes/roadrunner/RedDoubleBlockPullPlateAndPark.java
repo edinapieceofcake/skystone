@@ -35,7 +35,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
     private MecanumDriveBase_435_35 drive;
     private DistanceSensor distance;
 
-    public static double LEFTFRISTX = -20;
+    public static double LEFTFIRSTX = -20;
     public static double RIGHTFIRSTX = -38;
     public static double MIDDLEFIRSTX = -30;
 
@@ -43,8 +43,8 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
     public static double LEFTSECONDY = -33;
     public static double RIGHTSECONDX = -62;
     public static double RIGHTSECONDY = -33;
-    public static double MIDDLESECONDX = -54;
-    public static double MIDDLESECONDY = -32;
+    public static double MIDDLESECONDX = -53;
+    public static double MIDDLESECONDY = -33;
 
     public void runOpMode() {
         long sleepTime = 0;
@@ -114,7 +114,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         switch (location) {
             case left:
-                firstBlockLocation = LEFTFRISTX;
+                firstBlockLocation = LEFTFIRSTX;
                 secondBlockXLocation = LEFTSECONDX;
                 secondblockYLocation = LEFTSECONDY;
                 break;
@@ -133,16 +133,17 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         drive.setPoseEstimate(new Pose2d(-40.0, -63.0, Math.toRadians(0.0)));
 
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
-                .addMarker(1.0, () -> { arm.setPosition(.40);return Unit.INSTANCE; })
-                .strafeTo(new Vector2d(firstBlockLocation, -31.0)).build(); // pick up first block
+                .addMarker(.5, () -> { arm.setPosition(.40);return Unit.INSTANCE; })
+                .strafeTo(new Vector2d(firstBlockLocation, -30.0)).build(); // pick up first block
 
         drive.followTrajectorySync(driveToFirstBlock);
+
         arm.setPosition(0);
         sleep(250);
-        flap.setPosition(1);
-        sleep(750);
+        flap.setPosition(.6);
+        sleep(850);
         arm.setPosition(1);
-        sleep(100);
+        sleep(200);
 
         Trajectory dropOffFirstBlock = drive.trajectoryBuilder()
                 .splineTo(new Pose2d(0.0, -36.0))
@@ -150,9 +151,11 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
                 .build();
 
         drive.followTrajectorySync(dropOffFirstBlock);
-        flap.setPosition(0);
+
         arm.setPosition(0);
-        sleep(400);
+        sleep(200);
+        flap.setPosition(0);
+        sleep(200);
 
         flap.setPosition(1);
         arm.setPosition(1);
@@ -160,17 +163,18 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, -36.0))
-                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.45); return Unit.INSTANCE;})
+                .addMarker(new Vector2d(0.0, -36.0), () -> {flap.setPosition(0); arm.setPosition(.6); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
         drive.followTrajectorySync(driveToSecondBlock);
+
         arm.setPosition(0);
         sleep(250);
-        flap.setPosition(1);
-        sleep(750);
+        flap.setPosition(.6);
+        sleep(650);
         arm.setPosition(1);
-        sleep(100);
+        sleep(200);
 
         Trajectory dropOffSecondBlock = drive.trajectoryBuilder()
                 .splineTo(new Pose2d(0.0, -36.0))
@@ -178,9 +182,11 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
                 .build();
 
         drive.followTrajectorySync(dropOffSecondBlock);
-        flap.setPosition(0);
+
         arm.setPosition(0);
-        sleep(400);
+        sleep(200);
+        flap.setPosition(0);
+        sleep(200);
 
         flap.setPosition(1);
         arm.setPosition(1);
@@ -216,9 +222,10 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         sleep(500);
 
         Trajectory driveToBridge = drive.trajectoryBuilder()
-                .strafeTo(new Vector2d(30, -38))
+                .strafeTo(new Vector2d(30, -36))
                 .lineTo(new Vector2d(8.0, -33)) // drive to bridge
                 .build();
+
         drive.followTrajectorySync(driveToBridge);
     }
 }
