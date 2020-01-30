@@ -38,7 +38,7 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
     public static double RIGHTFIRSTX = -38;
     public static double MIDDLEFIRSTX = -28;
 
-    public static double LEFTSECONDX = -45;
+    public static double LEFTSECONDX = -44;
     public static double LEFTSECONDY = 33;
     public static double RIGHTSECONDX = -62;
     public static double RIGHTSECONDY = 33.5;
@@ -105,8 +105,6 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
                 }
             }
         }
-
-        hardwareMap.servo.get("leftArm").setPosition(1);
 
         sleep(sleepTime);
 

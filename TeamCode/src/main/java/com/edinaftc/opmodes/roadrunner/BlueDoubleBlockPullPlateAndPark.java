@@ -69,7 +69,7 @@ public class BlueDoubleBlockPullPlateAndPark extends LinearOpMode {
 
         camera.initialize();
 
-        flap.setPosition(0);
+        flap.setPosition(.6);
 
         hardwareMap.servo.get("leftArm").setPosition(1);
         hardwareMap.servo.get("leftFlap").setPosition(1);
