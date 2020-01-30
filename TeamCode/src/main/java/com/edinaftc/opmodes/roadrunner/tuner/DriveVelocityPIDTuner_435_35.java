@@ -39,7 +39,7 @@ import static com.edinaftc.library.motion.roadrunner.mecanum.DriveConstants_435_
  * PID coefficients. Once you've found a satisfactory set of gains, add them to your drive class
  * ctor.
  */
-@Config
+//@Config
 @Autonomous(group = "drive")
 @Disabled
 public class DriveVelocityPIDTuner_435_35 extends LinearOpMode {

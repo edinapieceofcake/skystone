@@ -34,6 +34,17 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
     private MecanumDriveBase_435_40 drive;
     private DistanceSensor distance;
 
+    public static double LEFTFIRSTX = -20;
+    public static double RIGHTFIRSTX = -38;
+    public static double MIDDLEFIRSTX = -28;
+
+    public static double LEFTSECONDX = -44;
+    public static double LEFTSECONDY = 33;
+    public static double RIGHTSECONDX = -62;
+    public static double RIGHTSECONDY = 33.5;
+    public static double MIDDLESECONDX = -53;
+    public static double MIDDLESECONDY = 33;
+
     public void runOpMode() {
         long sleepTime = 0;
         double firstBlockLocation = 0;
@@ -60,7 +71,7 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
 
         camera.initialize();
 
-        flap.setPosition(1);
+        flap.setPosition(.6);
 
         hardwareMap.servo.get("leftArm").setPosition(1);
         hardwareMap.servo.get("leftFlap").setPosition(1);
@@ -95,52 +106,52 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
             }
         }
 
-        hardwareMap.servo.get("leftArm").setPosition(1);
-
         sleep(sleepTime);
 
         switch (location) {
             case left:
-                firstBlockLocation = -22;
-                secondBlockXLocation = -44;
-                secondblockYLocation = 35;
+                firstBlockLocation = LEFTFIRSTX;
+                secondBlockXLocation = LEFTSECONDX;
+                secondblockYLocation = LEFTSECONDY;
                 break;
             case right:
-                firstBlockLocation = -38;
-                secondBlockXLocation = -62;
-                secondblockYLocation = 33;
+                firstBlockLocation = RIGHTFIRSTX;
+                secondBlockXLocation = RIGHTSECONDX;
+                secondblockYLocation = RIGHTSECONDY;
                 break;
             case middle:
-                firstBlockLocation = -30;
-                secondBlockXLocation = -54;
-                secondblockYLocation = 34;
+                firstBlockLocation = MIDDLEFIRSTX;
+                secondBlockXLocation = MIDDLESECONDX;
+                secondblockYLocation = MIDDLESECONDY;
                 break;
         }
 
         drive.setPoseEstimate(new Pose2d(-40.0, 63.0, Math.toRadians(0.0)));
 
         Trajectory driveToFirstBlock = drive.trajectoryBuilder()
-                .addMarker(1.0, () -> { arm.setPosition(.73);return Unit.INSTANCE; })
-                .strafeTo(new Vector2d(firstBlockLocation, 32.0)).build(); // pick up first block
+                .addMarker(.5, () -> { arm.setPosition(.70); flap.setPosition(1); return Unit.INSTANCE; })
+                .strafeTo(new Vector2d(firstBlockLocation, 29.0)).build(); // pick up first block
 
         drive.followTrajectorySync(driveToFirstBlock);
+
         arm.setPosition(1);
         sleep(250);
-        flap.setPosition(0);
-        sleep(550);
+        flap.setPosition(.4);
+        sleep(650);
         arm.setPosition(0);
-        sleep(100);
+        sleep(200);
 
         Trajectory dropOffFirstBlock = drive.trajectoryBuilder()
                 .splineTo(new Pose2d(0.0, 36.0))
-                .splineTo(new Pose2d(20.0, 36.0)) // drop off first block
+                .splineTo(new Pose2d(60.0, 29.0)) // drop off first block
                 .build();
 
         drive.followTrajectorySync(dropOffFirstBlock);
 
-        flap.setPosition(1);
         arm.setPosition(1);
-        sleep(400);
+        sleep(200);
+        flap.setPosition(1);
+        sleep(200);
 
         flap.setPosition(0);
         arm.setPosition(0);
@@ -148,28 +159,30 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
         Trajectory driveToSecondBlock = drive.trajectoryBuilder()
                 .reverse() // drive backwards
                 .splineTo(new Pose2d(0.0, 36.0))
-                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.73); return Unit.INSTANCE;})
+                .addMarker(new Vector2d(0.0, 36.0), () -> {flap.setPosition(1); arm.setPosition(.6); return Unit.INSTANCE;})
                 .splineTo(new Pose2d(secondBlockXLocation, secondblockYLocation)) // pick up second block
                 .build();
 
         drive.followTrajectorySync(driveToSecondBlock);
-        flap.setPosition(1);
+
+        arm.setPosition(1);
         sleep(250);
-        flap.setPosition(0);
-        sleep(550);
+        flap.setPosition(.4);
+        sleep(850);
         arm.setPosition(0);
-        sleep(100);
+        sleep(200);
 
         Trajectory dropOffSecondBlock = drive.trajectoryBuilder()
                 .splineTo(new Pose2d(0.0, 36.0))
-                .splineTo(new Pose2d(20.0, 36)) // drop off second block
+                .splineTo(new Pose2d(45.0, 29.0)) // drop off second block
                 .build();
 
         drive.followTrajectorySync(dropOffSecondBlock);
 
-        flap.setPosition(1);
         arm.setPosition(1);
-        sleep(400);
+        sleep(200);
+        flap.setPosition(1);
+        sleep(200);
 
         flap.setPosition(0);
         arm.setPosition(0);
@@ -178,7 +191,6 @@ public class BlueDoubleBlockAndPark extends LinearOpMode {
                 .reverse()
                 .splineTo(new Pose2d(4.0, 36.0))
                 .build();
-
 
         drive.followTrajectorySync(driveToBridge);
     }

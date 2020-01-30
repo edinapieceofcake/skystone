@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="DriveForward", group="Autonomous")
-@Config
+//@Config
 public class DriveForward extends LinearOpMode {
     private Stickygamepad _gamepad1;
     private MecanumDriveBase_435_35 drive;

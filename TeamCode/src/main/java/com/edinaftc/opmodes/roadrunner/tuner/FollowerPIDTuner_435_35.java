@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
  * Op mode for tuning follower PID coefficients (located in the drive base classes). The robot
  * drives in a DISTANCE-by-DISTANCE square indefinitely.
  */
-@Config
+//@Config
 @Autonomous(group = "drive")
 @Disabled
 public class FollowerPIDTuner_435_35 extends LinearOpMode {
