@@ -42,7 +42,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
     public static double LEFTSECONDX = -42;
     public static double LEFTSECONDY = -33;
     public static double RIGHTSECONDX = -62;
-    public static double RIGHTSECONDY = -33;
+    public static double RIGHTSECONDY = -32;
     public static double MIDDLESECONDX = -53;
     public static double MIDDLESECONDY = -33;
 
@@ -222,7 +222,7 @@ public class RedDoubleBlockPullPlateAndPark extends LinearOpMode {
         sleep(500);
 
         Trajectory driveToBridge = drive.trajectoryBuilder()
-                .strafeTo(new Vector2d(30, -36))
+                .strafeTo(new Vector2d(30, -37))
                 .lineTo(new Vector2d(8.0, -33)) // drive to bridge
                 .build();
 
