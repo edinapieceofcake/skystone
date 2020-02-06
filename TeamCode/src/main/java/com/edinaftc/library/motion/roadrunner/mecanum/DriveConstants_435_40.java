@@ -3,6 +3,7 @@ package com.edinaftc.library.motion.roadrunner.mecanum;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
+import com.edinaftc.library.motortype.GoBILDA5202Series1150;
 import com.edinaftc.library.motortype.GoBILDA5202Series435;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -27,7 +28,7 @@ public class DriveConstants_435_40 {
      * @DeviceProperties and @MotorType annotations.
      */
     public static final MotorConfigurationType MOTOR_CONFIG =
-            MotorConfigurationType.getMotorType(GoBILDA5202Series435.class);
+            MotorConfigurationType.getMotorType(GoBILDA5202Series1150.class);
 
     /*
      * Set the first flag appropriately. If using the built-in motor velocity PID, update
